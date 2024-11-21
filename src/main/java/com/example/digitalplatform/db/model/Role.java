@@ -1,12 +1,14 @@
 package com.example.digitalplatform.db.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "roles")
+@Data
 public class Role {
 
     @Id
