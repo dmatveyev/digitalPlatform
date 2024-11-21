@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add new account</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+</head>
+<body>
+
+<!-- Author create -->
+<form id="edit-form" th:action="@{/accounts/create}" th:method="post" action="addAccount.html">
+    <div class="container">
+        <h1>Account:</h1>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input1">User name:</label>
+            <input class="col-2" id="holder-input1" name="userName" type="text" th:value="${userData.userName}"
+                   value="John Doe" required/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input2">Password:</label>
+            <input class="col-2" id="holder-input2" name="password" type="text" th:value="${userData.password}"
+                   value="John Doe" required/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input3">First Name:</label>
+            <input class="col-2" id="holder-input3" name="firstName" type="text" th:value="${userData.firstName}"
+                   value="John Doe" required/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input4">Last Name:</label>
+            <input class="col-2" id="holder-input4" name="lastName" type="text" th:value="${userData.lastName}"
+                   value="John Doe" required/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input5">Institution:</label>
+            <input class="col-2" id="holder-input5" name="institution" type="text" th:value="${userData.institution}"
+                   value="John Doe" required/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="dropDownList">User type:</label>
+            <select class="col-2" id="dropDownList" name="type" required>
+                <option th:each="type : ${types}" th:value="${type}" th:text="${type.name}"></option>
+            </select>
+            <!--<input class="col-2" id="holder-input2" name="subjectArea" type="text" th:value="${request.subjectArea}" value="John Doe"/>-->
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a role="button" class="btn btn-outline-secondary" th:href="@{/accounts/all}">Close</a>
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>

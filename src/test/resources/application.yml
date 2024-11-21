@@ -9,6 +9,9 @@ spring:
   jpa:
     generate-ddl: false
     #generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
     hibernate:
       ddl-auto: none
       #ddl-auto: create-drop
@@ -18,3 +21,6 @@ spring:
       continue-on-error: false
       mode:
       data-locations: test.sql
+
+
+
