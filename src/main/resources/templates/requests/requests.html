@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список запросов</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" th:href="@{/requests/all}" href="requests.html">Request</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/rating_parameters/all}" href="rating_parameters.html">Rating Parameters</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/genres/all}" href="genres.html">Genres</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <h1>Список запросов</h1>
+    <div>
+        <table class="table table-bordered table-striped">
+            <thead class="bg-info">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Subject Area</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="request : ${requests}">
+                <td th:text="${request.id}">1</td>
+                <td th:text="${request.title}">Bond</td>
+                <td th:text="${request.subjectArea.name}">Bond</td>
+                <td th:text="${request.description}">Bond</td>
+                <td th:text="${request.status}">Bond</td>
+                <td th:text="${request.time}">Bond</td>
+                <td>
+                    <a role="button" class="btn btn-outline-primary" th:href="@{/requests/edit(id=${request.id})}"
+                       href="editRequest.html">Edit</a>
+
+                </td>
+                <td>
+                    <form th:action="@{/requests/delete}" th:method="delete">
+                        <input type="hidden" name="id" th:value="${request.id}"/>
+                        <input class="btn btn-danger" type="submit" value="Delete" onClick="return confirm('sure?')"/>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <a role="button" class="btn btn-primary" th:href="@{/requests/create}">Add new...</a>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>

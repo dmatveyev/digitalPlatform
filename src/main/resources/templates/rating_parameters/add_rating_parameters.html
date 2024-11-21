@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add new author</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+</head>
+<body>
+
+<!-- Author create -->
+<form id="edit-form" th:action="@{/rating_parameters/create}" th:method="post" action="add_rating_parameters.html">
+    <div class="container">
+        <h1>Author:</h1>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input1">Name:</label>
+            <input class="col-2" id="holder-input1" name="code" type="text" th:value="${rating_parameters.code}" value="John Doe"/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input2">description:</label>
+            <input class="col-2" id="holder-input2" name="description" type="text" th:value="${rating_parameters.description}" value="John Doe"/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input3">minValue:</label>
+            <input class="col-2" id="holder-input3" name="minValue" type="text" th:value="${rating_parameters.minValue}" value="John Doe"/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input4">maxValue:</label>
+            <input class="col-2" id="holder-input4" name="maxValue" type="text" th:value="${rating_parameters.maxValue}" value="John Doe"/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input5">coefficient:</label>
+            <input class="col-2" id="holder-input5" name="coefficient" type="text" th:value="${rating_parameters.coefficient}" value="John Doe"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a role="button" class="btn btn-outline-secondary" th:href="@{/rating_parameters/all}">Close</a>
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>
