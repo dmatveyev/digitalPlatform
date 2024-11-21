@@ -1,4 +1,4 @@
-drop table USERS cascade;
+drop table if exists USERS cascade;
 create table USERS
 (
     ID   UUID not null
@@ -9,7 +9,7 @@ create table USERS
     TOKEN_EXPIRED BOOLEAN
 );
 
-drop table ROLES cascade;
+drop table if exists ROLES cascade;
 create table ROLES
 (
     ID   UUID not null
@@ -17,7 +17,7 @@ create table ROLES
     NAME CHARACTER VARYING(255)
 );
 
-drop table CUSTOMERS cascade;
+drop table if exists CUSTOMERS cascade;
 create table CUSTOMERS
 (
     SCORE      DOUBLE PRECISION not null,
@@ -31,7 +31,7 @@ create table CUSTOMERS
     constraint customers_user_fk
         foreign key (USER_ID) references USERS
 );
-drop table PRIVILEGES cascade ;
+drop table if exists PRIVILEGES cascade ;
 create table PRIVILEGES
 (
     ID   UUID not null
@@ -39,7 +39,7 @@ create table PRIVILEGES
     NAME CHARACTER VARYING(255)
 );
 
-drop table ROLES_PRIVILEGES;
+drop table if exists ROLES_PRIVILEGES;
 create table ROLES_PRIVILEGES
 (
     PRIVILEGE_ID UUID not null,
@@ -50,7 +50,7 @@ create table ROLES_PRIVILEGES
         foreign key (ROLE_ID) references ROLES
 );
 
-drop table USERS_ROLES;
+drop table if exists USERS_ROLES;
 create table USERS_ROLES
 (
     ROLE_ID UUID not null,
@@ -59,7 +59,7 @@ create table USERS_ROLES
         foreign key (ROLE_ID) references ROLES
 );
 
-drop table WORKERS cascade;
+drop table if exists WORKERS cascade;
 create table WORKERS
 (
     SCORE      DOUBLE PRECISION not null,
@@ -75,7 +75,7 @@ create table WORKERS
         foreign key (USER_ID) references USERS
 );
 
-drop table SUBJECTAREAS cascade ;
+drop table if exists SUBJECTAREAS cascade ;
 create table SUBJECTAREAS
 (
     ID           UUID             not null
@@ -84,7 +84,7 @@ create table SUBJECTAREAS
     DESCRIPTION       CHARACTER VARYING(255)
 );
 
-drop table REQUESTS;
+drop table if exists REQUESTS;
 create table REQUESTS
 (
     RATING       DOUBLE PRECISION not null,
@@ -106,7 +106,7 @@ create table REQUESTS
 );
 
 
-drop table rating_parameters cascade ;
+drop table if exists rating_parameters cascade ;
 create table rating_parameters
 (
     ID           UUID             not null

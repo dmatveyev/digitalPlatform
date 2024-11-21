@@ -49,21 +49,23 @@ public class UserService {
         User saved = userRepository.save(user);
 
         switch (type) {
-            case TEACHER -> {
+            case TEACHER : {
                 Worker worker = new Worker();
                 worker.setUser(saved);
                 worker.setFirstName(accountDto.getFirstName());
                 worker.setLastName(accountDto.getLastName());
                 worker.setInstitute(accountDto.getInstitution());
                 workerRepository.save(worker);
+                break;
             }
-            case STUDENT -> {
+            case STUDENT : {
                 Customer customer = new Customer();
                 customer.setUser(saved);
                 customer.setFirstName(accountDto.getFirstName());
                 customer.setLastName(accountDto.getLastName());
                 customer.setSchool(accountDto.getInstitution());
                 customerRepository.save(customer);
+                break;
             }
         }
         return saved;

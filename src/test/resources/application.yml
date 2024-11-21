@@ -19,8 +19,6 @@ spring:
   sql:
     init:
       continue-on-error: false
-      mode:
-      data-locations: test.sql
-
+      data-locations: classpath*:test.sql
 
 

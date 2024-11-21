@@ -27,5 +27,6 @@ public class MySimpleUrlAuthenticationFailureHandler implements AuthenticationFa
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         log.error(exception.toString());
+        redirectStrategy.sendRedirect(request, response, "/login");
     }
 }
