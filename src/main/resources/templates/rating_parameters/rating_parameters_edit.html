@@ -16,28 +16,28 @@
 
         <div class="row mt-3">
             <label class="col-2" for="id-input">ID:</label>
-            <input class="col-2" id="id-input" type="text" disabled th:value="${rating_parameters.id}" value="1"/>
+            <input class="col-2" id="id-input" type="text" disabled th:value="${rating_parameters.id}" required/>
         </div>
 
         <div class="row mt-3">
             <label class="col-2" for="holder-input1">Name:</label>
-            <input class="col-2" id="holder-input1" name="code" type="text" disabled th:value="${rating_parameters.code}" value="John Doe"/>
+            <input class="col-2" id="holder-input1" name="code" type="text" disabled th:value="${rating_parameters.code}" required/>
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input2">description:</label>
-            <input class="col-2" id="holder-input2" name="description" type="text" th:value="${rating_parameters.description}" value="John Doe"/>
+            <input class="col-2" id="holder-input2" name="description" type="text" th:value="${rating_parameters.description}" required/>
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input3">minValue:</label>
-            <input class="col-2" id="holder-input3" name="minValue" type="text" th:value="${rating_parameters.minValue}" value="John Doe"/>
+            <input class="col-2" id="holder-input3" name="minValue" type="text" th:value="${rating_parameters.minValue}" required/>
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input4">maxValue:</label>
-            <input class="col-2" id="holder-input4" name="maxValue" type="text" th:value="${rating_parameters.maxValue}" value="John Doe"/>
+            <input class="col-2" id="holder-input4" name="maxValue" type="text" th:value="${rating_parameters.maxValue}" required/>
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input5">coefficient:</label>
-            <input class="col-2" id="holder-input5" name="coefficient" type="text" th:value="${rating_parameters.coefficient}" value="John Doe"/>
+            <input class="col-2" id="holder-input5" name="coefficient" type="text" th:value="${rating_parameters.coefficient}" required/>
         </div>
 
 

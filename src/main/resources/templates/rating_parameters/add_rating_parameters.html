@@ -15,23 +15,23 @@
         <h1>Author:</h1>
         <div class="row mt-3">
             <label class="col-2" for="holder-input1">Name:</label>
-            <input class="col-2" id="holder-input1" name="code" type="text" th:value="${rating_parameters.code}" value="John Doe"/>
+            <input class="col-2" id="holder-input1" name="code" type="text" th:value="${rating_parameters.code}" required value="John Doe"/>
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input2">description:</label>
-            <input class="col-2" id="holder-input2" name="description" type="text" th:value="${rating_parameters.description}" value="John Doe"/>
+            <input class="col-2" id="holder-input2" name="description" type="text" th:value="${rating_parameters.description}" required value="John Doe"/>
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input3">minValue:</label>
-            <input class="col-2" id="holder-input3" name="minValue" type="text" th:value="${rating_parameters.minValue}" value="John Doe"/>
+            <input class="col-2" id="holder-input3" name="minValue" type="text" th:value="${rating_parameters.minValue}" required/>
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input4">maxValue:</label>
-            <input class="col-2" id="holder-input4" name="maxValue" type="text" th:value="${rating_parameters.maxValue}" value="John Doe"/>
+            <input class="col-2" id="holder-input4" name="maxValue" type="text" th:value="${rating_parameters.maxValue}" required/>
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input5">coefficient:</label>
-            <input class="col-2" id="holder-input5" name="coefficient" type="text" th:value="${rating_parameters.coefficient}" value="John Doe"/>
+            <input class="col-2" id="holder-input5" name="coefficient" type="text" th:value="${rating_parameters.coefficient}" required/>
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
         <a role="button" class="btn btn-outline-secondary" th:href="@{/rating_parameters/all}">Close</a>
