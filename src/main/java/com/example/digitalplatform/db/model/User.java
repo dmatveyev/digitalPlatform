@@ -28,13 +28,13 @@ public class User {
     @OneToMany(mappedBy = "worker")
     private List<Request> assigned;
 
-   @ManyToMany
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles;
+    private Role role;
 
 }

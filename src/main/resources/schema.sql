@@ -19,10 +19,12 @@ create table ROLES
 (
     ID   UUID not null
         primary key,
-    NAME CHARACTER VARYING(255)
+    NAME CHARACTER VARYING(255),
+    CODE CHARACTER VARYING(255),
+    DESCRIPTION CHARACTER VARYING(255)
 );
 
-drop table if exists PRIVILEGES cascade ;
+drop table if exists PRIVILEGES cascade;
 create table PRIVILEGES
 (
     ID   UUID not null

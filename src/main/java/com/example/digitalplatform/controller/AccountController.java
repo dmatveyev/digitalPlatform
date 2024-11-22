@@ -1,7 +1,8 @@
 package com.example.digitalplatform.controller;
 
+import com.example.digitalplatform.db.model.Role;
+import com.example.digitalplatform.dto.RoleDto;
 import com.example.digitalplatform.dto.UserAccountDto;
-import com.example.digitalplatform.dto.UserType;
 import com.example.digitalplatform.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,22 +21,23 @@ import java.util.List;
 @RequestMapping("/accounts")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@PreAuthorize("hasRole('ROLE_ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
 class AccountController {
 
     UserService userService;
 
     @GetMapping("/create")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     String getAddAccountForm(Model model) {
 
         model.addAttribute("userData", new UserAccountDto());
-        model.addAttribute("types", Arrays.stream(UserType.values()).toList());
+        List<RoleDto> roles = userService.getAvailableRoles();
+        model.addAttribute("roles", roles);
         return "accounts/addAccount";
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     String addAccount(UserAccountDto userAccountDto, Model model) {
         userService.registerNewUserAccount(userAccountDto);
         List<UserAccountDto> accounts = userService.getAllUserAccounts();
@@ -44,7 +46,7 @@ class AccountController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     String getAll(Model model) {
         List<UserAccountDto> accounts = userService.getAllUserAccounts();
         model.addAttribute("accounts", accounts);

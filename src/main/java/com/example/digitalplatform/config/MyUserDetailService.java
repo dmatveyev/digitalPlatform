@@ -30,7 +30,7 @@ public class MyUserDetailService implements UserDetailsService  {
         User user = userRepository.findByLogin(username);
         return new org.springframework.security.core.userdetails.User(
                 user.getLogin(), user.getPassword(), user.isEnabled(), true, true,
-                true, getAuthorities(user.getRoles()));
+                true, getAuthorities(List.of(user.getRole())));
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(
@@ -44,7 +44,7 @@ public class MyUserDetailService implements UserDetailsService  {
         List<String> privileges = new ArrayList<>();
         List<Privilege> collection = new ArrayList<>();
         for (Role role : roles) {
-            privileges.add(role.getName());
+            privileges.add(role.getCode().name());
             collection.addAll(role.getPrivileges());
         }
         for (Privilege item : collection) {

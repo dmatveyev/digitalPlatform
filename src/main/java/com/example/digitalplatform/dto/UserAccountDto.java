@@ -1,5 +1,7 @@
 package com.example.digitalplatform.dto;
 
+import com.example.digitalplatform.db.model.Role;
+import com.example.digitalplatform.db.model.RoleType;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -16,6 +18,7 @@ public class UserAccountDto {
     String firstName;
     String lastName;
     String institution;
-    UserType type;
+    RoleType roleCode;
+    String roleName;
 
 }

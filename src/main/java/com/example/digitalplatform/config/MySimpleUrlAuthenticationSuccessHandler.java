@@ -1,5 +1,6 @@
 package com.example.digitalplatform.config;
 
+import com.example.digitalplatform.db.model.RoleType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -52,8 +53,10 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
     protected String determineTargetUrl(final Authentication authentication) {
 
         Map<String, String> roleTargetUrlMap = new HashMap<>();
-        roleTargetUrlMap.put("ROLE_USER", "/requests/all");
-        roleTargetUrlMap.put("ROLE_ADMIN", "/accounts/all");
+        roleTargetUrlMap.put(RoleType.USER.name(), "/requests/all");
+        roleTargetUrlMap.put(RoleType.TEACHER.name(), "/requests/all");
+        roleTargetUrlMap.put(RoleType.STUDENT.name(), "/requests/all");
+        roleTargetUrlMap.put(RoleType.ADMIN.name(), "/accounts/all");
 
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (final GrantedAuthority grantedAuthority : authorities) {

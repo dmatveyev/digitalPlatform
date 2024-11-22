@@ -1,15 +1,15 @@
 package com.example.digitalplatform.service;
 
+import com.example.digitalplatform.db.model.Role;
 import com.example.digitalplatform.db.model.User;
 import com.example.digitalplatform.db.repository.RoleRepository;
 import com.example.digitalplatform.db.repository.UserRepository;
+import com.example.digitalplatform.dto.RoleDto;
 import com.example.digitalplatform.dto.UserAccountDto;
-import com.example.digitalplatform.dto.UserType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +31,13 @@ public class UserService {
         if (Objects.nonNull(old)) {
             log.error("There is an account with that user name: " + accountDto.getUserName());
         }
-        UserType type = accountDto.getType();
-
         User user = new User();
         user.setLogin(accountDto.getUserName());
         user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
         user.setEnabled(true);
 
-        user.setRoles(Collections.singletonList(roleRepository.findByName("ROLE_USER")));
+        Role byCode = roleRepository.findByCode(accountDto.getRoleCode());
+        user.setRole(byCode);
 
         user.setFirstName(accountDto.getFirstName());
         user.setLastName(accountDto.getLastName());
@@ -55,12 +54,22 @@ public class UserService {
         for (User user : users) {
             UserAccountDto dto = new UserAccountDto();
             dto.setUserName(user.getLogin());
-            dto.setType(null);
+            Role role = user.getRole();
+            dto.setRoleCode(role.getCode());
+            dto.setRoleName(role.getName());
             dto.setInstitution(user.getInstitute());
             dto.setFirstName(user.getFirstName());
             dto.setLastName(user.getLastName());
             result.add(dto);
         }
         return result;
+    }
+
+    public List<RoleDto> getAvailableRoles() {
+        List<Role> all = roleRepository.findAll();
+        List<RoleDto> dtos = all.stream().map(role ->
+            new RoleDto(role.getCode(), role.getName())
+        ).toList();
+        return dtos;
     }
 }

@@ -39,9 +39,9 @@
                    value="John Doe" required/>
         </div>
         <div class="row mt-3">
-            <label class="col-2" for="dropDownList">User type:</label>
-            <select class="col-2" id="dropDownList" name="type" required>
-                <option th:each="type : ${types}" th:value="${type}" th:text="${type.name}"></option>
+            <label class="col-2" for="dropDownList">User role:</label>
+            <select class="col-2" id="dropDownList" name="roleCode" required>
+                <option th:each="role : ${roles}" th:value="${role.code}" th:text="${role.name}"></option>
             </select>
             <!--<input class="col-2" id="holder-input2" name="subjectArea" type="text" th:value="${request.subjectArea}" value="John Doe"/>-->
         </div>
