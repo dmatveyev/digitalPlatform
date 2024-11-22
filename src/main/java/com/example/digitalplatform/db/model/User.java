@@ -18,6 +18,15 @@ public class User {
     private boolean enabled;
     @Column(name = "token_expired")
     private boolean tokenExpired;
+    String firstName;
+    String LastName;
+    String institute;
+    String degree;
+    double score;
+    @OneToMany(mappedBy = "customer")
+    private List<Request> created;
+    @OneToMany(mappedBy = "worker")
+    private List<Request> assigned;
 
    @ManyToMany
     @JoinTable(

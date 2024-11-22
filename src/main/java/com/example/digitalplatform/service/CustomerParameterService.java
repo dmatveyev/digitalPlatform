@@ -1,9 +1,9 @@
 package com.example.digitalplatform.service;
 
-import com.example.digitalplatform.db.model.Customer;
 import com.example.digitalplatform.db.model.RatingName;
 import com.example.digitalplatform.db.model.RatingParameters;
 import com.example.digitalplatform.db.model.Request;
+import com.example.digitalplatform.db.model.User;
 import com.example.digitalplatform.db.repository.RatingParametersRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class CustomerParameterService implements RatingParameterService {
         RatingParameters ratingParameters = ratingParametersRepository.findByCode(getRatingName().name());
         if (Objects.nonNull(ratingParameters)) {
             double rating = request.getRating();
-            Customer customer = request.getCustomer();
+            User customer = request.getCustomer();
             double score = customer.getScore();
             double coefficient = ratingParameters.getCoefficient();
             rating += score * coefficient;

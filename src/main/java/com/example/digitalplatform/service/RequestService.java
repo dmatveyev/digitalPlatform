@@ -1,10 +1,8 @@
 package com.example.digitalplatform.service;
 
-import com.example.digitalplatform.db.model.Customer;
 import com.example.digitalplatform.db.model.Request;
 import com.example.digitalplatform.db.model.SubjectArea;
 import com.example.digitalplatform.db.model.User;
-import com.example.digitalplatform.db.repository.CustomerRepository;
 import com.example.digitalplatform.db.repository.RequestRepository;
 import com.example.digitalplatform.db.repository.SubjectAreaRepository;
 import com.example.digitalplatform.db.repository.UserRepository;
@@ -25,7 +23,6 @@ import static com.example.digitalplatform.controller.Status.NEW;
 public class RequestService {
 
     SubjectAreaRepository subjectAreaRepository;
-    CustomerRepository customerRepository;
     UserRepository userRepository;
     RequestRepository requestRepository;
     RatingService ratingService;
@@ -42,8 +39,7 @@ public class RequestService {
         request.setSubjectArea(subjectArea);
         request.setStatus(NEW.name());
         User byLogin = userRepository.findByLogin(login);
-        Customer customer = customerRepository.findByUserId(byLogin.getId());
-        request.setCustomer(customer);
+        request.setCustomer(byLogin);
         ratingService.createRating(request);
         requestRepository.save(request);
 

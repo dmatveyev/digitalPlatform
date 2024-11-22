@@ -30,9 +30,9 @@ public class Request {
     String title;
     String description;
     @ManyToOne
-    Customer customer;
+    User customer;
     @ManyToOne
-    Worker worker;
+    User worker;
     @ManyToOne()
     SubjectArea subjectArea;
     /**
