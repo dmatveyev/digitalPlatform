@@ -2,16 +2,32 @@ package com.example.digitalplatform.core;
 
 
 import com.example.digitalplatform.db.model.Request;
+import com.example.digitalplatform.db.model.User;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
-@Service
-public class BackpackBellman {
 
-    public List<Request> executeByDP(Request[] requests, int n, int k) {
+@Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Slf4j
+public class BackpackBellman implements GeneratorDessisions {
+
+    @Override
+    public List<Request> execute(List<Request> list, User user) {
+        log.debug("Начинаем формирование оптимального списка заявок для пользователя с id {}", user.getId());
+        if (list.isEmpty()) {
+            return Collections.emptyList();
+        }
+        int k = user.getLimitOurs();
+        int n = list.size();
+        Request[] requests = list.toArray(Request[]::new);
         Backpack[][] bp = new Backpack[n + 1][k + 1];
         for (int i = 0; i < n + 1; i++) {
             for (int j = 0; j < k + 1; j++) {
@@ -40,7 +56,13 @@ public class BackpackBellman {
         List<Backpack> lastColumn = Arrays.stream(bp).map(row -> row[row.length - 1]).toList();
         Backpack backpackWithMax = lastColumn.stream().max(Comparator.comparing(Backpack::getScore))
                 .orElse(new Backpack(null, 0));
+        Request[] requestArr = backpackWithMax.getRequests();
+        log.debug("Формирование списка завершено. Для пользователя с id: {} количество подходящих заявок: {}",
+                user.getId(), requestArr.length);
+        return Arrays.stream(requestArr).toList();
+    }
 
-        return Arrays.stream(backpackWithMax.getRequests()).toList();
+    public String generatorType() {
+        return "BACKPACK_BELLMAN";
     }
 }

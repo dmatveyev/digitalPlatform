@@ -105,4 +105,14 @@ public class RequestService {
         Request request = requestRepository.findById(uuid).orElseThrow();
         return getRequestDto(request);
     }
+
+    public List<Request> findUnassigned() {
+        List<Request> byStatus = requestRepository.findByStatus(RequestStatus.NEW);
+        byStatus.forEach(request -> request.setStatus(RequestStatus.PLANNING));
+        return byStatus;
+    }
+
+    public void updateList(List<Request> tempAssigned) {
+        requestRepository.saveAll(tempAssigned);
+    }
 }

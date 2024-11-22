@@ -1,6 +1,7 @@
 package com.example.digitalplatform.service;
 
 import com.example.digitalplatform.db.model.Role;
+import com.example.digitalplatform.db.model.RoleType;
 import com.example.digitalplatform.db.model.User;
 import com.example.digitalplatform.db.repository.RoleRepository;
 import com.example.digitalplatform.db.repository.UserRepository;
@@ -71,5 +72,11 @@ public class UserService {
             new RoleDto(role.getCode(), role.getName())
         ).toList();
         return dtos;
+    }
+
+    public List<User> getTeachers() {
+        List<User> byRoleCodeAndAssignedNull = userRepository.findByRoleCodeAndAssignedNull(RoleType.TEACHER);
+        log.debug("found teachers: {}", byRoleCodeAndAssignedNull.size());
+        return byRoleCodeAndAssignedNull;
     }
 }

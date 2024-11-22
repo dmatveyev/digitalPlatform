@@ -1,6 +1,6 @@
 -- Пользователи
-INSERT INTO PUBLIC.USERS (ID, LOGIN, PASSWORD, ENABLED, TOKEN_EXPIRED, SCORE, DEGREE, FIRST_NAME, LAST_NAME, INSTITUTE)
-VALUES ('4c1e8ca4-c820-43c9-97e2-186edf346523', 'teacher', '{bcrypt}$2a$10$pqz3eTPFJPtNoiYg3xC9yOfyekTM4yFDCz5d7visMU0gD7qGEK3gy', true, false, '4.5', 'Professor', 'Ivanov', 'Ivan', 'PSUTI');
+INSERT INTO PUBLIC.USERS (ID, LOGIN, PASSWORD, ENABLED, TOKEN_EXPIRED, SCORE, DEGREE, FIRST_NAME, LAST_NAME, INSTITUTE, LIMIT_OURS)
+VALUES ('4c1e8ca4-c820-43c9-97e2-186edf346523', 'teacher', '{bcrypt}$2a$10$pqz3eTPFJPtNoiYg3xC9yOfyekTM4yFDCz5d7visMU0gD7qGEK3gy', true, false, '4.5', 'Professor', 'Ivanov', 'Ivan', 'PSUTI', 20);
 INSERT INTO PUBLIC.USERS (ID, LOGIN, PASSWORD, ENABLED, TOKEN_EXPIRED, SCORE, DEGREE, FIRST_NAME, LAST_NAME, INSTITUTE)
 VALUES ('aa25d9af-f18b-4bf1-bef6-f70176b89b52', 'user', '{bcrypt}$2a$10$AsgwBmSDITYg8KEkQWfPXeiTy9mcJRPHY1esw2bHyrmPny8PCZhIy', true, false, '4.5','', 'Den', 'Matveev', 'МБОУ Школа №112');
 -- Роли

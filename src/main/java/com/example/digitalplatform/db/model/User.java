@@ -23,6 +23,9 @@ public class User {
     String institute;
     String degree;
     double score;
+
+    @Column(name = "limit_ours")
+    Integer limitOurs;
     @OneToMany(mappedBy = "customer")
     private List<Request> created;
     @OneToMany(mappedBy = "worker")

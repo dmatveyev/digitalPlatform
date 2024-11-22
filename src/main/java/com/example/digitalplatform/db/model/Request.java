@@ -58,4 +58,9 @@ public class Request {
     @Column(name = "actual_finish_date")
     LocalDateTime actualFinishDate;
 
+    public Request(String title, int time, int rating) {
+        this.title = title;
+        this.time = time;
+        this.rating = rating;
+    }
 }
