@@ -39,6 +39,10 @@
             <label class="col-2" for="holder-input4">Time:</label>
             <input class="col-2" id="holder-input4" name="time" type="text" th:value="${request.time}" value="1"/>
         </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input5">Time:</label>
+            <input class="col-2" id="holder-input5" name="time" type="text" disabled th:value="${request.assignedBy}" value="1"/>
+        </div>
 
 
         <button type="submit" class="btn btn-primary">Save</button>

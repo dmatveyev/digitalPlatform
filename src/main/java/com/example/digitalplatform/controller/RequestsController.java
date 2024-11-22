@@ -4,6 +4,7 @@ import com.example.digitalplatform.db.model.Request;
 import com.example.digitalplatform.db.model.SubjectArea;
 import com.example.digitalplatform.db.repository.RequestRepository;
 import com.example.digitalplatform.db.repository.SubjectAreaRepository;
+import com.example.digitalplatform.dto.CreateRequestDto;
 import com.example.digitalplatform.dto.RequestDto;
 import com.example.digitalplatform.service.RequestService;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +24,14 @@ import java.util.UUID;
 @PreAuthorize("hasRole('STUDENT')")
 public class RequestsController {
 
-   private final RequestRepository authorService;
+   private final RequestRepository requestRepository;
    private final SubjectAreaRepository subjectAreaRepository;
    private final RequestService requestService;
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('STUDENT')")
     public String getAll(Model model, Principal principal) {
-        List<Request> list = authorService.findAll();
+        List<RequestDto> list = requestService.findByPrincipal(principal);
         model.addAttribute("requests", list);
         return "requests/requests";
     }
@@ -38,26 +39,26 @@ public class RequestsController {
     @GetMapping("/edit")
     @PreAuthorize("hasRole('STUDENT')")
     public String edit(@RequestParam("id") String id, Model model) {
-        Request Request = authorService.findById(UUID.fromString(id)).orElseThrow(NullPointerException::new);
-        model.addAttribute("request", Request);
+        RequestDto requestDto = requestService.findById(UUID.fromString(id));
+        model.addAttribute("request", requestDto);
         return "requests/editRequest";
     }
 
     @PostMapping("/edit")
     @PreAuthorize("hasRole('STUDENT')")
-    public String save(@RequestParam("id") String id, RequestDto requestDto, Model model) {
-        Request save = requestService.updateRequest(id, requestDto);
+    public String save(@RequestParam("id") String id, CreateRequestDto createRequestDto, Model model) {
+        Request save = requestService.updateRequest(id, createRequestDto);
         model.addAttribute("requests", save);
         return "redirect:/requests/all";
     }
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('STUDENT')")
-    public String create(RequestDto requestDto, Model model, Principal principal) {
-        requestService.addRequest(requestDto, principal.getName());
+    public String create(CreateRequestDto createRequestDto, Model model, Principal principal) {
+        requestService.addRequest(createRequestDto, principal.getName());
 
-        List<Request> allGenres = authorService.findAll();
-        model.addAttribute("requests", allGenres);
+        List<RequestDto> requests = requestService.findByPrincipal(principal);
+        model.addAttribute("requests", requests);
         return "redirect:/requests/all";
     }
 
@@ -65,7 +66,7 @@ public class RequestsController {
     @PreAuthorize("hasRole('STUDENT')")
     public String showCreateForm(Model model) {
         model.addAttribute("request", new Request());
-        model.addAttribute("requestDto", new RequestDto());
+        model.addAttribute("requestDto", new CreateRequestDto());
         List<SubjectArea> all = subjectAreaRepository.findAll();
         model.addAttribute("subjectAreas", all);
         return "requests/addRequest";
@@ -73,9 +74,9 @@ public class RequestsController {
 
     @PostMapping("/delete")
     @PreAuthorize("hasRole('STUDENT')")
-    public String delete(@RequestParam("id") String id, Model model) {
-        authorService.deleteById(UUID.fromString(id));
-        List<Request> list = authorService.findAll();
+    public String delete(@RequestParam("id") String id, Model model, Principal principal) {
+        requestRepository.deleteById(UUID.fromString(id));
+        List<RequestDto> list = requestService.findByPrincipal(principal);
         model.addAttribute("requests", list);
         return "redirect:/requests/all";
     }

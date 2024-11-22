@@ -1,6 +1,5 @@
 package com.example.digitalplatform.dto;
 
-import com.example.digitalplatform.db.model.SubjectArea;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,15 +15,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RequestDto {
+public class CreateRequestDto {
 
-    UUID id;
     String title;
     String description;
-    SubjectArea subjectArea;
+    UUID subjectAreaId;
     int time;
-    String status;
-    String creatorName;
-    String assignedBy;
 
 }
