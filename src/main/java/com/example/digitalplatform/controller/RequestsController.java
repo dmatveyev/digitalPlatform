@@ -65,8 +65,7 @@ public class RequestsController {
     @GetMapping("/create")
     @PreAuthorize("hasRole('STUDENT')")
     public String showCreateForm(Model model) {
-        model.addAttribute("request", new Request());
-        model.addAttribute("requestDto", new CreateRequestDto());
+        model.addAttribute("request", new CreateRequestDto());
         List<SubjectArea> all = subjectAreaRepository.findAll();
         model.addAttribute("subjectAreas", all);
         return "requests/addRequest";

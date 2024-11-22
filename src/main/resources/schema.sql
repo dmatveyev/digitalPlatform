@@ -75,6 +75,9 @@ create table REQUESTS
     STATUS       CHARACTER VARYING(255),
     SUBJECT_AREA_ID UUID,
     TITLE        CHARACTER VARYING(255),
+    CREATION_DATE        TIMESTAMP,
+    PLANED_FINISH_DATE        TIMESTAMP,
+    ACTUAL_FINISH_DATE        TIMESTAMP,
     constraint requests_customers_fk
         foreign key (CUSTOMER_ID) references USERS,
     constraint request_workers_fk

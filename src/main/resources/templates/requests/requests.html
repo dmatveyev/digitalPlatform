@@ -35,6 +35,7 @@
                 <th>Description</th>
                 <th>Status</th>
                 <th>Time</th>
+                <th>Deadline</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -45,8 +46,9 @@
                 <td th:text="${request.title}">Bond</td>
                 <td th:text="${request.subjectArea.name}">Bond</td>
                 <td th:text="${request.description}">Bond</td>
-                <td th:text="${request.status}">Bond</td>
+                <td th:text="${request.status.desc}">Bond</td>
                 <td th:text="${request.time}">Bond</td>
+                <td th:text="${#temporals.format(request.deadline, 'dd-MM-yyyy HH:mm')}">Bond</td>
                 <td>
                     <a role="button" class="btn btn-outline-primary" th:href="@{/requests/edit(id=${request.id})}"
                        href="editRequest.html">Edit</a>

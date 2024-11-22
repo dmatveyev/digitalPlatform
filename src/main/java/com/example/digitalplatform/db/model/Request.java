@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -44,6 +46,13 @@ public class Request {
      */
     double rating;
 
-    String status;
+    RequestStatus status;
+
+    @Column(name = "creation_date")
+    LocalDateTime creationDate;
+    @Column(name = "planed_finish_date")
+    LocalDateTime planedFinishDate;
+    @Column(name = "actual_finish_date")
+    LocalDateTime actualFinishDate;
 
 }

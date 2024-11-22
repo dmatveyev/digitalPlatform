@@ -1,5 +1,6 @@
 package com.example.digitalplatform.dto;
 
+import com.example.digitalplatform.db.model.RequestStatus;
 import com.example.digitalplatform.db.model.SubjectArea;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -23,8 +25,9 @@ public class RequestDto {
     String description;
     SubjectArea subjectArea;
     int time;
-    String status;
+    RequestStatus status;
     String creatorName;
     String assignedBy;
+    LocalDateTime deadline;
 
 }

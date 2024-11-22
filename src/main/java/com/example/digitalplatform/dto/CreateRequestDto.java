@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
@@ -21,5 +24,7 @@ public class CreateRequestDto {
     String description;
     UUID subjectAreaId;
     int time;
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
+    LocalDateTime deadline;
 
 }

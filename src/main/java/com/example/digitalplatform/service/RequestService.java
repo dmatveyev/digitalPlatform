@@ -12,6 +12,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 import static com.example.digitalplatform.controller.Status.NEW;
@@ -36,7 +38,9 @@ public class RequestService {
         Optional<SubjectArea> byId = subjectAreaRepository.findById(createRequestDto.getSubjectAreaId());
         SubjectArea subjectArea = byId.orElseThrow();
         request.setSubjectArea(subjectArea);
-        request.setStatus(NEW.name());
+        request.setStatus(RequestStatus.NEW);
+        request.setCreationDate(LocalDateTime.now());
+        request.setPlanedFinishDate(createRequestDto.getDeadline());
         User byLogin = userRepository.findByLogin(login);
         request.setCustomer(byLogin);
         ratingService.createRating(request);
@@ -48,6 +52,7 @@ public class RequestService {
         Request request = requestRepository.findById(UUID.fromString(id)).orElseThrow();
         request.setTime(createRequestDto.getTime());
         request.setDescription(createRequestDto.getDescription());
+        request.setPlanedFinishDate(createRequestDto.getDeadline());
         return requestRepository.save(request);
 
     }
@@ -85,6 +90,7 @@ public class RequestService {
         if (Objects.nonNull(worker)) {
             dto.setAssignedBy(worker.getDegree() + " " + worker.getFirstName() + " " + worker.getLastName());
         }
+        dto.setDeadline(request.getPlanedFinishDate());
         return dto;
     }
 
