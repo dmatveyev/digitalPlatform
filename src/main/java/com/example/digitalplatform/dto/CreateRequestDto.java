@@ -1,5 +1,6 @@
 package com.example.digitalplatform.dto;
 
+import com.example.digitalplatform.db.model.WorkType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,5 +27,7 @@ public class CreateRequestDto {
     int time;
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
     LocalDateTime deadline;
+    WorkType workType;
+    boolean periodical;
 
 }

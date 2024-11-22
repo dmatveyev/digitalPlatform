@@ -41,6 +41,8 @@ public class RequestService {
         request.setStatus(RequestStatus.NEW);
         request.setCreationDate(LocalDateTime.now());
         request.setPlanedFinishDate(createRequestDto.getDeadline());
+        request.setWorkType(createRequestDto.getWorkType());
+        request.setPeriodical(createRequestDto.isPeriodical());
         User byLogin = userRepository.findByLogin(login);
         request.setCustomer(byLogin);
         ratingService.createRating(request);
@@ -48,12 +50,15 @@ public class RequestService {
 
     }
 
-    public Request updateRequest(String id, CreateRequestDto createRequestDto) {
+    public RequestDto updateRequest(String id, CreateRequestDto createRequestDto) {
         Request request = requestRepository.findById(UUID.fromString(id)).orElseThrow();
         request.setTime(createRequestDto.getTime());
         request.setDescription(createRequestDto.getDescription());
         request.setPlanedFinishDate(createRequestDto.getDeadline());
-        return requestRepository.save(request);
+        request.setPeriodical(createRequestDto.isPeriodical());
+        request.setWorkType(createRequestDto.getWorkType());
+        Request save = requestRepository.save(request);
+        return getRequestDto(save);
 
     }
 
@@ -91,6 +96,8 @@ public class RequestService {
             dto.setAssignedBy(worker.getDegree() + " " + worker.getFirstName() + " " + worker.getLastName());
         }
         dto.setDeadline(request.getPlanedFinishDate());
+        dto.setPeriodical(request.isPeriodical());
+        dto.setWorkType(request.getWorkType());
         return dto;
     }
 

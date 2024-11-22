@@ -27,7 +27,8 @@
         <div class="row mt-3">
             <label class="col-2" for="dropDownList">Subject Area:</label>
             <select class="col-2" id="dropDownList" name="subjectAreaId" disabled>
-                <option selected th:value="${request.subjectArea.id}" th:text="${request.subjectArea.name}"></option>
+                <option selected th:value="${request.subjectArea.id}" th:text="${request.subjectArea.name}"
+                ></option>
             </select>
         </div>
         <div class="row mt-3">
@@ -44,13 +45,25 @@
             <input class="col-2" id="holder-input5" name="time" type="text" disabled th:value="${request.assignedBy}" value="1"/>
         </div>
         <div class="row mt-3">
+            <label class="col-2" for="workTypes">Work type:</label>
+            <select class="col-2" id="workTypes" name="workType" required>
+                <option th:each="workType : ${workTypes}" th:value="${workType}" th:text="${workType.desc}"
+                        th:selected="${workType == request.workType}"
+                ></option>
+            </select>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="checkbox-input">Periodical:</label>
+            <input id="checkbox-input" name="periodical" type="checkbox" th:checked="${request.periodical}"/>
+        </div>
+        <div class="row mt-3">
             <label class="col-2" for="holder-input6">Deadline:</label>
             <input class="col-2" id="holder-input6" name="deadline" type="datetime-local" th:value="${request.deadline}"  value="1"/>
         </div>
 
 
         <button type="submit" class="btn btn-primary">Save</button>
-        <a role="button" class="btn btn-outline-secondary" th:href="@{/rating_parameters/all}">Close</a>
+        <a role="button" class="btn btn-outline-secondary" th:href="@{/requests/all}">Close</a>
     </div>
 </form>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

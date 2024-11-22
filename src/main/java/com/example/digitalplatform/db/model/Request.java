@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -46,7 +44,12 @@ public class Request {
      */
     double rating;
 
+    @Enumerated(EnumType.STRING)
     RequestStatus status;
+    @Column(name = "work_type")
+    @Enumerated(EnumType.STRING)
+    WorkType workType;
+    boolean periodical;
 
     @Column(name = "creation_date")
     LocalDateTime creationDate;

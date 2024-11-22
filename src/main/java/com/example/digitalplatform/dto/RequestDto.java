@@ -2,6 +2,7 @@ package com.example.digitalplatform.dto;
 
 import com.example.digitalplatform.db.model.RequestStatus;
 import com.example.digitalplatform.db.model.SubjectArea;
+import com.example.digitalplatform.db.model.WorkType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,5 +30,7 @@ public class RequestDto {
     String creatorName;
     String assignedBy;
     LocalDateTime deadline;
+    WorkType workType;
+    boolean periodical;
 
 }

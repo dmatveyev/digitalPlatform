@@ -29,7 +29,6 @@
         <table class="table table-bordered table-striped">
             <thead class="bg-info">
             <tr>
-                <th>ID</th>
                 <th>Title</th>
                 <th>Subject Area</th>
                 <th>Description</th>
@@ -42,7 +41,6 @@
             </thead>
             <tbody>
             <tr th:each="request : ${requests}">
-                <td th:text="${request.id}">1</td>
                 <td th:text="${request.title}">Bond</td>
                 <td th:text="${request.subjectArea.name}">Bond</td>
                 <td th:text="${request.description}">Bond</td>

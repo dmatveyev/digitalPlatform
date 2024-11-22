@@ -2,6 +2,7 @@ package com.example.digitalplatform.controller;
 
 import com.example.digitalplatform.db.model.Request;
 import com.example.digitalplatform.db.model.SubjectArea;
+import com.example.digitalplatform.db.model.WorkType;
 import com.example.digitalplatform.db.repository.RequestRepository;
 import com.example.digitalplatform.db.repository.SubjectAreaRepository;
 import com.example.digitalplatform.dto.CreateRequestDto;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,14 +43,16 @@ public class RequestsController {
     public String edit(@RequestParam("id") String id, Model model) {
         RequestDto requestDto = requestService.findById(UUID.fromString(id));
         model.addAttribute("request", requestDto);
+        model.addAttribute("workTypes", Arrays.stream(WorkType.values()).toList());
         return "requests/editRequest";
     }
 
     @PostMapping("/edit")
     @PreAuthorize("hasRole('STUDENT')")
-    public String save(@RequestParam("id") String id, CreateRequestDto createRequestDto, Model model) {
-        Request save = requestService.updateRequest(id, createRequestDto);
-        model.addAttribute("requests", save);
+    public String save(@RequestParam("id") String id, CreateRequestDto createRequestDto, Model model, Principal principal) {
+        RequestDto save = requestService.updateRequest(id, createRequestDto);
+        List<RequestDto> requests = requestService.findByPrincipal(principal);
+        model.addAttribute("requests", requests);
         return "redirect:/requests/all";
     }
 
@@ -68,6 +72,7 @@ public class RequestsController {
         model.addAttribute("request", new CreateRequestDto());
         List<SubjectArea> all = subjectAreaRepository.findAll();
         model.addAttribute("subjectAreas", all);
+        model.addAttribute("workTypes", Arrays.stream(WorkType.values()).toList());
         return "requests/addRequest";
     }
 

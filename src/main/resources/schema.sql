@@ -65,16 +65,18 @@ create table SUBJECTAREAS
 drop table if exists REQUESTS;
 create table REQUESTS
 (
-    RATING       DOUBLE PRECISION not null,
-    TIME         INTEGER          not null,
-    CUSTOMER_ID  UUID,
     ID           UUID             not null
         primary key,
-    WORKER_ID    UUID,
-    DESCRIPTION  CHARACTER VARYING(255),
-    STATUS       CHARACTER VARYING(255),
-    SUBJECT_AREA_ID UUID,
     TITLE        CHARACTER VARYING(255),
+    DESCRIPTION  CHARACTER VARYING(255),
+    RATING       DOUBLE PRECISION not null,
+    STATUS       CHARACTER VARYING(255),
+    WORK_TYPE       CHARACTER VARYING(255),
+    PERIODICAL BOOLEAN,
+    TIME         INTEGER          not null,
+    CUSTOMER_ID  UUID,
+    WORKER_ID    UUID,
+    SUBJECT_AREA_ID UUID,
     CREATION_DATE        TIMESTAMP,
     PLANED_FINISH_DATE        TIMESTAMP,
     ACTUAL_FINISH_DATE        TIMESTAMP,
