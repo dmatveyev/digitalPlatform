@@ -7,6 +7,7 @@ import com.example.digitalplatform.db.repository.SubjectAreaRepository;
 import com.example.digitalplatform.dto.RequestDto;
 import com.example.digitalplatform.service.RequestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/requests")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('STUDENT')")
 public class RequestsController {
 
    private final RequestRepository authorService;
@@ -26,13 +28,15 @@ public class RequestsController {
    private final RequestService requestService;
 
     @GetMapping("/all")
-    public String getAll(Model model) {
+    @PreAuthorize("hasRole('STUDENT')")
+    public String getAll(Model model, Principal principal) {
         List<Request> list = authorService.findAll();
         model.addAttribute("requests", list);
         return "requests/requests";
     }
 
     @GetMapping("/edit")
+    @PreAuthorize("hasRole('STUDENT')")
     public String edit(@RequestParam("id") String id, Model model) {
         Request Request = authorService.findById(UUID.fromString(id)).orElseThrow(NullPointerException::new);
         model.addAttribute("request", Request);
@@ -40,6 +44,7 @@ public class RequestsController {
     }
 
     @PostMapping("/edit")
+    @PreAuthorize("hasRole('STUDENT')")
     public String save(@RequestParam("id") String id, RequestDto requestDto, Model model) {
         Request save = requestService.updateRequest(id, requestDto);
         model.addAttribute("requests", save);
@@ -47,6 +52,7 @@ public class RequestsController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('STUDENT')")
     public String create(RequestDto requestDto, Model model, Principal principal) {
         requestService.addRequest(requestDto, principal.getName());
 
@@ -56,6 +62,7 @@ public class RequestsController {
     }
 
     @GetMapping("/create")
+    @PreAuthorize("hasRole('STUDENT')")
     public String showCreateForm(Model model) {
         model.addAttribute("request", new Request());
         model.addAttribute("requestDto", new RequestDto());
@@ -65,6 +72,7 @@ public class RequestsController {
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasRole('STUDENT')")
     public String delete(@RequestParam("id") String id, Model model) {
         authorService.deleteById(UUID.fromString(id));
         List<Request> list = authorService.findAll();

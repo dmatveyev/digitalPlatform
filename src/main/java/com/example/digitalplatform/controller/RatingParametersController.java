@@ -3,6 +3,7 @@ package com.example.digitalplatform.controller;
 import com.example.digitalplatform.db.model.RatingParameters;
 import com.example.digitalplatform.db.repository.RatingParametersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +14,12 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/rating_parameters")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class RatingParametersController {
     private final RatingParametersRepository ratingParametersRepository;
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getAll(Model model) {
         List<RatingParameters> all = ratingParametersRepository.findAll();
         model.addAttribute("rating_parameters", all);
@@ -24,6 +27,7 @@ public class RatingParametersController {
     }
 
     @GetMapping("/edit")
+    @PreAuthorize("hasRole('ADMIN')")
     public String edit(@RequestParam("id") String id, Model model) {
         RatingParameters ratingParameters = ratingParametersRepository.findById(UUID.fromString(id)).orElseThrow(NullPointerException::new);
         model.addAttribute("rating_parameters", ratingParameters);
@@ -31,6 +35,7 @@ public class RatingParametersController {
     }
 
     @PostMapping("/edit")
+    @PreAuthorize("hasRole('ADMIN')")
     public String save(@RequestParam("id") String id, RatingParameters toSave, Model model) {
         RatingParameters ratingParameters = ratingParametersRepository.findById(UUID.fromString(id)).orElseThrow();
         ratingParameters.setCoefficient(toSave.getCoefficient());
@@ -43,6 +48,7 @@ public class RatingParametersController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public String create(RatingParameters toAdd, Model model) {
         RatingParameters newParam = ratingParametersRepository.save(toAdd);
         List<RatingParameters> list = ratingParametersRepository.findAll();
@@ -51,12 +57,14 @@ public class RatingParametersController {
     }
 
     @GetMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public String showCreateForm(Model model) {
         model.addAttribute("rating_parameters", new RatingParameters());
         return "rating_parameters/add_rating_parameters";
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public String delete(@RequestParam("id") String id, Model model) {
         ratingParametersRepository.deleteById(UUID.fromString(id));
         List<RatingParameters> list = ratingParametersRepository.findAll();
