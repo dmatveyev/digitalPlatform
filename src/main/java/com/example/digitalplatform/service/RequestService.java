@@ -9,14 +9,17 @@ import com.example.digitalplatform.dto.RequestDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.geo.GeoPage;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.*;
-
-import static com.example.digitalplatform.controller.Status.NEW;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +70,7 @@ public class RequestService {
         User user = userRepository.findByLogin(principal.getName());
         Role role = user.getRole();
         RoleType code = role.getCode();
+
         List<Request> requests = switch (code) {
             case STUDENT -> requestRepository.findByCustomer(user);
             case TEACHER -> requestRepository.findByWorker(user);
@@ -117,5 +121,19 @@ public class RequestService {
 
     public void updateList(List<Request> tempAssigned) {
         requestRepository.saveAll(tempAssigned);
+    }
+
+    public Page<Request> findByPrincipalPageable(Principal principal, Pageable pageable) {
+        User user = userRepository.findByLogin(principal.getName());
+        Role role = user.getRole();
+        RoleType code = role.getCode();
+        Page<Request> page = switch (code) {
+            case STUDENT -> requestRepository.findByCustomer(user, pageable);
+            case TEACHER -> requestRepository.findByWorker(user, pageable);
+            case ADMIN -> requestRepository.findAll(pageable);
+            case USER -> Page.empty();
+        };
+
+        return page;
     }
 }

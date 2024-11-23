@@ -15,10 +15,11 @@
                 <a class="nav-link" th:href="@{/profile/edit}" href="profile.html">Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" th:href="@{/requests/all}" href="requests.html">Request</a>
+                <a class="nav-link active" th:href="@{/requests/all(age=1,size=5)}" href="requests.html">Request</a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
-                <a class="nav-link" th:href="@{/rating_parameters/all}" href="rating_parameters/rating_parameters.html">Rating Parameters</a>
+                <a class="nav-link" th:href="@{/rating_parameters/all}" href="rating_parameters/rating_parameters.html">Rating
+                    Parameters</a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
                 <a class="nav-link" th:href="@{/accounts/all}" href="accounts.html">Accounts</a>
@@ -30,8 +31,23 @@
     </div>
 </nav>
 <div class="container">
-    <h1>Список запросов</h1>
+    <h1 class="row mt-3">Список запросов</h1>
     <div>
+        <form class="row mt-3" th:action="@{/requests/all}" id="searchForm">
+            <div class="col-md-3 input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="pageSize">Выводить по:</label>
+                </div>
+                <select id="pageSize" form="searchForm" for="label" name="size" th:value="${requestPage.size}" onchange="changePageSize()"
+                        class="size-select">
+                    <option th:each="s : ${#numbers.sequence(5,20,5)}" th:value="${s}" th:text="${s}"
+                            th:selected="${s == requestPage.size}"></option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="row mt-3">
+
         <table class="table table-bordered table-striped">
             <thead class="bg-info">
             <tr>
@@ -46,13 +62,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="request : ${requests}">
+            <tr th:each="request : ${requestPage.content}">
                 <td th:text="${request.title}">Bond</td>
                 <td th:text="${request.subjectArea.name}">Bond</td>
                 <td th:text="${request.description}">Bond</td>
                 <td th:text="${request.status.desc}">Bond</td>
                 <td th:text="${request.time}">Bond</td>
-                <td th:text="${#temporals.format(request.deadline, 'dd-MM-yyyy HH:mm')}">Bond</td>
+                <td th:text="${#temporals.format(request.planedFinishDate, 'dd-MM-yyyy HH:mm')}">Bond</td>
                 <td>
                     <a role="button" class="btn btn-outline-primary" th:href="@{/requests/edit(id=${request.id})}"
                        href="editRequest.html">Show</a>
@@ -67,9 +83,35 @@
             </tr>
             </tbody>
         </table>
-        <div class="btn-group" role="group" aria-label="Basic example" sec:authorize="hasAnyAuthority('ADMIN','CREATE_REQUEST')">
-            <a role="button" class="btn btn-primary" th:href="@{/requests/create}">Add new...</a>
-        </div>
+
+
+    </div>
+    <div class="row mt-3">
+        <ul class="nav nav-pills">
+            <li class="page-item" th:classappend="${requestPage.number == 0} ? 'active'">
+                <a th:replace="paging :: paging(${1}, ${1}, 'Page ' + ${1}, ${requestPage.size})"></a>
+            </li>
+            <li class="page-item disabled" th:if="${requestPage.number + 1 > 3}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item" th:classappend="${requestPage.number + 1 == page} ? 'active'"
+                th:each="page : ${#numbers.sequence((requestPage.number + 2 > 3 ? requestPage.number : 2),
+                    (requestPage.number + 1 < requestPage.totalPages - 1 ? requestPage.number + 2 : requestPage.totalPages - 1 ))}">
+                <a th:replace="paging :: paging(${page}, ${page}, 'Page ' + ${page}, ${requestPage.size})"></a>
+            </li>
+            <li class="page-item disabled"
+                th:if="${requestPage.number + 2 < requestPage.totalPages - 1}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item" th:classappend="${requestPage.number + 1 == requestPage.totalPages} ? 'active'">
+                <a th:replace="paging :: paging(${requestPage.totalPages}, ${requestPage.totalPages}, 'Page ' + ${requestPage.totalPages}, ${requestPage.size})"
+                ></a>
+            </li>
+        </ul>
+    </div>
+    <div class="btn-group row mt-3" role="group" aria-label="Basic example"
+         sec:authorize="hasAnyAuthority('ADMIN','CREATE_REQUEST')">
+        <a role="button" class="btn btn-primary" th:href="@{/requests/create}">Add new...</a>
     </div>
 </div>
 
@@ -85,4 +127,19 @@
         crossorigin="anonymous"></script>
 
 </body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // ...
+
+        $("#btnClear").on("click", function (e) {
+            e.preventDefault();
+            $("#keyword").text("");
+            window.location = "[[@{/tutorials}]]";
+        });
+    });
+
+    function changePageSize() {
+        $("#searchForm").submit();
+    }
+</script>
 </html>

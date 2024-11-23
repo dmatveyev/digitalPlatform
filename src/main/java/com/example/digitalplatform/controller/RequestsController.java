@@ -9,6 +9,8 @@ import com.example.digitalplatform.dto.CreateRequestDto;
 import com.example.digitalplatform.dto.RequestDto;
 import com.example.digitalplatform.service.RequestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/requests")
@@ -26,15 +31,19 @@ import java.util.UUID;
 @PreAuthorize("hasAnyRole('STUDENT','TEACHER')")
 public class RequestsController {
 
-   private final RequestRepository requestRepository;
-   private final SubjectAreaRepository subjectAreaRepository;
-   private final RequestService requestService;
+    private final RequestRepository requestRepository;
+    private final SubjectAreaRepository subjectAreaRepository;
+    private final RequestService requestService;
 
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('STUDENT','TEACHER')")
-    public String getAll(Model model, Principal principal) {
-        List<RequestDto> list = requestService.findByPrincipal(principal);
-        model.addAttribute("requests", list);
+    public String getAll(@RequestParam("page") Optional<Integer> page,
+                         @RequestParam("size") Optional<Integer> size,
+                         Model model, Principal principal) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+        Page<Request> result = requestService.findByPrincipalPageable(principal, PageRequest.of(currentPage - 1, pageSize));
+        model.addAttribute("requestPage", result);
         return "requests/requests";
     }
 
@@ -49,11 +58,12 @@ public class RequestsController {
 
     @PostMapping("/edit")
     @PreAuthorize("hasRole('STUDENT')")
-    public String save(@RequestParam("id") String id, CreateRequestDto createRequestDto, Model model, Principal principal) {
+    public String save(@RequestParam("id") String id, CreateRequestDto createRequestDto, Model model, Principal
+            principal) {
         RequestDto save = requestService.updateRequest(id, createRequestDto);
         List<RequestDto> requests = requestService.findByPrincipal(principal);
         model.addAttribute("requests", requests);
-        return "redirect:/requests/all";
+        return "redirect:/requests/all?page=1&size=5";
     }
 
     @PostMapping("/create")
@@ -63,7 +73,7 @@ public class RequestsController {
 
         List<RequestDto> requests = requestService.findByPrincipal(principal);
         model.addAttribute("requests", requests);
-        return "redirect:/requests/all";
+        return "redirect:/requests/all?page=1&size=5";
     }
 
     @GetMapping("/create")
@@ -82,7 +92,7 @@ public class RequestsController {
         requestRepository.deleteById(UUID.fromString(id));
         List<RequestDto> list = requestService.findByPrincipal(principal);
         model.addAttribute("requests", list);
-        return "redirect:/requests/all";
+        return "redirect:/requests/all?page=1&size=5";
     }
 
 }
