@@ -28,7 +28,6 @@
 </nav>
 <div class="container">
     <h1>Список запросов</h1>
-    User authorities: <span sec:authentication="principal.authorities"></span>
     <div>
         <table class="table table-bordered table-striped">
             <thead class="bg-info">
@@ -65,7 +64,7 @@
             </tr>
             </tbody>
         </table>
-        <div class="btn-group" role="group" aria-label="Basic example" sec:authorize="hasAuthority('STUDENT')">
+        <div class="btn-group" role="group" aria-label="Basic example" sec:authorize="hasAnyAuthority('ADMIN','CREATE_REQUEST')">
             <a role="button" class="btn btn-primary" th:href="@{/requests/create}">Add new...</a>
         </div>
     </div>
