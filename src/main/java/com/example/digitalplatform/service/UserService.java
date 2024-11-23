@@ -7,9 +7,12 @@ import com.example.digitalplatform.db.repository.TeacherInfoRepository;
 import com.example.digitalplatform.db.repository.UserRepository;
 import com.example.digitalplatform.dto.RoleDto;
 import com.example.digitalplatform.dto.UserAccountDto;
+import com.example.digitalplatform.service.handlers.userinfo.UserInfoService;
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,16 @@ public class UserService {
     RoleRepository roleRepository;
     TeacherInfoRepository teacherInfoRepository;
     StudentInfoRepository studentInfoRepository;
+
+    List<UserInfoService> userInfoServices;
+
+    @NonFinal
+    Map<RoleType, UserInfoService> serviceMap;
+
+    @PostConstruct
+    public void init() {
+        serviceMap = userInfoServices.stream().collect(Collectors.toMap(UserInfoService::getProcessingRole, Function.identity()));
+    }
 
 
     public User registerNewUserAccount(UserAccountDto accountDto)  {
@@ -53,35 +66,14 @@ public class UserService {
     public List<UserAccountDto> getAllUserAccounts() {
         List<User> users = userRepository.findAll();
         List<UserAccountDto> result = new ArrayList<>();
-        List<TeacherInfo> teacherInfos = teacherInfoRepository.findByUserIn(users);
-        Map<User, TeacherInfo> teacherMap = teacherInfos.stream().collect(Collectors.toMap(TeacherInfo::getUser, Function.identity()));
-        List<StudentInfo> studentInfos = studentInfoRepository.findByUserIn(users);
-        Map<User, StudentInfo> studentMap = studentInfos.stream().collect(Collectors.toMap(StudentInfo::getUser, Function.identity()));
         for (User user : users) {
-            if (teacherMap.containsKey(user)) {
-                TeacherInfo teacher = teacherMap.get(user);
-                fillUserAccountDto(result, user, teacher.getInstitute(), teacher.getFirstName(), teacher.getLastName());
-            } else if (studentMap.containsKey(user)) {
-                StudentInfo studentInfo = studentMap.get(user);
-                fillUserAccountDto(result, user, studentInfo.getInstitute(), studentInfo.getFirstName(), studentInfo.getLastName());
-            } else {
-                fillUserAccountDto(result, user, "", "", "");
-            }
+            UserInfoService userInfoService = serviceMap.get(user.getRole().getCode());
+            UserAccountDto userInfo = userInfoService.getUserInfo(user);
+            result.add(userInfo);
         }
         return result;
     }
 
-    private void fillUserAccountDto(List<UserAccountDto> result, User user, String institute, String firstName, String lastName) {
-        UserAccountDto dto = new UserAccountDto();
-        dto.setUserName(user.getLogin());
-        Role role = user.getRole();
-        dto.setRoleCode(role.getCode());
-        dto.setRoleName(role.getName());
-        dto.setInstitution(institute);
-        dto.setFirstName(firstName);
-        dto.setLastName(lastName);
-        result.add(dto);
-    }
 
     public List<RoleDto> getAvailableRoles() {
         List<Role> all = roleRepository.findAll();
@@ -101,5 +93,19 @@ public class UserService {
     public List<TeacherInfo> findTeacherInfos() {
         List<User> teachers = getTeachers();
         return teacherInfoRepository.findByUserIn(teachers);
+    }
+
+    public UserAccountDto getUserInfoByUserName(String login) {
+        User user = userRepository.findByLogin(login);
+        Role role = user.getRole();
+        UserInfoService userInfoService = serviceMap.get(role.getCode());
+        UserAccountDto userInfo = userInfoService.getUserInfo(user);
+        return userInfo;
+
+    }
+
+    public void saveUserInfo(UserAccountDto dto, User user) {
+        UserInfoService userInfoService = serviceMap.get(user.getRole().getCode());
+        userInfoService.saveUserInfo(dto, user);
     }
 }

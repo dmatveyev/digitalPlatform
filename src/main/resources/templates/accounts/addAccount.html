@@ -31,7 +31,7 @@
             <!--<input class="col-2" id="holder-input2" name="subjectArea" type="text" th:value="${request.subjectArea}" value="John Doe"/>-->
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
-        <a role="button" class="btn btn-outline-secondary" th:href="@{/accounts/all}">Close</a>
+        <a role="button" class="btn btn-outline-secondary" onclick="history.go(-1)">Close</a>
     </div>
 </form>
 

@@ -1,7 +1,7 @@
 package com.example.digitalplatform.service;
 
 import com.example.digitalplatform.db.model.*;
-import com.example.digitalplatform.db.repository.RatingParametersRepository;
+import com.example.digitalplatform.service.handlers.rating.RatingParameterService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -9,10 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

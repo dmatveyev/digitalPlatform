@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+</head>
+<body>
+
+<!-- par edition -->
+<form id="edit-form" th:action="@{/profile/edit}" th:method="post" action="profile.html">
+    <div class="container">
+        <h1>Profile info:</h1>
+        <div class="row mt-3" hidden>
+            <input class="col-2" id="id" name="id" type="text" readonly th:value="${info.id}"
+                   value="John Doe"/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input1">First name:</label>
+            <input class="col-2" id="holder-input1" name="firstName" type="text" th:value="${info.firstName}"
+                   value="John Doe"/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input2">Last name:</label>
+            <input class="col-2" id="holder-input2" name="lastName" type="text" th:value="${info.lastName}"
+                   value="John Doe"/>
+        </div>
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input3">Institution:</label>
+            <input class="col-2" id="holder-input3" name="institution" type="text" th:value="${info.institution}"
+                   value="John Doe"/>
+        </div>
+<!--        <div class="row mt-3">
+            <label class="col-2" for="dropDownList">Subject Area:</label>
+            <select class="col-2" id="dropDownList" name="subjectAreaId" disabled>
+                <option selected th:value="${request.subjectArea.id}" th:text="${request.subjectArea.name}"></option>
+            </select>
+        </div>-->
+        <div class="row mt-3">
+            <label class="col-2" for="holder-input4">Role:</label>
+            <input class="col-2" id="holder-input4" name="roleName"
+                   readonly
+                   type="text"
+                   th:value="${info.roleName}"
+                   value="John Doe"/>
+        </div>
+        <div class="row mt-3" th:if="${info.limitHours != null}">
+            <label class="col-2" for="holder-input5">Limit Hours:</label>
+            <input class="col-2" id="holder-input5" name="limitHours" type="text" th:value="${info.limitHours}" value="1"/>
+        </div>
+        <div class="row mt-3" th:if="${info.degree != null}">
+            <label class="col-2" for="holder-input6" >Degree:</label>
+            <input class="col-2" id="holder-input6" name="degree" type="text" th:value="${info.degree}" value="1"/>
+        </div>
+        <div class="row mt-3" th:if="${info.score != null}">
+            <label class="col-2" for="holder-input7" >Score:</label>
+            <input class="col-2" id="holder-input7" name="score" readonly type="text" th:value="${info.score}" value="1"/>
+        </div>
+        <div class="row mt-3" th:if="${info.roleCode == 'TEACHER'}">
+            <label class="col-2" for="workTypes">Subject area:</label>
+            <select class="col-2" id="workTypes" name="subjectAreas" multiple="multiple">
+                <option th:each="area : ${areas}"
+                        th:value="${area.id}"
+                        th:text="${area.name}"
+                        th:selected="${info.subjectAreas != null && info.subjectAreas.contains(area)}">
+
+                </option>
+            </select>
+        </div>
+        <div class="row mt-3">
+            <button  type="submit" class="btn btn-primary" >Save</button>
+            <a role="button" class="btn btn-outline-secondary" onclick="history.go(-1)">Close</a>
+        </div>
+
+    </div>
+</form>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>

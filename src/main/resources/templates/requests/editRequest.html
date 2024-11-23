@@ -63,7 +63,7 @@
         </div>
         <div class="row mt-3">
             <button type="submit" class="btn btn-primary" th:hidden="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')')&& request.status.name == 'NEW'}">Save</button>
-            <a role="button" class="btn btn-outline-secondary" th:href="@{/requests/all}">Close</a>
+            <a role="button" class="btn btn-outline-secondary" onclick="history.go(-1)">Close</a>
         </div>
 
     </div>
