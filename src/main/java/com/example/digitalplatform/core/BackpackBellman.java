@@ -20,12 +20,12 @@ import java.util.stream.Stream;
 public class BackpackBellman implements GeneratorDessisions {
 
     @Override
-    public List<Request> execute(List<Request> list, TeacherInfo user) {
-        log.debug("Начинаем формирование оптимального списка заявок для пользователя с id {}", user.getId());
+    public List<Request> execute(List<Request> list, TeacherInfo teacher) {
+        log.debug("Starting creating optimal request list for teacher with id: {}", teacher.getId());
         if (list.isEmpty()) {
             return Collections.emptyList();
         }
-        int k = user.getLimitHours();
+        int k = teacher.getLimitHours();
         int n = list.size();
         Request[] requests = list.toArray(Request[]::new);
         Backpack[][] bp = new Backpack[n + 1][k + 1];
@@ -57,11 +57,12 @@ public class BackpackBellman implements GeneratorDessisions {
         Backpack backpackWithMax = lastColumn.stream().max(Comparator.comparing(Backpack::getScore))
                 .orElse(new Backpack(null, 0));
         Request[] requestArr = backpackWithMax.getRequests();
-        log.debug("Формирование списка завершено. Для пользователя с id: {} количество подходящих заявок: {}",
-                user.getId(), requestArr.length);
+        log.debug("Optimal requests list was created. For teacher with id: {} request count is: {}",
+                teacher.getId(), requestArr.length);
         return Arrays.stream(requestArr).toList();
     }
 
+    @Override
     public String generatorType() {
         return "BACKPACK_BELLMAN";
     }

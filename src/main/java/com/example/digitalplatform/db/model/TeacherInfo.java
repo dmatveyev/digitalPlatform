@@ -26,7 +26,7 @@ public class TeacherInfo {
     double score;
     @Column(name = "limit_hours")
     Integer limitHours;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "teachers_subject_areas",
             joinColumns = @JoinColumn(
                     name = "teacher_id", referencedColumnName = "id"),

@@ -21,4 +21,7 @@ spring:
       continue-on-error: false
       data-locations: classpath*:test.sql
 
+generators:
+  type: BACKPACK_BELLMAN
+
 

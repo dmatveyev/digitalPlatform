@@ -20,6 +20,14 @@ spring:
     init:
       mode: always
 
+generators:
+  type: BACKPACK_BELLMAN
+logging:
+  level:
+    com:
+      example:
+        digitalplatform: DEBUG
+
 
 
 

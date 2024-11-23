@@ -93,7 +93,7 @@ public class UserService {
 
     public List<User> getTeachers() {
         List<User> byRoleCodeAndAssignedNull = userRepository.findByRoleCodeAndAssignedNull(RoleType.TEACHER);
-        log.debug("found teachers: {}", byRoleCodeAndAssignedNull.size());
+        log.debug("Teachers count: {}", byRoleCodeAndAssignedNull.size());
         return byRoleCodeAndAssignedNull;
     }
 

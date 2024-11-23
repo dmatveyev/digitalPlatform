@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface GeneratorDessisions {
     List<Request> execute(List<Request> requests, TeacherInfo user);
+
+    String generatorType();
 }

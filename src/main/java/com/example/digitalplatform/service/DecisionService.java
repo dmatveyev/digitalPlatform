@@ -1,15 +1,19 @@
 package com.example.digitalplatform.service;
 
-import com.example.digitalplatform.core.BackpackBellman;
+import com.example.digitalplatform.core.GeneratorDessisions;
 import com.example.digitalplatform.db.model.*;
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,18 +22,35 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DecisionService {
 
-    BackpackBellman backpackBellman;
     UserService userService;
     RequestService requestService;
+    List<GeneratorDessisions> generators;
+    @NonFinal
+    Map<String, GeneratorDessisions> generatorsMap;
+    @NonFinal
+    @Value("${generators.type}")
+    String generatorType;
+
+
+    @PostConstruct
+    public void init() {
+        generatorsMap = generators.stream().collect(Collectors.toMap(GeneratorDessisions::generatorType, Function.identity()));
+    }
 
     @Scheduled(cron = "0 */1 * * * *")
     public void assign() {
+        GeneratorDessisions generatorDessisions = generatorsMap.get(generatorType);
+        if (Objects.isNull(generatorDessisions)) {
+            generatorDessisions = generatorsMap.get("BACKPACK_BELLMAN");
+        }
+        log.debug("Process assigning request is start");
         List<TeacherInfo> teachers = userService.findTeacherInfos();
         List<Request> unassigned = requestService.findUnassigned();
         List<Request> processing = new ArrayList<>(unassigned);
+        log.debug("Available request count: {}", processing.size());
         for (TeacherInfo teacherInfo : teachers) {
             List<Request> available = getAvailableRequests(teacherInfo, processing);
-            List<Request> tempAssigned = backpackBellman.execute(available, teacherInfo);
+            List<Request> tempAssigned = generatorDessisions.execute(available, teacherInfo);
             processing.removeAll(tempAssigned);
             tempAssigned.forEach(request -> request.setWorker(teacherInfo.getUser()));
             tempAssigned.forEach(request -> request.setStatus(RequestStatus.ASSIGNED));
@@ -39,6 +60,7 @@ public class DecisionService {
             processing.forEach(request -> request.setStatus(RequestStatus.NEW));
             requestService.updateList(processing);
         }
+        log.debug("Process assigning is end. Unassigned request count:{}", processing.size());
    }
 
     private List<Request> getAvailableRequests(TeacherInfo teacherInfo, List<Request> processing) {
