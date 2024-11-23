@@ -3,6 +3,7 @@ package com.example.digitalplatform.core.dessision;
 import com.example.digitalplatform.core.BackpackBellman;
 import com.example.digitalplatform.db.model.Request;
 import com.example.digitalplatform.db.model.RequestStatus;
+import com.example.digitalplatform.db.model.TeacherInfo;
 import com.example.digitalplatform.db.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,9 +36,11 @@ public class BellmanTest {
         int limitOurs = 20;
         User user = new User();
         user.setId(UUID.randomUUID());
-        user.setLimitOurs(limitOurs);
+        TeacherInfo teacherInfo = new TeacherInfo();
+        teacherInfo.setLimitHours(limitOurs);
+        teacherInfo.setUser(user);
         System.out.println("Bellman");
-        List<Request> dpBellmanResult = backpackBellman.execute(requests, user);
+        List<Request> dpBellmanResult = backpackBellman.execute(requests, teacherInfo);
         assertTrue(dpBellmanResult.contains(e1));
         assertTrue(dpBellmanResult.contains(e3));
         assertTrue(dpBellmanResult.contains(e5));
@@ -45,10 +48,6 @@ public class BellmanTest {
         assertTrue(dpBellmanResult.contains(e9));
         assertTrue(dpBellmanResult.contains(e10));
         int sum = dpBellmanResult.stream().mapToInt(Request::getTime).sum();
-/*        boolean isActualStatus = dpBellmanResult.stream().allMatch(request -> request.getStatus().equals(RequestStatus.ASSIGNED));
-        boolean isWorkerAssigned = dpBellmanResult.stream().allMatch(request -> request.getWorker().getId().equals(user.getId()));
-        assertTrue(isActualStatus);
-        assertTrue(isWorkerAssigned);*/
         assertEquals(limitOurs, sum);
     }
 }

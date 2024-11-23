@@ -24,21 +24,6 @@
                    value="John Doe" required/>
         </div>
         <div class="row mt-3">
-            <label class="col-2" for="holder-input3">First Name:</label>
-            <input class="col-2" id="holder-input3" name="firstName" type="text" th:value="${userData.firstName}"
-                   value="John Doe" required/>
-        </div>
-        <div class="row mt-3">
-            <label class="col-2" for="holder-input4">Last Name:</label>
-            <input class="col-2" id="holder-input4" name="lastName" type="text" th:value="${userData.lastName}"
-                   value="John Doe" required/>
-        </div>
-        <div class="row mt-3">
-            <label class="col-2" for="holder-input5">Institution:</label>
-            <input class="col-2" id="holder-input5" name="institution" type="text" th:value="${userData.institution}"
-                   value="John Doe" required/>
-        </div>
-        <div class="row mt-3">
             <label class="col-2" for="dropDownList">User role:</label>
             <select class="col-2" id="dropDownList" name="roleCode" required>
                 <option th:each="role : ${roles}" th:value="${role.code}" th:text="${role.name}"></option>

@@ -2,7 +2,7 @@ package com.example.digitalplatform.core;
 
 
 import com.example.digitalplatform.db.model.Request;
-import com.example.digitalplatform.db.model.User;
+import com.example.digitalplatform.db.model.TeacherInfo;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +20,12 @@ import java.util.stream.Stream;
 public class BackpackBellman implements GeneratorDessisions {
 
     @Override
-    public List<Request> execute(List<Request> list, User user) {
+    public List<Request> execute(List<Request> list, TeacherInfo user) {
         log.debug("Начинаем формирование оптимального списка заявок для пользователя с id {}", user.getId());
         if (list.isEmpty()) {
             return Collections.emptyList();
         }
-        int k = user.getLimitOurs();
+        int k = user.getLimitHours();
         int n = list.size();
         Request[] requests = list.toArray(Request[]::new);
         Backpack[][] bp = new Backpack[n + 1][k + 1];

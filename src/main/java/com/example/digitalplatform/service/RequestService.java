@@ -27,6 +27,7 @@ public class RequestService {
     UserRepository userRepository;
     RequestRepository requestRepository;
     RatingService ratingService;
+    UserDetailInfoService userDetailInfoService;
 
 
     public void addRequest(CreateRequestDto createRequestDto, String login) {
@@ -90,10 +91,12 @@ public class RequestService {
         dto.setTime(request.getTime());
         dto.setSubjectArea(request.getSubjectArea());
         User customer = request.getCustomer();
-        dto.setCreatorName(customer.getFirstName() + " " + customer.getLastName());
+        String customerName = userDetailInfoService.getUserName(customer);
+        dto.setCreatorName(customerName);
         User worker = request.getWorker();
         if (Objects.nonNull(worker)) {
-            dto.setAssignedBy(worker.getDegree() + " " + worker.getFirstName() + " " + worker.getLastName());
+            String workerName = userDetailInfoService.getUserName(worker);
+            dto.setAssignedBy(workerName);
         }
         dto.setDeadline(request.getPlanedFinishDate());
         dto.setPeriodical(request.isPeriodical());

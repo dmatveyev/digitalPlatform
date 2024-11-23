@@ -2,6 +2,7 @@ package com.example.digitalplatform.core.dessision;
 
 import com.example.digitalplatform.db.model.Request;
 import com.example.digitalplatform.db.model.RequestStatus;
+import com.example.digitalplatform.db.model.TeacherInfo;
 import com.example.digitalplatform.db.model.User;
 import com.example.digitalplatform.service.DecisionService;
 import com.example.digitalplatform.service.RequestService;
@@ -39,7 +40,8 @@ public class DecisionGeneratorTest {
     void assignForOne() {
         List<Request> requests = getRequests();
         User user = getUser();
-        when(userService.getTeachers()).thenReturn(List.of(user));
+        TeacherInfo info1 = getTeacherInfo(user);
+        when(userService.findTeacherInfos()).thenReturn(List.of(info1));
         when(requestService.findUnassigned()).thenReturn(requests);
         doNothing().when(requestService).updateList(requestsCaptor.capture());
         decisionService.assign();
@@ -57,12 +59,21 @@ public class DecisionGeneratorTest {
         assertTrue(isWorkerAssigned);
     }
 
+    private static TeacherInfo getTeacherInfo(User user) {
+        TeacherInfo info1 = new TeacherInfo();
+        info1.setUser(user);
+        info1.setLimitHours(20);
+        return info1;
+    }
+
     @Test
     void assignAllRequest() {
         List<Request> requests = getRequests();
         User user = getUser();
         User user2 = getUser();
-        when(userService.getTeachers()).thenReturn(List.of(user, user2));
+        TeacherInfo info1 = getTeacherInfo(user);
+        TeacherInfo info2 = getTeacherInfo(user2);
+        when(userService.findTeacherInfos()).thenReturn(List.of(info1, info2));
         when(requestService.findUnassigned()).thenReturn(requests);
         doNothing().when(requestService).updateList(requestsCaptor.capture());
         decisionService.assign();
@@ -83,7 +94,6 @@ public class DecisionGeneratorTest {
         int limitOurs = 20;
         User user = new User();
         user.setId(UUID.randomUUID());
-        user.setLimitOurs(limitOurs);
         return user;
     }
     private List<Request> getRequests() {

@@ -24,7 +24,7 @@ public class CustomerParameterService implements RatingParameterService {
         if (Objects.nonNull(ratingParameters)) {
             double rating = request.getRating();
             User customer = request.getCustomer();
-            double score = customer.getScore();
+            double score = 5d;
             double coefficient = ratingParameters.getCoefficient();
             rating += score * coefficient;
             request.setRating(rating);

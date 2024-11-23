@@ -1,9 +1,9 @@
 package com.example.digitalplatform.service;
 
-import com.example.digitalplatform.db.model.Role;
-import com.example.digitalplatform.db.model.RoleType;
-import com.example.digitalplatform.db.model.User;
+import com.example.digitalplatform.db.model.*;
 import com.example.digitalplatform.db.repository.RoleRepository;
+import com.example.digitalplatform.db.repository.StudentInfoRepository;
+import com.example.digitalplatform.db.repository.TeacherInfoRepository;
 import com.example.digitalplatform.db.repository.UserRepository;
 import com.example.digitalplatform.dto.RoleDto;
 import com.example.digitalplatform.dto.UserAccountDto;
@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +27,15 @@ public class UserService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
+    TeacherInfoRepository teacherInfoRepository;
+    StudentInfoRepository studentInfoRepository;
 
 
     public User registerNewUserAccount(UserAccountDto accountDto)  {
         User old = userRepository.findByLogin(accountDto.getUserName());
         if (Objects.nonNull(old)) {
             log.error("There is an account with that user name: " + accountDto.getUserName());
+            return old;
         }
         User user = new User();
         user.setLogin(accountDto.getUserName());
@@ -39,10 +44,6 @@ public class UserService {
 
         Role byCode = roleRepository.findByCode(accountDto.getRoleCode());
         user.setRole(byCode);
-
-        user.setFirstName(accountDto.getFirstName());
-        user.setLastName(accountDto.getLastName());
-        user.setInstitute(accountDto.getInstitution());
         User saved = userRepository.save(user);
 
         return saved;
@@ -52,18 +53,34 @@ public class UserService {
     public List<UserAccountDto> getAllUserAccounts() {
         List<User> users = userRepository.findAll();
         List<UserAccountDto> result = new ArrayList<>();
+        List<TeacherInfo> teacherInfos = teacherInfoRepository.findByUserIn(users);
+        Map<User, TeacherInfo> teacherMap = teacherInfos.stream().collect(Collectors.toMap(TeacherInfo::getUser, Function.identity()));
+        List<StudentInfo> studentInfos = studentInfoRepository.findByUserIn(users);
+        Map<User, StudentInfo> studentMap = studentInfos.stream().collect(Collectors.toMap(StudentInfo::getUser, Function.identity()));
         for (User user : users) {
-            UserAccountDto dto = new UserAccountDto();
-            dto.setUserName(user.getLogin());
-            Role role = user.getRole();
-            dto.setRoleCode(role.getCode());
-            dto.setRoleName(role.getName());
-            dto.setInstitution(user.getInstitute());
-            dto.setFirstName(user.getFirstName());
-            dto.setLastName(user.getLastName());
-            result.add(dto);
+            if (teacherMap.containsKey(user)) {
+                TeacherInfo teacher = teacherMap.get(user);
+                fillUserAccountDto(result, user, teacher.getInstitute(), teacher.getFirstName(), teacher.getLastName());
+            } else if (studentMap.containsKey(user)) {
+                StudentInfo studentInfo = studentMap.get(user);
+                fillUserAccountDto(result, user, studentInfo.getInstitute(), studentInfo.getFirstName(), studentInfo.getLastName());
+            } else {
+                fillUserAccountDto(result, user, "", "", "");
+            }
         }
         return result;
+    }
+
+    private void fillUserAccountDto(List<UserAccountDto> result, User user, String institute, String firstName, String lastName) {
+        UserAccountDto dto = new UserAccountDto();
+        dto.setUserName(user.getLogin());
+        Role role = user.getRole();
+        dto.setRoleCode(role.getCode());
+        dto.setRoleName(role.getName());
+        dto.setInstitution(institute);
+        dto.setFirstName(firstName);
+        dto.setLastName(lastName);
+        result.add(dto);
     }
 
     public List<RoleDto> getAvailableRoles() {
@@ -78,5 +95,11 @@ public class UserService {
         List<User> byRoleCodeAndAssignedNull = userRepository.findByRoleCodeAndAssignedNull(RoleType.TEACHER);
         log.debug("found teachers: {}", byRoleCodeAndAssignedNull.size());
         return byRoleCodeAndAssignedNull;
+    }
+
+
+    public List<TeacherInfo> findTeacherInfos() {
+        List<User> teachers = getTeachers();
+        return teacherInfoRepository.findByUserIn(teachers);
     }
 }
