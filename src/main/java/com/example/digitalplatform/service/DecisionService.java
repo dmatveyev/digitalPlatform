@@ -38,12 +38,23 @@ public class DecisionService {
     }
 
     @Scheduled(cron = "0 */1 * * * *")
-    public void assign() {
+    public void automaticAssign() {
+        log.debug("Process assigning request was start automatically");
+        List<Request> processing = getRequests();
+        log.debug("Automatic process assigning was end. Unassigned request count:{}", processing.size());
+   }
+
+    public void manualAssign(UUID userId) {
+        log.debug("Process assigning request was start by user with id: {}", userId);
+        List<Request> processing = getRequests();
+        log.debug("Process assigning was end. Unassigned request count:{}", processing.size());
+    }
+
+    private List<Request> getRequests() {
         GeneratorDessisions generatorDessisions = generatorsMap.get(generatorType);
         if (Objects.isNull(generatorDessisions)) {
             generatorDessisions = generatorsMap.get("BACKPACK_BELLMAN");
         }
-        log.debug("Process assigning request is start");
         List<TeacherInfo> teachers = userService.findTeacherInfos();
         List<Request> unassigned = requestService.findUnassigned();
         List<Request> processing = new ArrayList<>(unassigned);
@@ -60,8 +71,8 @@ public class DecisionService {
             processing.forEach(request -> request.setStatus(RequestStatus.NEW));
             requestService.updateList(processing);
         }
-        log.debug("Process assigning is end. Unassigned request count:{}", processing.size());
-   }
+        return processing;
+    }
 
     private List<Request> getAvailableRequests(TeacherInfo teacherInfo, List<Request> processing) {
         Map<UUID, List<Request>> requestBySubjectArea = processing.stream().collect(Collectors.groupingBy
