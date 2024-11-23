@@ -22,6 +22,4 @@ public class SubjectArea {
     UUID id;
     String name;
     String description;
-    @OneToMany(mappedBy = "subjectArea")
-    List<Request> requests;
 }
