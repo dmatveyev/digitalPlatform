@@ -45,7 +45,7 @@ public class DecisionGeneratorTest {
         when(userService.findTeacherInfos()).thenReturn(List.of(info1));
         when(requestService.findUnassigned()).thenReturn(requests);
         doNothing().when(requestService).updateList(requestsCaptor.capture());
-        decisionService.assign();
+        decisionService.automaticAssign();
         List<List<Request>> allValues = requestsCaptor.getAllValues();
         assertEquals(2, allValues.size());
         List<Request> assigned = allValues.get(0);
@@ -87,7 +87,7 @@ public class DecisionGeneratorTest {
         when(userService.findTeacherInfos()).thenReturn(List.of(info1, info2));
         when(requestService.findUnassigned()).thenReturn(requests);
         doNothing().when(requestService).updateList(requestsCaptor.capture());
-        decisionService.assign();
+        decisionService.automaticAssign();
         List<List<Request>> allValues = requestsCaptor.getAllValues();
         assertEquals(2, allValues.size());
         List<Request> assignedFirst = allValues.get(0);
