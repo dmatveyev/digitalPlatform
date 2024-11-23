@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Параметры формирования рейтинга</title>
@@ -14,8 +14,11 @@
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/requests/all}" href="requests.html">Request</a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" th:href="@{/rating_parameters/all}" href="rating_parameters.html">Rating Parameters</a>
+            <li class="nav-item active" sec:authorize="hasAuthority('ADMIN')">
+                <a class="nav-link" th:href="@{/rating_parameters/all}" href="rating_parameters/rating_parameters.html">Rating Parameters</a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                <a class="nav-link" th:href="@{/accounts/all}" href="accounts.html">Accounts</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/logout}">Logout</a>

@@ -23,7 +23,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/requests")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('STUDENT')")
+@PreAuthorize("hasAnyRole('STUDENT','TEACHER')")
 public class RequestsController {
 
    private final RequestRepository requestRepository;
@@ -31,7 +31,7 @@ public class RequestsController {
    private final RequestService requestService;
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAnyRole('STUDENT','TEACHER')")
     public String getAll(Model model, Principal principal) {
         List<RequestDto> list = requestService.findByPrincipal(principal);
         model.addAttribute("requests", list);
@@ -39,7 +39,7 @@ public class RequestsController {
     }
 
     @GetMapping("/edit")
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasAnyRole('STUDENT','TEACHER')")
     public String edit(@RequestParam("id") String id, Model model) {
         RequestDto requestDto = requestService.findById(UUID.fromString(id));
         model.addAttribute("request", requestDto);

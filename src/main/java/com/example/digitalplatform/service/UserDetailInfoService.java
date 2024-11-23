@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -24,7 +26,11 @@ public class UserDetailInfoService {
         String name = switch (code) {
             case STUDENT -> {
                 StudentInfo byUser = studentInfoRepository.findByUser(user);
-                yield byUser.getFirstName().concat(" ").concat(byUser.getLastName());
+                if (Objects.nonNull(byUser)) {
+                    yield byUser.getFirstName().concat(" ").concat(byUser.getLastName());
+                } else {
+                    yield "";
+                }
             }
             case TEACHER -> {
                 TeacherInfo byUser = teacherInfoRepository.findByUser(user);
