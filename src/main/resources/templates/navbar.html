@@ -1,0 +1,27 @@
+<nav th:fragment="navbar(activeNav, pageNum, pageSize)"
+     class="navbar navbar-expand-lg navbar-dark bg-dark" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav" sec:authorize="isAuthenticated()">
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeNav == 1} ? 'active'"
+                   th:href="@{/profile/edit}" href="profile.html">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " th:classappend="${activeNav == 2} ? 'active'"
+                   th:href="@{/requests/all(page=${pageNum},size=${pageSize})}" href="requests.html">Request</a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                <a class="nav-link" th:classappend="${activeNav == 3} ? 'active'"
+                   th:href="@{/rating_parameters/all}" href="rating_parameters/rating_parameters.html">Rating
+                    Parameters</a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                <a class="nav-link" th:classappend="${activeNav == 4} ? 'active'"
+                   th:href="@{/accounts/all}" href="accounts.html">Accounts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>

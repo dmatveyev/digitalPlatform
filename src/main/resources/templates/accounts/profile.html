@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>Profile</title>
@@ -8,7 +8,6 @@
           crossorigin="anonymous">
 </head>
 <body>
-
 <!-- par edition -->
 <form id="edit-form" th:action="@{/profile/edit}" th:method="post" action="profile.html">
     <div class="container">
@@ -32,12 +31,11 @@
             <input class="col-2" id="holder-input3" name="institution" type="text" th:value="${info.institution}"
                    value="John Doe"/>
         </div>
-<!--        <div class="row mt-3">
-            <label class="col-2" for="dropDownList">Subject Area:</label>
-            <select class="col-2" id="dropDownList" name="subjectAreaId" disabled>
-                <option selected th:value="${request.subjectArea.id}" th:text="${request.subjectArea.name}"></option>
-            </select>
-        </div>-->
+        <div class="row mt-3" th:if="${#authorization.expression('hasAuthority(''STUDENT'')')}">
+            <label class="col-2" for="holder-input8">Class:</label>
+            <input class="col-2" id="holder-input8" name="clazz" type="text" th:value="${info.clazz}"
+                   value="John Doe"/>
+        </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input4">Role:</label>
             <input class="col-2" id="holder-input4" name="roleName"
@@ -46,11 +44,11 @@
                    th:value="${info.roleName}"
                    value="John Doe"/>
         </div>
-        <div class="row mt-3" th:if="${info.limitHours != null}">
+        <div class="row mt-3" th:if="${#authorization.expression('hasAuthority(''TEACHER'')')}">
             <label class="col-2" for="holder-input5">Limit Hours:</label>
             <input class="col-2" id="holder-input5" name="limitHours" type="text" th:value="${info.limitHours}" value="1"/>
         </div>
-        <div class="row mt-3" th:if="${info.degree != null}">
+        <div class="row mt-3" th:if="${#authorization.expression('hasAuthority(''TEACHER'')')}">
             <label class="col-2" for="holder-input6" >Degree:</label>
             <input class="col-2" id="holder-input6" name="degree" type="text" th:value="${info.degree}" value="1"/>
         </div>
@@ -58,7 +56,7 @@
             <label class="col-2" for="holder-input7" >Score:</label>
             <input class="col-2" id="holder-input7" name="score" readonly type="text" th:value="${info.score}" value="1"/>
         </div>
-        <div class="row mt-3" th:if="${info.roleCode == 'TEACHER'}">
+        <div class="row mt-3" th:if="${#authorization.expression('hasAuthority(''TEACHER'')')}">
             <label class="col-2" for="workTypes">Subject area:</label>
             <select class="col-2" id="workTypes" name="subjectAreas" multiple="multiple">
                 <option th:each="area : ${areas}"

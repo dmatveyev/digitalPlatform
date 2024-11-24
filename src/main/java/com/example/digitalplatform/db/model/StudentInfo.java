@@ -22,6 +22,7 @@ public class StudentInfo {
     String firstName;
     String LastName;
     String institute;
+    String clazz;
     double score;
 
 

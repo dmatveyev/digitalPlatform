@@ -8,27 +8,7 @@
           crossorigin="anonymous">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav" sec:authorize="isAuthenticated()">
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/profile/edit}" href="profile.html">Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/requests/all(page=1, size=5)}" href="requests.html">Request</a>
-            </li>
-            <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
-                <a class="nav-link" th:href="@{/rating_parameters/all}" href="rating_parameters/rating_parameters.html">Rating Parameters</a>
-            </li>
-            <li class="nav-item active"  sec:authorize="hasAuthority('ADMIN')">
-                <a class="nav-link" th:href="@{/accounts/all}" href="accounts.html">Accounts</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/logout}">Logout</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<nav th:replace="navbar :: navbar(4, 1, 5)"></nav>
 <div class="container">
     <h1>Список Пользователей</h1>
     <div>

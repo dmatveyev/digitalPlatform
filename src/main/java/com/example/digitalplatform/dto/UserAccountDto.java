@@ -20,6 +20,7 @@ public class UserAccountDto {
     String firstName;
     String lastName;
     String institution;
+    String clazz;
     RoleType roleCode;
     String roleName;
     String degree;
