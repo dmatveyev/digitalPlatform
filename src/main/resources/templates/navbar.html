@@ -1,4 +1,4 @@
-<nav th:fragment="navbar(activeNav, pageNum, pageSize)"
+<nav th:fragment="navbar(activeNav)"
      class="navbar navbar-expand-lg navbar-dark bg-dark" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav" sec:authorize="isAuthenticated()">
@@ -8,7 +8,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link " th:classappend="${activeNav == 2} ? 'active'"
-                   th:href="@{/requests/all(page=${pageNum},size=${pageSize})}" href="requests.html">Request</a>
+                   th:href="@{/requests/all(page=1,size=5)}" href="requests.html">Request</a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
                 <a class="nav-link" th:classappend="${activeNav == 3} ? 'active'"
