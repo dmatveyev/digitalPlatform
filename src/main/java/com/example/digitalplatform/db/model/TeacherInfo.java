@@ -19,8 +19,6 @@ public class TeacherInfo {
     UUID id;
     @OneToOne
     User user;
-    String firstName;
-    String LastName;
     String institute;
     String degree;
     double score;

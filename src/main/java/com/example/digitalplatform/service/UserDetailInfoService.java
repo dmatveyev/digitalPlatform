@@ -17,24 +17,16 @@ import java.util.Objects;
 public class UserDetailInfoService {
 
     TeacherInfoRepository teacherInfoRepository;
-    StudentInfoRepository studentInfoRepository;
-
 
     public String getUserName(User user) {
         Role role = user.getRole();
         RoleType code = role.getCode();
         String name = switch (code) {
-            case STUDENT -> {
-                StudentInfo byUser = studentInfoRepository.findByUser(user);
-                if (Objects.nonNull(byUser)) {
-                    yield byUser.getFirstName().concat(" ").concat(byUser.getLastName());
-                } else {
-                    yield "";
-                }
-            }
+            case STUDENT -> user.getFirstName().concat(" ").concat(user.getLastName());
+
             case TEACHER -> {
                 TeacherInfo byUser = teacherInfoRepository.findByUser(user);
-                yield byUser.getDegree().concat(" ").concat(byUser.getFirstName().concat(" ").concat(byUser.getLastName()));
+                yield byUser.getDegree().concat(" ").concat(user.getFirstName().concat(" ").concat(user.getLastName()));
             }
             default -> user.getLogin();
         };

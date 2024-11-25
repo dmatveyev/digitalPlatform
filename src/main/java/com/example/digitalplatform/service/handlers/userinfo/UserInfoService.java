@@ -11,6 +11,8 @@ public interface UserInfoService {
         dto.setUserName(user.getLogin());
         dto.setRoleName(user.getRole().getName());
         dto.setRoleCode(getProcessingRole());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
         return dto;
     }
 

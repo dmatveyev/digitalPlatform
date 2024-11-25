@@ -37,8 +37,6 @@ public class StudentInfoService implements UserInfoService {
         if (Objects.isNull(studentInfo.getUser())) {
             studentInfo.setUser(user);
         }
-        studentInfo.setFirstName(dto.getFirstName());
-        studentInfo.setLastName(dto.getLastName());
         studentInfo.setInstitute(dto.getInstitution());
         if (dto.getScore() != null) {
             studentInfo.setScore(dto.getScore());
@@ -63,8 +61,8 @@ public class StudentInfoService implements UserInfoService {
         dto.setRoleCode(role.getCode());
         dto.setRoleName(role.getName());
         dto.setInstitution(info.getInstitute());
-        dto.setFirstName(info.getFirstName());
-        dto.setLastName(info.getLastName());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
         dto.setScore(info.getScore());
         return dto;
     }

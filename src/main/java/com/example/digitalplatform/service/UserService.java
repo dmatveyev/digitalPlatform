@@ -105,6 +105,9 @@ public class UserService {
     }
 
     public void saveUserInfo(UserAccountDto dto, User user) {
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        userRepository.save(user);
         UserInfoService userInfoService = serviceMap.get(user.getRole().getCode());
         userInfoService.saveUserInfo(dto, user);
     }

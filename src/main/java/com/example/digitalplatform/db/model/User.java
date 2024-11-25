@@ -16,6 +16,10 @@ public class User {
     private String login;
     private String password;
     private boolean enabled;
+    private String firstName;
+    private String middleName;
+    private String LastName;
+    private String email;
     @Column(name = "token_expired")
     private boolean tokenExpired;
 

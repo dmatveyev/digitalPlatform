@@ -1,6 +1,7 @@
 -- Пользователи
-INSERT INTO PUBLIC.USERS (ID, LOGIN, PASSWORD, ENABLED, TOKEN_EXPIRED)
-VALUES ('aa25d9af-f18b-4bf1-bef6-f70176b89b52', 'user', '{bcrypt}$2a$10$AsgwBmSDITYg8KEkQWfPXeiTy9mcJRPHY1esw2bHyrmPny8PCZhIy', true, false);
+INSERT INTO PUBLIC.USERS (ID, LOGIN, PASSWORD, FIRST_NAME, LAST_NAME, ENABLED, TOKEN_EXPIRED)
+VALUES ('aa25d9af-f18b-4bf1-bef6-f70176b89b52', 'user',
+        '{bcrypt}$2a$10$AsgwBmSDITYg8KEkQWfPXeiTy9mcJRPHY1esw2bHyrmPny8PCZhIy','Админ', 'Админов', true, false);
 --Информация о пользователе
 -- Роли
 INSERT INTO PUBLIC.ROLES (ID, CODE, NAME, DESCRIPTION) VALUES ('fba1ffbb-5e6c-4abf-8d1d-aff59ca895b9', 'ADMIN', 'Администратор', 'Администратор системя');

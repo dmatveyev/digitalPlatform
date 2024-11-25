@@ -19,8 +19,6 @@ public class StudentInfo {
     UUID id;
     @OneToOne
     User user;
-    String firstName;
-    String LastName;
     String institute;
     String clazz;
     double score;

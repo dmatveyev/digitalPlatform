@@ -43,14 +43,11 @@ public class TeacherInfoService implements UserInfoService {
         if (Objects.isNull(teacherInfo.getUser())) {
             teacherInfo.setUser(user);
         }
-        teacherInfo.setFirstName(dto.getFirstName());
-        teacherInfo.setLastName(dto.getLastName());
         teacherInfo.setInstitute(dto.getInstitution());
         teacherInfo.setDegree(dto.getDegree());
         teacherInfo.setLimitHours(dto.getLimitHours());
         teacherInfo.setSubjectAreas(dto.getSubjectAreas());
         teacherInfoRepository.save(teacherInfo);
-
     }
 
 
@@ -62,8 +59,8 @@ public class TeacherInfoService implements UserInfoService {
         dto.setRoleCode(role.getCode());
         dto.setRoleName(role.getName());
         dto.setInstitution(info.getInstitute());
-        dto.setFirstName(info.getFirstName());
-        dto.setLastName(info.getLastName());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
         dto.setDegree(info.getDegree());
         dto.setLimitHours(info.getLimitHours());
         dto.setSubjectAreas(info.getSubjectAreas());
