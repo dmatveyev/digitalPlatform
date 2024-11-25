@@ -30,6 +30,7 @@ public class RequestDto {
     RequestStatus status;
     String creatorName;
     String assignedBy;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     LocalDateTime deadline;
     WorkType workType;
     boolean periodical;

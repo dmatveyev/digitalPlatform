@@ -44,7 +44,10 @@
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input5">Срок завершения:</label>
-            <input class="col-2" id="holder-input5" name="deadline" type="datetime-local" th:value="${#temporals.format(request.deadline, 'dd-MM-yyyy HH:mm')}"
+            <input class="col-2" id="holder-input5" name="deadline" type="datetime-local"
+                   th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd''T''HH:mm')}"
+                   th:max="${#temporals.format(#temporals.createNow().plus(30, T(java.time.temporal.ChronoUnit).DAYS), 'yyyy-MM-dd''T''HH:mm')}"
+                   th:value="${#temporals.format(request.deadline, 'dd-MM-yyyy HH:mm')}"
                    required value="1"/>
         </div>
         <button type="submit" class="btn btn-primary">Сохранить</button>
