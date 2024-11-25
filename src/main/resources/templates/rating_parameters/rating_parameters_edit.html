@@ -20,29 +20,29 @@
         </div>
 
         <div class="row mt-3">
-            <label class="col-2" for="holder-input1">Name:</label>
+            <label class="col-2" for="holder-input1">Код:</label>
             <input class="col-2" id="holder-input1" name="code" type="text" disabled th:value="${rating_parameters.code}" required/>
         </div>
         <div class="row mt-3">
-            <label class="col-2" for="holder-input2">description:</label>
+            <label class="col-2" for="holder-input2">Описание:</label>
             <input class="col-2" id="holder-input2" name="description" type="text" th:value="${rating_parameters.description}" required/>
         </div>
         <div class="row mt-3">
-            <label class="col-2" for="holder-input3">minValue:</label>
+            <label class="col-2" for="holder-input3">Минимум:</label>
             <input class="col-2" id="holder-input3" name="minValue" type="text" th:value="${rating_parameters.minValue}" required/>
         </div>
         <div class="row mt-3">
-            <label class="col-2" for="holder-input4">maxValue:</label>
+            <label class="col-2" for="holder-input4">Максимум:</label>
             <input class="col-2" id="holder-input4" name="maxValue" type="text" th:value="${rating_parameters.maxValue}" required/>
         </div>
         <div class="row mt-3">
-            <label class="col-2" for="holder-input5">coefficient:</label>
+            <label class="col-2" for="holder-input5">Коэффициент:</label>
             <input class="col-2" id="holder-input5" name="coefficient" type="text" th:value="${rating_parameters.coefficient}" required/>
         </div>
 
 
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a role="button" class="btn btn-outline-secondary" onclick="history.go(-1)">Close</a>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a role="button" class="btn btn-outline-secondary" onclick="history.go(-1)">Закрыть</a>
     </div>
 </form>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

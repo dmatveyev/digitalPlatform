@@ -10,24 +10,35 @@
 <body>
 <nav th:replace="navbar :: navbar(3)"></nav>
 <div class="container">
-    <h1>Параметры рейтинга</h1>
-    <div>
+    <h1 class="row mt-3">Параметры рейтинга</h1>
+    <div class="row mt-3">
+        <form th:action="@{/rating_parameters/all}" id="searchFormRp">
+            <div class="input-group mt-2">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="pageSize">Выводить по:</label>
+                </div>
+                <select id="pageSize" form="searchFormRp" name="size" th:value="${pageItem.size}" onchange="changePageSize()"
+                        class="size-select">
+                    <option th:each="s : ${#numbers.sequence(5,20,5)}" th:value="${s}" th:text="${s}"
+                            th:selected="${s == pageItem.size}"></option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="row mt-3">
         <table class="table table-bordered table-striped">
             <thead class="bg-info">
             <tr>
-                <th>ID</th>
-                <th>Code</th>
-                <th>Description</th>
-                <th>Min</th>
-                <th>Max</th>
-                <th>Coefficient</th>
-                <th></th>
+                <th>Код</th>
+                <th>Описание</th>
+                <th>Минимум</th>
+                <th>Максимум</th>
+                <th>Коэффициент</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="r_param : ${rating_parameters}">
-                <td th:text="${r_param.id}">1</td>
+            <tr th:each="r_param : ${pageItem.content}">
                 <td th:text="${r_param.code}">Bond</td>
                 <td th:text="${r_param.description}">Bond</td>
                 <td th:text="${r_param.minValue}">Bond</td>
@@ -35,23 +46,30 @@
                 <td th:text="${r_param.coefficient}">Bond</td>
                 <td>
                     <a role="button" class="btn btn-outline-primary" th:href="@{/rating_parameters/edit(id=${r_param.id})}"
-                       href="rating_parameters_edit.html">Edit</a>
-
-                </td>
-                <td>
-                    <form th:action="@{/rating_parameters/delete}" th:method="delete">
-                        <input type="hidden" name="id" th:value="${r_param.id}"/>
-                        <input class="btn btn-danger" type="submit" value="Delete" onClick="return confirm('sure?')"/>
-                    </form>
+                       href="rating_parameters_edit.html">Ред...</a>
                 </td>
             </tr>
             </tbody>
         </table>
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <a role="button" class="btn btn-primary" th:href="@{/rating_parameters/create}">Add new...</a>
-        </div>
     </div>
+    <div th:replace="pagingNav :: pagingNav(${pageItem}, @{/rating_parameters/all})"></div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // ...
+
+        $("#btnClear").on("click", function (e) {
+            e.preventDefault();
+            $("#keyword").text("");
+            window.location = "[[@{/tutorials}]]";
+        });
+    });
+
+    function changePageSize() {
+        $("#searchFormRp").submit();
+    }
+</script>
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

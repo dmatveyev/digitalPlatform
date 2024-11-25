@@ -62,7 +62,7 @@ class AccountController {
         PageRequest pageRequest = PageRequest.of(start - 1, pageSize);
         List<UserAccountDto> accounts = Objects.isNull(roleCode) ? userService.getAllUserAccounts()
                 :userService.findByRoleCode(roleCode);
-        int end = Math.min((start + pageRequest.getPageSize()), accounts.size());
+        int end = Math.min((start - 1 + pageRequest.getPageSize()), accounts.size());
         List<UserAccountDto> pageContent = accounts.isEmpty()? Collections.emptyList(): accounts.subList(start-1, end);
         Page<UserAccountDto> accountPage = new PageImpl<>(pageContent, pageRequest, accounts.size());
         model.addAttribute("accounts", accountPage);

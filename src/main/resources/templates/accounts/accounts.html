@@ -42,11 +42,11 @@
         <table class="table table-bordered table-striped">
             <thead class="bg-info">
             <tr>
-                <th>User name</th>
-                <th>First name</th>
-                <th>Last name</th>
-                <th>Institution</th>
-                <th>User type</th>
+                <th>Имя пользователя</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Учреждение</th>
+                <th>Роль</th>
             </tr>
             </thead>
             <tbody>
@@ -62,7 +62,7 @@
     </div>
     <div th:replace="pagingNav :: pagingNav(${accounts}, @{/accounts/all})"></div>
     <div class="btn-group row mt-3" role="group" aria-label="Basic example">
-        <a role="button" class="btn btn-primary" th:href="@{/accounts/create}">Add new...</a>
+        <a role="button" class="btn btn-primary" th:href="@{/accounts/create}">Создать...</a>
     </div>
 </div>
 

@@ -14,24 +14,24 @@
     <div class="container">
         <h1>Account:</h1>
         <div class="row mt-3">
-            <label class="col-2" for="holder-input1">User name:</label>
+            <label class="col-2" for="holder-input1">Имя пользователя:</label>
             <input class="col-2" id="holder-input1" name="userName" type="text" th:value="${userData.userName}"
                    value="John Doe" required/>
         </div>
         <div class="row mt-3">
-            <label class="col-2" for="holder-input2">Password:</label>
+            <label class="col-2" for="holder-input2">Пароль:</label>
             <input class="col-2" id="holder-input2" name="password" type="text" th:value="${userData.password}"
                    value="John Doe" required/>
         </div>
         <div class="row mt-3">
-            <label class="col-2" for="dropDownList">User role:</label>
+            <label class="col-2" for="dropDownList">Роль:</label>
             <select class="col-2" id="dropDownList" name="roleCode" required>
                 <option th:each="role : ${roles}" th:value="${role.code}" th:text="${role.name}"></option>
             </select>
             <!--<input class="col-2" id="holder-input2" name="subjectArea" type="text" th:value="${request.subjectArea}" value="John Doe"/>-->
         </div>
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a role="button" class="btn btn-outline-secondary" onclick="history.go(-1)">Close</a>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a role="button" class="btn btn-outline-secondary" onclick="history.go(-1)">Закрыть</a>
     </div>
 </form>
 

@@ -4,23 +4,22 @@
         <ul class="navbar-nav" sec:authorize="isAuthenticated()">
             <li class="nav-item">
                 <a class="nav-link" th:classappend="${activeNav == 1} ? 'active'"
-                   th:href="@{/profile/edit}" href="profile.html">Profile</a>
+                   th:href="@{/profile/edit}" href="profile.html">Профиль</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link " th:classappend="${activeNav == 2} ? 'active'"
-                   th:href="@{/requests/all(page=1,size=5)}" href="requests.html">Request</a>
+                   th:href="@{/requests/all(page=1,size=5)}" href="requests.html">Запросы</a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
                 <a class="nav-link" th:classappend="${activeNav == 3} ? 'active'"
-                   th:href="@{/rating_parameters/all}" href="rating_parameters/rating_parameters.html">Rating
-                    Parameters</a>
+                   th:href="@{/rating_parameters/all}" href="rating_parameters/rating_parameters.html">Параметры оценки запроса</a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
                 <a class="nav-link" th:classappend="${activeNav == 4} ? 'active'"
-                   th:href="@{/accounts/all}" href="accounts.html">Accounts</a>
+                   th:href="@{/accounts/all}" href="accounts.html">Пользователи</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/logout}">Logout</a>
+                <a class="nav-link" th:href="@{/logout}">Выйти</a>
             </li>
         </ul>
     </div>
