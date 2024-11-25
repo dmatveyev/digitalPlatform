@@ -40,6 +40,12 @@ public class StudentInfoService implements UserInfoService {
         studentInfo.setFirstName(dto.getFirstName());
         studentInfo.setLastName(dto.getLastName());
         studentInfo.setInstitute(dto.getInstitution());
+        if (dto.getScore() != null) {
+            studentInfo.setScore(dto.getScore());
+        }
+        if (dto.getClazz() != null) {
+            studentInfo.setClazz(dto.getClazz());
+        }
         studentInfoRepository.save(studentInfo);
 
     }
