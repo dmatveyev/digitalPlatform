@@ -1,7 +1,7 @@
 package com.example.digitalplatform.service;
 
 import com.example.digitalplatform.db.model.*;
-import com.example.digitalplatform.service.handlers.rating.RatingParameterService;
+import com.example.digitalplatform.service.handlers.rating.RatingCalculator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 public class RatingService {
 
-    List<RatingParameterService> parameterServiceList;
+    List<RatingCalculator> parameterServiceList;
 
     void createRating(Request request) {
         parameterServiceList.forEach(service -> service.calculate(request));

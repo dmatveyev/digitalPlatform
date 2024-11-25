@@ -15,7 +15,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CustomerParameterService implements RatingParameterService {
+public class CustomerParameterRatingCalculator implements RatingCalculator {
     RatingParametersRepository ratingParametersRepository;
     StudentInfoRepository studentInfoRepository;
 
