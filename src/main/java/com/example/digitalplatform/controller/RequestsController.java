@@ -89,7 +89,7 @@ public class RequestsController {
         return "requests/addRequest";
     }
 
-    @PostMapping("/delete")
+    @GetMapping("/delete")
     @PreAuthorize("hasRole('STUDENT')")
     public String delete(@RequestParam("id") String id, Model model, Principal principal) {
         requestRepository.deleteById(UUID.fromString(id));

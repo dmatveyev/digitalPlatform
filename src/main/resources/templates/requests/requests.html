@@ -37,7 +37,6 @@
                 <th>Количество часов</th>
                 <th>Срок завершения</th>
                 <th></th>
-                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -52,12 +51,6 @@
                        href="editRequest.html">Показать</a>
 
                 </td>
-                <td>
-                    <form th:action="@{/requests/delete}" th:method="delete">
-                        <input type="hidden" name="id" th:value="${request.id}"/>
-                        <input class="btn btn-danger" type="submit" value="Удалить" onClick="return confirm('sure?')"/>
-                    </form>
-                </td>
             </tr>
             </tbody>
         </table>
@@ -65,31 +58,6 @@
 
     </div>
     <div th:replace="pagingNav :: pagingNav(${requestPage}, @{/requests/all})"></div>
-<!--    <div class="row mt-3" th:if="${requestPage.content != null}">
-        <ul class="nav nav-pills">
-            <li class="page-item" th:classappend="${requestPage.number == 0} ? 'active'">
-                <a th:replace="paging :: paging(${1}, ${1}, 'Page ' + ${1}, ${requestPage.size})"></a>
-            </li>
-            <li class="page-item disabled" th:if="${requestPage.number + 1 > 3}">
-                <a class="page-link" href="#">...</a>
-            </li>
-            <li class="page-item"
-                th:classappend="${requestPage.number + 1 == page} ? 'active'"
-                th:if="${requestPage.totalPages != 2}"
-                th:each="page : ${#numbers.sequence((requestPage.number + 2 > 3 ? requestPage.number : 2),
-                    (requestPage.number + 1 < requestPage.totalPages - 1 ? requestPage.number + 2 : requestPage.totalPages - 1 ))}">
-                <a th:replace="paging :: paging(${page}, ${page}, 'Page ' + ${page}, ${requestPage.size})"></a>
-            </li>
-            <li class="page-item disabled"
-                th:if="${requestPage.number + 2 < requestPage.totalPages - 1}">
-                <a class="page-link" href="#">...</a>
-            </li>
-            <li class="page-item" th:classappend="${requestPage.number + 1 == requestPage.totalPages} ? 'active'">
-                <a th:replace="paging :: paging(${requestPage.totalPages}, ${requestPage.totalPages}, 'Page ' + ${requestPage.totalPages}, ${requestPage.size})"
-                ></a>
-            </li>
-        </ul>
-    </div>-->
     <div class="btn-group row mt-3" role="group" aria-label="Basic example"
          sec:authorize="hasAnyAuthority('ADMIN','CREATE_REQUEST')">
         <a role="button" class="btn btn-primary" th:href="@{/requests/create}">Создать...</a>
@@ -109,16 +77,6 @@
 
 </body>
 <script type="text/javascript">
-    $(document).ready(function () {
-        // ...
-
-        $("#btnClear").on("click", function (e) {
-            e.preventDefault();
-            $("#keyword").text("");
-            window.location = "[[@{/tutorials}]]";
-        });
-    });
-
     function changePageSize() {
         $("#searchForm").submit();
     }

@@ -87,6 +87,11 @@
                     th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')') && request.status.name == 'NEW'}"
             >Сохранить
             </button>
+            <a role="button" class="btn btn-danger" type="submit" onClick="return confirm('Удалить?')"
+               th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')') && request.status.name == 'NEW'}"
+               th:href="@{/requests/delete(id=${request.id})}"
+            >Удалить</a>
+
             <a role="button" class="btn btn-primary" type="submit" onClick="return confirm('Взять?')"
                th:if="${#authorization.expression('hasAnyAuthority(''TEACHER'')') && request.status.name == 'ASSIGNED'}"
                th:href="@{/requests/{id}(id=${request.id},status=${'PROCESSED'})}">Взять в работу</a>
@@ -95,7 +100,8 @@
                th:href="@{/requests/{id}(id=${request.id},status=${'DECLINED'})}">Отклонить</a>
             <form th:action="@{/requests/delete}" th:method="post"
                   th:if="${#authorization.expression('hasAnyAuthority(''TEACHER'')') && request.status.name == 'PROCESSED'}">
-                <input type="hidden" name="status" th:value="${T(com.example.digitalplatform.db.model.RequestStatus).FINISHED}"/>
+                <input type="hidden" name="status"
+                       th:value="${T(com.example.digitalplatform.db.model.RequestStatus).FINISHED}"/>
                 <input class="btn btn-success" type="submit" value="Завершить" onClick="return confirm('Завершить?')"/>
             </form>
             <a role="button" class="btn btn-outline-secondary" onclick="history.go(-1)">Закрыть</a>
