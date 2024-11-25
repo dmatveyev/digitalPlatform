@@ -1,6 +1,7 @@
 package com.example.digitalplatform.controller;
 
 import com.example.digitalplatform.db.model.Request;
+import com.example.digitalplatform.db.model.RequestStatus;
 import com.example.digitalplatform.db.model.SubjectArea;
 import com.example.digitalplatform.db.model.WorkType;
 import com.example.digitalplatform.db.repository.RequestRepository;
@@ -59,8 +60,8 @@ public class RequestsController {
     }
 
     @PostMapping("/edit")
-    @PreAuthorize("hasRole('STUDENT')")
-    public String save(@RequestParam("id") String id, CreateRequestDto createRequestDto, Model model, Principal
+    @PreAuthorize("hasAnyRole('STUDENT','TEACHER')")
+    public String save(@RequestParam("id") String id, RequestDto createRequestDto, Model model, Principal
             principal) {
         RequestDto save = requestService.updateRequest(id, createRequestDto);
         List<RequestDto> requests = requestService.findByPrincipal(principal);
@@ -95,6 +96,18 @@ public class RequestsController {
         List<RequestDto> list = requestService.findByPrincipal(principal);
         model.addAttribute("requests", list);
         return "redirect:/requests/all?page=1&size=5";
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public String changeStatus(@PathVariable("id") String id,
+                               @RequestParam("status") RequestStatus requestStatus,
+                               RequestDto requestDto,
+                               Model model,
+                               Principal principal) {
+        RequestDto updated = requestService.changeStatus(UUID.fromString(id), requestDto.getStatus());
+        model.addAttribute("request", updated);
+        return "redirect:/requests/edit?id="+id;
     }
 
 }

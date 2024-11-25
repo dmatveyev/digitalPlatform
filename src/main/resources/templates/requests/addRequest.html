@@ -26,7 +26,8 @@
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input3">Описание:</label>
-            <input class="col-2" id="holder-input3" name="description" type="text" th:value="${request.description}" value="John Doe"/>
+            <textarea class="col-2" id="holder-input3" name="description"  th:value="${request.description}" >
+                </textarea>
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input4">Количество часов:</label>

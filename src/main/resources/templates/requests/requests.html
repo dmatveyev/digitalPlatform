@@ -17,6 +17,7 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="pageSize">Выводить по:</label>
                 </div>
+                <input type="hidden" name="page" th:value="1"/>
                 <select id="pageSize" form="searchForm" name="size" th:value="${requestPage.size}" onchange="changePageSize()"
                         class="size-select">
                     <option th:each="s : ${#numbers.sequence(5,20,5)}" th:value="${s}" th:text="${s}"

@@ -32,6 +32,8 @@ public class RequestDto {
     String assignedBy;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     LocalDateTime deadline;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    LocalDateTime endDate;
     WorkType workType;
     boolean periodical;
 

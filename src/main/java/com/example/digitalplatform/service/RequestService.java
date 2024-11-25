@@ -10,16 +10,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.geo.GeoPage;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,13 +50,17 @@ public class RequestService {
 
     }
 
-    public RequestDto updateRequest(String id, CreateRequestDto createRequestDto) {
+    public RequestDto updateRequest(String id, RequestDto requestDto) {
         Request request = requestRepository.findById(UUID.fromString(id)).orElseThrow();
-        request.setTime(createRequestDto.getTime());
-        request.setDescription(createRequestDto.getDescription());
-        request.setPlanedFinishDate(createRequestDto.getDeadline());
-        request.setPeriodical(createRequestDto.isPeriodical());
-        request.setWorkType(createRequestDto.getWorkType());
+        request.setTime(requestDto.getTime());
+        request.setDescription(requestDto.getDescription());
+        request.setPlanedFinishDate(requestDto.getDeadline());
+        request.setPeriodical(requestDto.isPeriodical());
+        request.setWorkType(requestDto.getWorkType());
+        if (requestDto.getStatus().equals(RequestStatus.FINISHED)) {
+            request.setActualFinishDate(requestDto.getEndDate());
+            request.setStatus(requestDto.getStatus());
+        }
         Request save = requestRepository.save(request);
         return getRequestDto(save);
 
@@ -135,5 +135,12 @@ public class RequestService {
         };
 
         return page;
+    }
+
+    public RequestDto changeStatus(UUID id, RequestStatus requestStatus) {
+        Request byId = requestRepository.findById(id).orElseThrow();
+        byId.setStatus(requestStatus);
+        requestRepository.save(byId);
+        return getRequestDto(byId);
     }
 }

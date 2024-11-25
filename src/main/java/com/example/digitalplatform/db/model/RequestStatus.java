@@ -4,6 +4,7 @@ public enum RequestStatus {
     NEW("Новая"),
     PLANNING("В планировании"),
     ASSIGNED("Назначена"),
+    DECLINED("Отклонена"),
     PROCESSED("В обработке"),
     FINISHED("Завершена");
 

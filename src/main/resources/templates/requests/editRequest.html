@@ -12,15 +12,19 @@
 <!-- par edition -->
 <form id="edit-form" th:action="@{/requests/edit(id=${request.id})}" th:method="post" action="editRequest.html">
     <div class="container">
-        <h1>Parameters Info:</h1>
+        <h1>Информация о запросе:</h1>
         <div class="row mt-3">
             <label class="col-2" for="id-input" hidden>ID:</label>
             <input class="col-2" id="id-input" type="text" hidden th:value="${request.id}" value="1"/>
         </div>
+        <div class="row mt-3">
+            <label class="col-2" for="status-input" hidden>ID:</label>
+            <input class="col-2" id="status-input" type="text" hidden th:value="${request.status}" value="1"/>
+        </div>
 
         <div class="row mt-3">
             <label class="col-2" for="holder-input1">Заголовок:</label>
-            <input class="col-2" id="holder-input1" name="title" type="text" disabled th:value="${request.title}"
+            <input class="col-2" id="holder-input1" name="title" type="text" readonly th:value="${request.title}"
                    value="John Doe"/>
         </div>
         <div class="row mt-3">
@@ -32,22 +36,26 @@
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input3">Описание:</label>
-            <input class="col-2" id="holder-input3" name="description"
-                   th:disabled="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')')&& request.status.name == 'NEW'}"
-                   type="text" th:value="${request.description}"
-                   value="John Doe"/>
+            <textarea class="col-2" id="holder-input3" name="description"
+                      th:readonly="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')')&& request.status.name == 'NEW'}"
+                      th:text="${request.description}"
+            ></textarea>
         </div>
         <div class="row mt-3">
             <label class="col-2" for="holder-input4">Количество часов:</label>
-            <input class="col-2" id="holder-input4" name="time" th:disabled="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')')&& request.status.name == 'NEW'}" type="text" th:value="${request.time}" value="1"/>
+            <input class="col-2" id="holder-input4" name="time"
+                   th:readonly="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')')&& request.status.name == 'NEW'}"
+                   type="text" th:value="${request.time}" value="1"/>
         </div>
         <div class="row mt-3" th:if="${request.assignedBy != null}">
-            <label class="col-2" for="holder-input5" >Назначена:</label>
-            <input class="col-2" id="holder-input5" name="time" type="text" disabled th:value="${request.assignedBy}" value="1"/>
+            <label class="col-2" for="holder-input5">Назначена:</label>
+            <textarea class="col-2" id="holder-input5" name="assignedBy" readonly
+                      th:text="${request.assignedBy}"></textarea>
         </div>
-        <div class="row mt-3" >
+        <div class="row mt-3">
             <label class="col-2" for="workTypes">Тип занятия:</label>
-            <select class="col-2" id="workTypes" name="workType" required th:disabled="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')')&& request.status.name == 'NEW'}">
+            <select class="col-2" id="workTypes" name="workType" required
+                    th:readonly="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')') && request.status.name == 'NEW'}">
                 <option th:each="workType : ${workTypes}" th:value="${workType}" th:text="${workType.desc}"
                         th:selected="${workType == request.workType}"
                 ></option>
@@ -55,25 +63,47 @@
         </div>
         <div class="row mt-3">
             <label class="col-2" for="checkbox-input">Периодичная:</label>
-            <input id="checkbox-input" name="periodical" type="checkbox" th:disabled="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')') && request.status.name == 'NEW'}" th:checked="${request.periodical}"/>
+            <input id="checkbox-input" name="periodical" type="checkbox"
+                   th:disabled="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')') && request.status.name == 'NEW'}"
+                   th:checked="${request.periodical}"/>
         </div>
         <div class="row mt-3">
-            <label class="col-2" for="holder-input6">Срок завершения:</label>
+            <label class="col-2" for="holder-input6">Выполнить до:</label>
             <input class="col-2" id="holder-input6" name="deadline" type="datetime-local"
-                   th:disabled="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')')&& request.status.name == 'NEW'}"
+                   th:readonly="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')')&& request.status.name == 'NEW'}"
                    th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd''T''HH:mm')}"
                    th:max="${#temporals.format(#temporals.createNow().plus(30, T(java.time.temporal.ChronoUnit).DAYS), 'yyyy-MM-dd''T''HH:mm')}"
                    th:value="${#temporals.format(request.deadline, 'yyyy-MM-dd''T''HH:mm')}" required value="1"/>
         </div>
         <div class="row mt-3">
-            <button type="submit" class="btn btn-primary"
-                    th:hidden="!${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')')&& request.status.name == 'NEW'}"
-            >Сохранить</button>
+            <label class="col-2" for="holder-input7">Срок завершения:</label>
+            <input class="col-2" id="holder-input7" name="endDate" type="datetime-local"
+                   th:if="${#authorization.expression('hasAnyAuthority(''TEACHER'',)')&& request.status.name == 'PROCESSED'}"
+                   th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd''T''HH:mm')}"
+                   th:value="${#temporals.format(request.endDate, 'yyyy-MM-dd''T''HH:mm')}" required value="1"/>
+        </div>
+        <div class="row mt-3">
+            <button th:marginheight="50" type="submit" class="btn btn-primary" th:value="${'PROCESSED'}"
+                    th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')') && request.status.name == 'NEW'}"
+            >Сохранить
+            </button>
+            <a role="button" class="btn btn-primary" type="submit" onClick="return confirm('Взять?')"
+               th:if="${#authorization.expression('hasAnyAuthority(''TEACHER'')') && request.status.name == 'ASSIGNED'}"
+               th:href="@{/requests/{id}(id=${request.id},status=${'PROCESSED'})}">Взять в работу</a>
+            <a role="button" class="btn btn-danger" type="submit" onClick="return confirm('Отклонить?')"
+               th:if="${#authorization.expression('hasAnyAuthority(''TEACHER'')') && request.status.name == 'ASSIGNED'}"
+               th:href="@{/requests/{id}(id=${request.id},status=${'DECLINED'})}">Отклонить</a>
+            <form th:action="@{/requests/delete}" th:method="post"
+                  th:if="${#authorization.expression('hasAnyAuthority(''TEACHER'')') && request.status.name == 'PROCESSED'}">
+                <input type="hidden" name="status" th:value="${T(com.example.digitalplatform.db.model.RequestStatus).FINISHED}"/>
+                <input class="btn btn-success" type="submit" value="Завершить" onClick="return confirm('Завершить?')"/>
+            </form>
             <a role="button" class="btn btn-outline-secondary" onclick="history.go(-1)">Закрыть</a>
         </div>
 
     </div>
 </form>
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>

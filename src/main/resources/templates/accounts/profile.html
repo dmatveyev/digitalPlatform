@@ -54,7 +54,7 @@
         </div>
         <div class="row mt-3" th:if="${info.score != null}">
             <label class="col-2" for="holder-input7" >Средний балл:</label>
-            <input class="col-2" id="holder-input7" name="score" readonly type="text"
+            <input class="col-2" id="holder-input7" name="score" readonly type=""
                    th:value="${#numbers.formatDecimal(info.score, 1, 'DEFAULT', 2, 'DEFAULT')}" value="1"/>
         </div>
         <div class="row mt-3" th:if="${#authorization.expression('hasAuthority(''TEACHER'')')}">
