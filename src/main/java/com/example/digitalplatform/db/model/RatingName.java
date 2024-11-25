@@ -2,7 +2,7 @@ package com.example.digitalplatform.db.model;
 
 public enum RatingName {
     AVERAGE_SCORE,
-    REQUEST_TITLE,
+    PERIODICAL_WORK,
     TYPE_ORGANIZATION,
     AUTHOR_RATING,
     DEADLINE

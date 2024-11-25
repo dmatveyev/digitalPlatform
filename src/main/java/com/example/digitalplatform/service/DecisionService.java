@@ -55,7 +55,8 @@ public class DecisionService {
         if (Objects.isNull(generatorDessisions)) {
             generatorDessisions = generatorsMap.get("BACKPACK_BELLMAN");
         }
-        List<TeacherInfo> teachers = userService.findTeacherInfos();
+        List<TeacherInfo> teachers = new ArrayList<>(userService.findTeacherInfos());
+        Collections.shuffle(teachers);
         List<Request> unassigned = requestService.findUnassigned();
         List<Request> processing = new ArrayList<>(unassigned);
         log.debug("Available request count: {}", processing.size());

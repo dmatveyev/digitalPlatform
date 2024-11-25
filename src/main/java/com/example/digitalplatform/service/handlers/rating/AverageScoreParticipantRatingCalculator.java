@@ -15,7 +15,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CustomerParameterRatingCalculator implements RatingCalculator {
+public class AverageScoreParticipantRatingCalculator implements RatingCalculator {
     RatingParametersRepository ratingParametersRepository;
     StudentInfoRepository studentInfoRepository;
 
@@ -43,6 +43,6 @@ public class CustomerParameterRatingCalculator implements RatingCalculator {
 
     @Override
     public RatingName getRatingName() {
-        return RatingName.AUTHOR_RATING;
+        return RatingName.AVERAGE_SCORE;
     }
 }
