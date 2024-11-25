@@ -36,7 +36,7 @@ create table STUDENT_INFO
     FIRST_NAME CHARACTER VARYING(255),
     LAST_NAME  CHARACTER VARYING(255),
     INSTITUTE  CHARACTER VARYING(255),
-    CLASS  CHARACTER VARYING(255),
+    CLAZZ  CHARACTER VARYING(255),
     constraint student_info_users_fk
         foreign key (USER_ID) references USERS
 );
