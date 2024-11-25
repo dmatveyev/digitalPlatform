@@ -44,7 +44,7 @@ public class UserService {
     }
 
 
-    public User registerNewUserAccount(UserAccountDto accountDto)  {
+    public User registerNewUserAccount(UserAccountDto accountDto) {
         User old = userRepository.findByLogin(accountDto.getUserName());
         if (Objects.nonNull(old)) {
             log.error("There is an account with that user name: " + accountDto.getUserName());
@@ -78,7 +78,7 @@ public class UserService {
     public List<RoleDto> getAvailableRoles() {
         List<Role> all = roleRepository.findAll();
         List<RoleDto> dtos = all.stream().map(role ->
-            new RoleDto(role.getCode(), role.getName())
+                new RoleDto(role.getCode(), role.getName())
         ).toList();
         return dtos;
     }
@@ -107,5 +107,16 @@ public class UserService {
     public void saveUserInfo(UserAccountDto dto, User user) {
         UserInfoService userInfoService = serviceMap.get(user.getRole().getCode());
         userInfoService.saveUserInfo(dto, user);
+    }
+
+    public List<UserAccountDto> findByRoleCode(RoleType roleCode) {
+        List<User> users = userRepository.findByRoleCode(roleCode);
+        List<UserAccountDto> result = new ArrayList<>();
+        for (User user : users) {
+            UserInfoService userInfoService = serviceMap.get(user.getRole().getCode());
+            UserAccountDto userInfo = userInfoService.getUserInfo(user);
+            result.add(userInfo);
+        }
+        return result;
     }
 }

@@ -11,8 +11,8 @@
 <nav th:replace="navbar :: navbar(2)"></nav>
 <div class="container">
     <h1 class="row mt-3">Список запросов</h1>
-    <div>
-        <form class="row mt-3" th:action="@{/requests/all}" id="searchForm">
+    <div class="row mt-3">
+        <form th:action="@{/requests/all}" id="searchForm">
             <div class="col-md-3 input-group mt-2">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="pageSize">Выводить по:</label>
@@ -65,7 +65,8 @@
 
 
     </div>
-    <div class="row mt-3" th:if="${requestPage.content != null}">
+    <div th:replace="pagingNav :: pagingNav(${requestPage}, @{/requests/all})"></div>
+<!--    <div class="row mt-3" th:if="${requestPage.content != null}">
         <ul class="nav nav-pills">
             <li class="page-item" th:classappend="${requestPage.number == 0} ? 'active'">
                 <a th:replace="paging :: paging(${1}, ${1}, 'Page ' + ${1}, ${requestPage.size})"></a>
@@ -89,7 +90,7 @@
                 ></a>
             </li>
         </ul>
-    </div>
+    </div>-->
     <div class="btn-group row mt-3" role="group" aria-label="Basic example"
          sec:authorize="hasAnyAuthority('ADMIN','CREATE_REQUEST')">
         <a role="button" class="btn btn-primary" th:href="@{/requests/create}">Add new...</a>

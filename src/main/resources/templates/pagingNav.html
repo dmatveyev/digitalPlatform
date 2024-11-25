@@ -1,0 +1,27 @@
+<div th:fragment="pagingNav(requestPage, url)" class="row mt-3" th:if="${requestPage.content != null}">
+    <ul class="nav nav-pills">
+        <li class="page-item" th:classappend="${requestPage.number == 0} ? 'active'">
+            <a th:replace="paging :: paging(${1}, ${1}, 'Page ' + ${1}, ${requestPage.size}, ${url})"></a>
+        </li>
+        <li class="page-item disabled" th:if="${requestPage.number + 1 > 3}">
+            <a class="page-link" href="#">...</a>
+        </li>
+        <li class="page-item"
+            th:classappend="${requestPage.number + 1 == page} ? 'active'"
+            th:if="${requestPage.totalPages > 2}"
+            th:each="page : ${#numbers.sequence((requestPage.number + 2 > 3 ? requestPage.number : 2),
+                    (requestPage.number + 1 < requestPage.totalPages - 1 ? requestPage.number + 2 : requestPage.totalPages - 1 ))}">
+            <a th:replace="paging :: paging(${page}, ${page}, 'Page ' + ${page}, ${requestPage.size}, ${url})"
+            ></a>
+        </li>
+        <li class="page-item disabled"
+            th:if="${requestPage.number + 2 < requestPage.totalPages - 1}">
+            <a class="page-link" href="#">...</a>
+        </li>
+        <li class="page-item" th:classappend="${requestPage.number + 1 == requestPage.totalPages} ? 'active'"
+            th:if="${requestPage.totalPages > 1}">
+            <a th:replace="paging :: paging(${requestPage.totalPages}, ${requestPage.totalPages}, 'Page ' + ${requestPage.totalPages}, ${requestPage.size}, ${url})"
+            ></a>
+        </li>
+    </ul>
+</div>
