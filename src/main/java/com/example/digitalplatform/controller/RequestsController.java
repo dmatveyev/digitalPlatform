@@ -39,16 +39,22 @@ public class RequestsController {
     public String getAll(@RequestParam("page") Optional<Integer> page,
                          @RequestParam("size") Optional<Integer> size,
                          @RequestParam(value = "status", required = false) RequestStatus requestStatus,
+                         @RequestParam(value = "subjectArea", required = false) String subjectArea,
                          Model model, Principal principal) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
         List<RequestStatus> requestStatuses = requestStatus == null ?
                 Arrays.stream(RequestStatus.values()).toList(): List.of(requestStatus);
-        Page<Request> result = requestService.findByPrincipalAndStatusPageable(principal,
-                PageRequest.of(currentPage - 1, pageSize), requestStatuses);
+        List<SubjectArea> subjectAreas = subjectAreaRepository.findAll();
+        List<SubjectArea> searchAreas = subjectArea == null || subjectArea.isEmpty() ? subjectAreas :
+                List.of(subjectAreaRepository.findById(UUID.fromString(subjectArea)).orElseThrow());
+        Page<Request> result = requestService.findByPrincipalAndStatusAndSubjectAreaPageable(principal,
+                PageRequest.of(currentPage - 1, pageSize), requestStatuses, searchAreas);
         model.addAttribute("requestPage", result);
         model.addAttribute("statuses", RequestStatus.values());
         model.addAttribute("selectedSt", requestStatus);
+        model.addAttribute("subjectAreas", subjectAreas);
+        model.addAttribute("area", subjectArea);
         return "requests/requests";
     }
 

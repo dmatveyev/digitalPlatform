@@ -15,13 +15,15 @@
         <form th:action="@{/requests/all}" id="searchForm">
             <div class="input-group mt-2">
                 <div class="input-group-prepend">
-                    <label class="input-group-text" for="pageSize">Выводить по:</label>
+                    <label class="input-group-text" for="subjecArea">Предметная область:</label>
                 </div>
-                <input type="hidden" name="page" th:value="1"/>
-                <select id="pageSize" form="searchForm" name="size" th:value="${requestPage.size}" onchange="changePageSize()"
+                <select id="subjecArea" form="searchForm" name="subjectArea" th:value="${area}"
+                        onchange="changePageSize()"
                         class="size-select">
-                    <option th:each="s : ${#numbers.sequence(5,20,5)}" th:value="${s}" th:text="${s}"
-                            th:selected="${s == requestPage.size}"></option>
+                    <option th:text="Все" th:value="${null}" th:selected="${area == null}"></option>
+                    <option th:each="subjectArea : ${subjectAreas}" th:value="${subjectArea.id}"
+                            th:text="${subjectArea.name}"
+                            th:selected="${area == subjectArea.id.toString() }"></option>
                 </select>
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="statuses">Статус запроса:</label>
@@ -32,6 +34,16 @@
                     <option th:text="Все" th:value="${null}" th:selected="${selectedSt == null}"></option>
                     <option th:each="status : ${statuses}" th:value="${status}" th:text="${status.desc}"
                             th:selected="${selectedSt == status}"></option>
+                </select>
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="pageSize">Выводить по:</label>
+                </div>
+                <input type="hidden" name="page" th:value="1"/>
+                <select id="pageSize" form="searchForm" name="size" th:value="${requestPage.size}"
+                        onchange="changePageSize()"
+                        class="size-select">
+                    <option th:each="s : ${#numbers.sequence(5,20,5)}" th:value="${s}" th:text="${s}"
+                            th:selected="${s == requestPage.size}"></option>
                 </select>
             </div>
         </form>

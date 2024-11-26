@@ -2,6 +2,7 @@ package com.example.digitalplatform.db.repository;
 
 import com.example.digitalplatform.db.model.Request;
 import com.example.digitalplatform.db.model.RequestStatus;
+import com.example.digitalplatform.db.model.SubjectArea;
 import com.example.digitalplatform.db.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,9 +23,9 @@ public interface RequestRepository extends JpaRepository<Request, UUID>, PagingA
 
     Page<Request> findByWorker(User user, Pageable pageable);
 
-    Page<Request> findByCustomerAndStatusIn(User user, Pageable pageable, List<RequestStatus> requestStatuses);
+    Page<Request> findByCustomerAndStatusInAndSubjectAreaIn(User user, Pageable pageable, List<RequestStatus> requestStatuses, List<SubjectArea> subjectArea);
 
-    Page<Request> findByWorkerAndStatusIn(User user, Pageable pageable, List<RequestStatus> requestStatuses);
+    Page<Request> findByWorkerAndStatusInAndSubjectAreaIn(User user, Pageable pageable, List<RequestStatus> requestStatuses, List<SubjectArea> subjectArea);
 
-    Page<Request> findByStatusIn(Pageable pageable, List<RequestStatus> requestStatuses);
+    Page<Request> findByStatusInAndSubjectAreaIn(Pageable pageable, List<RequestStatus> requestStatuses, List<SubjectArea> subjectArea);
 }
