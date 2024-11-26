@@ -37,7 +37,7 @@ public class DecisionService {
         generatorsMap = generators.stream().collect(Collectors.toMap(GeneratorDessisions::generatorType, Function.identity()));
     }
 
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     public void automaticAssign() {
         log.debug("Process assigning request was start automatically");
         List<Request> processing = getRequests();

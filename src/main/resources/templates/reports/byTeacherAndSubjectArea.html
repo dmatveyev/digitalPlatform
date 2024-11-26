@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Список пользователей</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+</head>
+<body>
+<nav th:replace="navbar :: navbar(5)"></nav>
+<div class="container">
+
+    <h1 class="row mt-3">Статистика завершенных работ по преподавателям в разрезе предметных областей</h1>
+    <!--Фильтр -->
+    <div>
+        <form class="row mt-3" th:action="@{/reports/report}" id="searchFormRep">
+            <div class="input-group mt-2">
+
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="roleCode">Тип отчета:</label>
+                </div>
+                <select id="roleCode" form="searchFormRep" name="type" th:value="${reportType}"
+                        onchange="changeReportSize()"
+                        class="size-select">
+                    <option th:each="type : ${reportTypes}" th:value="${type}" th:text="${type.desc}"
+                            th:selected="${reportType == type}"></option>
+                </select>
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="pageSize">Выводить по:</label>
+                </div>
+                <input type="hidden" name="page" th:value="1"/>
+                <select id="pageSize" form="searchFormRep" name="size" th:value="${reportData.size}"
+                        onchange="changeReportSize()"
+                        class="size-select">
+                    <option th:each="s : ${#numbers.sequence(5,20,5)}" th:value="${s}" th:text="${s}"
+                            th:selected="${s == reportData.size}"></option>
+                </select>
+            </div>
+
+        </form>
+    </div>
+    <div class="row mt-3">
+        <table class="table table-bordered table-striped">
+            <thead class="bg-info">
+            <tr>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Звание</th>
+                <th>Учреждение</th>
+                <th>Предметная область</th>
+                <th>Статус запросов</th>
+                <th>Количество</th>
+                <th>Количество просроченных</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="data : ${reportData}">
+                <td th:text="${data.firstName}">Bond</td>
+                <td th:text="${data.lastName}">Bond</td>
+                <td th:text="${data.degree}">Bond</td>
+                <td th:text="${data.institute}">Bond</td>
+                <td th:text="${data.subjectArea.name}">Bond</td>
+                <td th:text="${data.getRequestStatus.desc}">Bond</td>
+                <td th:text="${data.countDone}">Bond</td>
+                <td th:text="${data.countExpired}">Bond</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:replace="pagingNav :: pagingNav(${reportData}, @{/reports/report(type=${reportType})})"></div>
+    <div th:if="${reportData != null }" class="btn-group row mt-3" role="group" aria-label="Basic example">
+        <a role="button" class="btn btn-primary" th:href="@{/reports/download(type=${reportType})}">Скачать</a>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function changeReportSize() {
+        $("#searchFormRep").submit();
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>
