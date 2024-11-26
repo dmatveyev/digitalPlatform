@@ -123,14 +123,14 @@ public class RequestService {
         requestRepository.saveAll(tempAssigned);
     }
 
-    public Page<Request> findByPrincipalPageable(Principal principal, Pageable pageable) {
+    public Page<Request> findByPrincipalAndStatusPageable(Principal principal, Pageable pageable, List<RequestStatus> requestStatuses) {
         User user = userRepository.findByLogin(principal.getName());
         Role role = user.getRole();
         RoleType code = role.getCode();
         Page<Request> page = switch (code) {
-            case STUDENT -> requestRepository.findByCustomer(user, pageable);
-            case TEACHER -> requestRepository.findByWorker(user, pageable);
-            case ADMIN -> requestRepository.findAll(pageable);
+            case STUDENT -> requestRepository.findByCustomerAndStatusIn(user, pageable, requestStatuses);
+            case TEACHER -> requestRepository.findByWorkerAndStatusIn(user, pageable, requestStatuses);
+            case ADMIN -> requestRepository.findByStatusIn(pageable, requestStatuses);
             case USER -> Page.empty();
         };
 

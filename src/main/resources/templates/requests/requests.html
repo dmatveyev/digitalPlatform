@@ -23,6 +23,16 @@
                     <option th:each="s : ${#numbers.sequence(5,20,5)}" th:value="${s}" th:text="${s}"
                             th:selected="${s == requestPage.size}"></option>
                 </select>
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="statuses">Статус запроса:</label>
+                </div>
+                <select id="statuses" form="searchForm" name="status" th:value="${selectedSt}"
+                        onchange="changePageSize()"
+                        class="size-select">
+                    <option th:text="Все" th:value="${null}" th:selected="${selectedSt == null}"></option>
+                    <option th:each="status : ${statuses}" th:value="${status}" th:text="${status.desc}"
+                            th:selected="${selectedSt == status}"></option>
+                </select>
             </div>
         </form>
     </div>

@@ -21,4 +21,10 @@ public interface RequestRepository extends JpaRepository<Request, UUID>, PagingA
     Page<Request> findByCustomer(User user, Pageable pageable);
 
     Page<Request> findByWorker(User user, Pageable pageable);
+
+    Page<Request> findByCustomerAndStatusIn(User user, Pageable pageable, List<RequestStatus> requestStatuses);
+
+    Page<Request> findByWorkerAndStatusIn(User user, Pageable pageable, List<RequestStatus> requestStatuses);
+
+    Page<Request> findByStatusIn(Pageable pageable, List<RequestStatus> requestStatuses);
 }

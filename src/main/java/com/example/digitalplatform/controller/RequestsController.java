@@ -12,12 +12,10 @@ import com.example.digitalplatform.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 
 import java.security.Principal;
@@ -25,8 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/requests")
@@ -42,11 +38,17 @@ public class RequestsController {
     @PreAuthorize("hasAnyRole('STUDENT','TEACHER')")
     public String getAll(@RequestParam("page") Optional<Integer> page,
                          @RequestParam("size") Optional<Integer> size,
+                         @RequestParam(value = "status", required = false) RequestStatus requestStatus,
                          Model model, Principal principal) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
-        Page<Request> result = requestService.findByPrincipalPageable(principal, PageRequest.of(currentPage - 1, pageSize));
+        List<RequestStatus> requestStatuses = requestStatus == null ?
+                Arrays.stream(RequestStatus.values()).toList(): List.of(requestStatus);
+        Page<Request> result = requestService.findByPrincipalAndStatusPageable(principal,
+                PageRequest.of(currentPage - 1, pageSize), requestStatuses);
         model.addAttribute("requestPage", result);
+        model.addAttribute("statuses", RequestStatus.values());
+        model.addAttribute("selectedSt", requestStatus);
         return "requests/requests";
     }
 

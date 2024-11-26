@@ -5,7 +5,7 @@ public enum RequestStatus {
     PLANNING("В планировании"),
     ASSIGNED("Назначена"),
     DECLINED("Отклонена"),
-    PROCESSED("В обработке"),
+    PROCESSED("В работе"),
     FINISHED("Завершена");
 
     private final String desc;
