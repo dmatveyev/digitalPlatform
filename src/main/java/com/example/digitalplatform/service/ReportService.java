@@ -81,7 +81,7 @@ public class ReportService {
     public byte[] generate(User user, ReportData reportData) {
         List<ReportModel> byPrincipalAndReportType = findByPrincipalAndReportType(user, reportData.getReportType());
         reportData.setData(byPrincipalAndReportType);
-        ReportTypeGenerator reportTypeGenerator = map.get(ReportType.BY_TEACHERS);
+        ReportTypeGenerator reportTypeGenerator = map.get(reportData.getReportType());
         byte[] generate = reportTypeGenerator.generate(user, reportData);
         return generate;
     }

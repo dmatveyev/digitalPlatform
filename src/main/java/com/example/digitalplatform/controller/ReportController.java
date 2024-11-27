@@ -92,12 +92,12 @@ class ReportController {
         response.setContentType("application/vnd.ms-excel");
         User byLogin = userRepository.findByLogin(principal.getName());
         ReportData data = new ReportData();
-        data.setReportName(ReportType.BY_TEACHERS.getDesc());
-        data.setReportType(ReportType.BY_TEACHERS);
+        data.setReportName(reportType.getDesc());
+        data.setReportType(reportType);
         data.setStartDate(LocalDateTime.now().minusDays(30));
         data.setEndDate(LocalDateTime.now());
         byte[] generate = reportService.generate(byLogin, data);
-        response.setHeader("Content-Disposition", "attachment; filename=" + reportType.name().concat(".xlsx"));
+        response.setHeader("Content-Disposition", "attachment; filename=" + reportType.name().toLowerCase().concat(".xlsx"));
         OutputStream outputStream = response.getOutputStream();
         outputStream.write(generate);
         outputStream.close();

@@ -2,6 +2,7 @@ package com.example.digitalplatform.service.handlers.reporttype;
 
 import com.example.digitalplatform.controller.ReportType;
 import com.example.digitalplatform.db.model.ReportModel;
+import com.example.digitalplatform.db.model.SubjectArea;
 import com.example.digitalplatform.db.model.User;
 import com.example.digitalplatform.dto.ReportData;
 import lombok.AccessLevel;
@@ -14,7 +15,6 @@ import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -27,11 +27,11 @@ import java.util.Map;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-public class ByTeacherGenerator implements ReportTypeGenerator {
+public class BySubjectAreaGenerator implements ReportTypeGenerator {
 
     @Override
     public ReportType getReportType() {
-        return ReportType.BY_TEACHERS;
+        return ReportType.BY_SUBJECT_AREA;
     }
 
     @Override
@@ -102,25 +102,21 @@ public class ByTeacherGenerator implements ReportTypeGenerator {
             //set style
             Cell cell0 = headerTable.createCell(0);
             cell0.setCellStyle(getTableHeaderStyle(workbook));
-            cell0.setCellValue("Преподаватель");
+            cell0.setCellValue("Предметная область");
             createCellBorderMedium(sheet, cell0);
-            Cell cell1 = headerTable.createCell(1);
-            cell1.setCellStyle(getTableHeaderStyle(workbook));
-            cell1.setCellValue("Институт");
-            createCellBorderMedium(sheet, cell1);
-            Cell cell2 = headerTable.createCell(2);
+            Cell cell2 = headerTable.createCell(1);
             cell2.setCellStyle(getTableHeaderStyle(workbook));
             cell2.setCellValue("Завершено");
             createCellBorderMedium(sheet, cell2);
-            Cell cell3 = headerTable.createCell(3);
+            Cell cell3 = headerTable.createCell(2);
             cell3.setCellStyle(getTableHeaderStyle(workbook));
             cell3.setCellValue("Отклонено");
             createCellBorderMedium(sheet, cell3);
-            Cell cell4 = headerTable.createCell(4);
+            Cell cell4 = headerTable.createCell(3);
             cell4.setCellStyle(getTableHeaderStyle(workbook));
             cell4.setCellValue("Просрочено");
             createCellBorderMedium(sheet, cell4);
-            Cell cell5 = headerTable.createCell(5);
+            Cell cell5 = headerTable.createCell(4);
             cell5.setCellStyle(getTableHeaderStyle(workbook));
             cell5.setCellValue("Всего");
             //create tableData
@@ -130,38 +126,31 @@ public class ByTeacherGenerator implements ReportTypeGenerator {
             int startRow = startRowIndex;
             for (ReportModel datum : data) {
                 Row dataRow = createRow(sheet, rowStart++);
-                String lastName = datum.getLastName();
-                String firstName = datum.getFirstName();
-                String degree = datum.getDegree();
-                String institute = datum.getInstitute();
+                String subjectArea = datum.getSubjectArea().getName();
                 long countDone = datum.getCountDone();
                 long countDeclined = datum.getCountDeclined();
                 long countExpired = datum.getCountExpired();
                 long countAssigned = datum.getCountAssigned();
                 Cell dataCell0 = dataRow.createCell(0);
 
-                dataCell0.setCellValue(degree + " " + lastName + " " + firstName);
+                dataCell0.setCellValue(subjectArea);
                 XSSFCellStyle tableDataStyle = getTableDataStyle(workbook);
                 tableDataStyle.setAlignment(HorizontalAlignment.LEFT);
                 dataCell0.setCellStyle(tableDataStyle);
                 createCellBorder(sheet, dataCell0);
-                Cell dataCell1 = dataRow.createCell(1);
-                dataCell1.setCellValue(institute);
-                dataCell1.setCellStyle(getTableDataStyle(workbook));
-                createCellBorder(sheet, dataCell1);
-                Cell dataCell2 = dataRow.createCell(2);
+                Cell dataCell2 = dataRow.createCell(1);
                 dataCell2.setCellValue(countDone);
                 dataCell2.setCellStyle(getTableDataStyle(workbook));
                 createCellBorder(sheet, dataCell2);
-                Cell dataCell3 = dataRow.createCell(3);
+                Cell dataCell3 = dataRow.createCell(2);
                 dataCell3.setCellStyle(getTableDataStyle(workbook));
                 dataCell3.setCellValue(countDeclined);
                 createCellBorder(sheet, dataCell3);
-                Cell dataCell4 = dataRow.createCell(4);
+                Cell dataCell4 = dataRow.createCell(3);
                 dataCell4.setCellStyle(getTableDataStyle(workbook));
                 dataCell4.setCellValue(countExpired);
                 createCellBorder(sheet, dataCell4);
-                Cell dataCell5 = dataRow.createCell(5);
+                Cell dataCell5 = dataRow.createCell(4);
                 dataCell5.setCellValue(countAssigned);
                 dataCell5.setCellStyle(getTableDataStyle(workbook));
                 createCellBorder(sheet, dataCell5);
@@ -170,11 +159,14 @@ public class ByTeacherGenerator implements ReportTypeGenerator {
 
             setRegionBorderWithMedium(new CellRangeAddress(cell5.getRowIndex(), cell5.getRowIndex(), cell5.getColumnIndex(), cell5.getColumnIndex()),
                     sheet);
-            setRegionBorderWithMedium(new CellRangeAddress(startRowIndex, startRow, startCollIndex, startCollIndex + 5),
+            setRegionBorderWithMedium(new CellRangeAddress(startRowIndex, startRow, startCollIndex, startCollIndex + 4),
                     sheet);
         }
 
         return rowStart;
     }
+
+
+
 
 }
