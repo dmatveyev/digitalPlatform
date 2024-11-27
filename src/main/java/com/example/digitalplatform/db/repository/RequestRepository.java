@@ -70,7 +70,7 @@ public interface RequestRepository extends JpaRepository<Request, UUID>, PagingA
     List<IReport> findTerminatedRequestsGroupByTeacherAndSubjectArea();
 
     @Query(value = """
-            select  s.NAME as name,
+            select  s.NAME as subjectArea,
                     count(case when r.STATUS = 'FINISHED' then 1 end) as countDone,
                     count(case when r.STATUS = 'DECLINED' then 1 end) as countDeclined,
                     count(case when r.PLANED_FINISH_DATE < r.ACTUAL_FINISH_DATE then 1 end) as countExpired,

@@ -5,10 +5,15 @@ import com.example.digitalplatform.db.model.*;
 import com.example.digitalplatform.db.repository.RequestRepository;
 import com.example.digitalplatform.db.repository.SubjectAreaRepository;
 import com.example.digitalplatform.db.repository.UserRepository;
+import com.example.digitalplatform.dto.ReportData;
 import com.example.digitalplatform.service.handlers.reporttype.ByTeacherGenerator;
+import com.example.digitalplatform.service.handlers.reporttype.ReportTypeGenerator;
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +32,14 @@ public class ReportService {
 
     RequestRepository reportRepository;
     SubjectAreaRepository subjectAreaRepository;
-    UserRepository userService;
-    ByTeacherGenerator byTeacherGenerator;
+    List<ReportTypeGenerator> reportTypeGenerators;
+
+    @NonFinal
+    Map<ReportType, ReportTypeGenerator> map;
+    @PostConstruct
+    public void init() {
+        map = reportTypeGenerators.stream().collect(Collectors.toMap(ReportTypeGenerator::getReportType, Function.identity()));
+    }
 
     public List<ReportModel> findByPrincipalAndReportType(User byLogin, ReportType reportType) {
         RoleType code = byLogin.getRole().getCode();
@@ -67,9 +78,11 @@ public class ReportService {
         return terminatedRequests;
     }
 
-    public byte[] generate(User user, ReportType reportType) {
-        List<ReportModel> byPrincipalAndReportType = findByPrincipalAndReportType(user, reportType);
-        byte[] generate = byTeacherGenerator.generate(user, byPrincipalAndReportType);
+    public byte[] generate(User user, ReportData reportData) {
+        List<ReportModel> byPrincipalAndReportType = findByPrincipalAndReportType(user, reportData.getReportType());
+        reportData.setData(byPrincipalAndReportType);
+        ReportTypeGenerator reportTypeGenerator = map.get(ReportType.BY_TEACHERS);
+        byte[] generate = reportTypeGenerator.generate(user, reportData);
         return generate;
     }
 }

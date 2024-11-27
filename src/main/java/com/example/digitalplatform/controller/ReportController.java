@@ -2,6 +2,7 @@ package com.example.digitalplatform.controller;
 
 import com.example.digitalplatform.db.model.*;
 import com.example.digitalplatform.db.repository.UserRepository;
+import com.example.digitalplatform.dto.ReportData;
 import com.example.digitalplatform.service.ReportService;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWithSerializerProvider;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -82,12 +84,19 @@ class ReportController {
             value = "/download",
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
     )
-    public void getFile(@RequestParam("type") ReportType reportType,
+    public void getFile(
+            @RequestParam("type") ReportType reportType,
+            @RequestParam(value = "startDate",required = false) Long startDate,
                         Model model, Principal principal,
                         HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.ms-excel");
         User byLogin = userRepository.findByLogin(principal.getName());
-        byte[] generate = reportService.generate(byLogin, ReportType.BY_TEACHERS);
+        ReportData data = new ReportData();
+        data.setReportName(ReportType.BY_TEACHERS.getDesc());
+        data.setReportType(ReportType.BY_TEACHERS);
+        data.setStartDate(LocalDateTime.now().minusDays(30));
+        data.setEndDate(LocalDateTime.now());
+        byte[] generate = reportService.generate(byLogin, data);
         response.setHeader("Content-Disposition", "attachment; filename=" + reportType.name().concat(".xlsx"));
         OutputStream outputStream = response.getOutputStream();
         outputStream.write(generate);

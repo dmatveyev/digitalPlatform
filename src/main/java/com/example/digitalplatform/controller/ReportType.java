@@ -2,9 +2,9 @@ package com.example.digitalplatform.controller;
 
 public enum ReportType {
 
-    BY_TEACHERS("По преподавателям"),
-    BY_SUBJECT_AREA("По предметным областям"),
-    BY_TEACHES_AND_SUBJECT_AREAS("По преподавателям и предметным областям");
+    BY_TEACHERS("Статистика завершенных работ по преподавателям"),
+    BY_SUBJECT_AREA("Статистика завершенных работ по предметным областям"),
+    BY_TEACHES_AND_SUBJECT_AREAS("Статистика завершенных работ по преподавателям в разрезе предметных областей");
 
     private final String desc;
 

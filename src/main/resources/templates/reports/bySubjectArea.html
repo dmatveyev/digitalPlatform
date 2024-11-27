@@ -44,7 +44,6 @@
             <thead class="bg-info">
             <tr>
                 <th>Предметная область</th>
-                <th>Статус запросов</th>
                 <th>Завершено</th>
                 <th>Отклонено</th>
                 <th>Просрочено</th>
@@ -54,7 +53,6 @@
             <tbody>
             <tr th:each="data : ${reportData}">
                 <td th:text="${data.subjectArea.name}">Bond</td>
-                <td th:text="${data.getRequestStatus.desc}">Bond</td>
                 <td th:text="${data.countDone}">Bond</td>
                 <td th:text="${data.countDeclined}">Bond</td>
                 <td th:text="${data.countExpired}">Bond</td>
