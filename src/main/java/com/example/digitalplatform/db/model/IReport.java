@@ -14,9 +14,9 @@ public interface IReport {
 
     String getSubjectArea();
 
-    String getRequestStatus();
-
     long getCountDone();
+    long getCountDeclined();
+    long getCountAssigned();
 
     long getCountExpired();
 }

@@ -19,8 +19,9 @@ public class ReportModel {
     private String degree;
     private String institute;
     private SubjectArea subjectArea;
-    private RequestStatus requestStatus;
     private long countDone;
     private long countExpired;
+    private long countDeclined;
+    private long countAssigned;
 
 }

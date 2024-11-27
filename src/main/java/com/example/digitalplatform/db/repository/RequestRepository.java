@@ -32,66 +32,69 @@ public interface RequestRepository extends JpaRepository<Request, UUID>, PagingA
 
     @Query(value = """
             select
-                   u.id::text as userId,
-                    u.LAST_NAME as lastName,
-                    u.FIRST_NAME as firstName,
-                    ti.DEGREE as degree,
-                     ti.INSTITUTE as institute,
-                       r.STATUS as requestStatus,
-                    count(u.id) as countDone,
-                    count(case when r.PLANED_FINISH_DATE < r.ACTUAL_FINISH_DATE then 1 end) as countExpired
-                   from requests r
-            left join teacher_info ti on ti.USER_ID = r.WORKER_ID
-            left join users u on u.ID= ti.USER_ID
-            where r.status in ('FINISHED', 'DECLINED')
-            group by r.WORKER_ID, r.STATUS
-            """, nativeQuery = true)
-    List<IReport> findTerminatedRequestsGroupByTeacherAndStatus();
-
-    @Query(value = """
-            select
-                u.id::text as userId,
+                (u.id::text) as userId,
                 u.LAST_NAME as lastName,
                 u.FIRST_NAME as firstName,
                 ti.DEGREE as degree,
                 ti.INSTITUTE as institute,
-                s.NAME as subjectArea,
-                r.STATUS as requestStatus,
-                count(u.id) as countDone,
-                count(case when r.PLANED_FINISH_DATE < r.ACTUAL_FINISH_DATE then 1 end) as countExpired
-            from requests r
-            left join teacher_info ti on ti.USER_ID = r.WORKER_ID
-            left join users u on u.ID= ti.USER_ID
-            left join subjectareas s on s.ID = r.SUBJECT_AREA_ID
+                count(case when r.STATUS = 'FINISHED' then 1 end) as countDone,
+                count(case when r.STATUS = 'DECLINED' then 1 end) as countDeclined,
+                count(case when r.PLANED_FINISH_DATE < r.ACTUAL_FINISH_DATE then 1 end) as countExpired,
+                count(u.id) as countAssigned
+            from REQUESTS r
+            left join TEACHER_INFO ti on ti.USER_ID = r.WORKER_ID
+            left join USERS u on u.ID= ti.USER_ID
             where r.status in ('FINISHED', 'DECLINED')
-            group by r.WORKER_ID, s.NAME, r.STATUS
+            group by r.WORKER_ID
             """, nativeQuery = true)
-    List<IReport> findTerminatedRequestsGroupByTeacherSubjectAreaAndStatus();
+    List<IReport> findTerminatedRequestsGroupByTeacher();
 
     @Query(value = """
-            select  s.NAME as subjectArea,
-                    r.STATUS as requestStatus,
-                    count(s.NAME) as countDone,
-                    count(case when r.PLANED_FINISH_DATE < r.ACTUAL_FINISH_DATE then 1 end) as countExpired
+            select (u.id::text) as userId,
+                   u.LAST_NAME as lastName,
+                   u.FIRST_NAME as firstName,
+                   ti.DEGREE as degree,
+                   ti.INSTITUTE as institute,
+                   s.NAME as subjectArea,
+                   count(case when r.STATUS = 'FINISHED' then 1 end) as countDone,
+                   count(case when r.STATUS = 'DECLINED' then 1 end) as countDeclined,
+                   count(case when r.PLANED_FINISH_DATE < r.ACTUAL_FINISH_DATE then 1 end) as countExpired,
+                   count(u.id) as countAssigned
+            from PUBLIC.REQUESTS r
+            left join PUBLIC.TEACHER_INFO ti on ti.USER_ID = r.WORKER_ID
+            left join PUBLIC.USERS u on u.ID= ti.USER_ID
+            left join SUBJECTAREAS s on s.ID = r.SUBJECT_AREA_ID
+            where status in ('FINISHED', 'DECLINED')
+            group by r.WORKER_ID, s.NAME
+            """, nativeQuery = true)
+    List<IReport> findTerminatedRequestsGroupByTeacherAndSubjectArea();
+
+    @Query(value = """
+            select  s.NAME as name,
+                    count(case when r.STATUS = 'FINISHED' then 1 end) as countDone,
+                    count(case when r.STATUS = 'DECLINED' then 1 end) as countDeclined,
+                    count(case when r.PLANED_FINISH_DATE < r.ACTUAL_FINISH_DATE then 1 end) as countExpired,
+                    count(s.NAME) as countAssigned
             from REQUESTS r
             left join SUBJECTAREAS S on S.ID = r.SUBJECT_AREA_ID
             where status in ('FINISHED', 'DECLINED')
-            group by s.NAME, r.STATUS;
+            group by s.NAME
             """, nativeQuery = true)
-    List<IReport> findTerminatedRequestsGroupBySubjectAreaAndStatus();
+    List<IReport> findTerminatedRequestsGroupBySubjectArea();
 
     @Query(value = """
             select s.NAME as subjectArea,
-                   r.STATUS as requestStatus,
-                   count(s.NAME) as countDone,
-                   count(case when r.PLANED_FINISH_DATE < r.ACTUAL_FINISH_DATE then 1 end) as countExpired
+                   count(case when r.STATUS = 'FINISHED' then 1 end) as countDone,
+                   count(case when r.STATUS = 'DECLINED' then 1 end) as countDeclined,
+                   count(case when r.PLANED_FINISH_DATE < r.ACTUAL_FINISH_DATE then 1 end) as countExpired,
+                   count(s.NAME) as countAssigned
             from PUBLIC.REQUESTS r
             left join PUBLIC.USERS u on u.ID= r.WORKER_ID
             left join SUBJECTAREAS s on s.ID = r.SUBJECT_AREA_ID
             where status in ('FINISHED', 'DECLINED') and u.id = :id
-            group by s.NAME, r.STATUS
+            group by s.NAME;
             """, nativeQuery = true)
-    List<IReport> findTerminatedRequestsByTeacherGroupBySubjectAreaAndStatus(@Param("id") UUID id);
+    List<IReport> findTerminatedRequestsByTeacherGroupBySubjectArea(@Param("id") UUID id);
 
 
 }

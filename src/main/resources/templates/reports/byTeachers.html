@@ -48,9 +48,10 @@
                 <th>Фамилия</th>
                 <th>Звание</th>
                 <th>Учреждение</th>
-                <th>Статус запросов</th>
-                <th>Количество</th>
-                <th>Количество просроченных</th>
+                <th>Завершено</th>
+                <th>Отклонено</th>
+                <th>Просрочено</th>
+                <th>Всего</th>
             </tr>
             </thead>
             <tbody>
@@ -59,9 +60,10 @@
                 <td th:text="${data.lastName}">Bond</td>
                 <td th:text="${data.degree}">Bond</td>
                 <td th:text="${data.institute}">Bond</td>
-                <td th:text="${data.getRequestStatus.desc}">Bond</td>
                 <td th:text="${data.countDone}">Bond</td>
+                <td th:text="${data.countDeclined}">Bond</td>
                 <td th:text="${data.countExpired}">Bond</td>
+                <td th:text="${data.countAssigned}">Bond</td>
             </tr>
             </tbody>
         </table>

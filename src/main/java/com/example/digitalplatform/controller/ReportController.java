@@ -85,11 +85,12 @@ class ReportController {
     public void getFile(@RequestParam("type") ReportType reportType,
                         Model model, Principal principal,
                         HttpServletResponse response) throws IOException {
-        response.setContentType("text/plain");//application/vnd.ms-excel
-
-        response.setHeader("Content-Disposition", "attachment; filename=" + reportType.name().concat(".txt"));
+        response.setContentType("application/vnd.ms-excel");
+        User byLogin = userRepository.findByLogin(principal.getName());
+        byte[] generate = reportService.generate(byLogin, ReportType.BY_TEACHERS);
+        response.setHeader("Content-Disposition", "attachment; filename=" + reportType.name().concat(".xlsx"));
         OutputStream outputStream = response.getOutputStream();
-        outputStream.write(reportType.getDesc().getBytes());
+        outputStream.write(generate);
         outputStream.close();
 
     }
