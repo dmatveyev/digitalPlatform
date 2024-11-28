@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +43,7 @@ public class RequestsController {
                          @RequestParam("size") Optional<Integer> size,
                          @RequestParam(value = "status", required = false) RequestStatus requestStatus,
                          @RequestParam(value = "subjectArea", required = false) String subjectArea,
+                         @RequestParam(value = "startDate", required = false) String startDate,
                          Model model, Principal principal) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
@@ -48,13 +52,16 @@ public class RequestsController {
         List<SubjectArea> subjectAreas = subjectAreaRepository.findAll();
         List<SubjectArea> searchAreas = subjectArea == null || subjectArea.isEmpty() ? subjectAreas :
                 List.of(subjectAreaRepository.findById(UUID.fromString(subjectArea)).orElseThrow());
-        Page<Request> result = requestService.findByPrincipalAndStatusAndSubjectAreaPageable(principal,
-                PageRequest.of(currentPage - 1, pageSize), requestStatuses, searchAreas);
+        LocalDateTime start = startDate == null || startDate.isEmpty()? LocalDateTime.now().minusDays(30) :
+                LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+        Page<Request> result = requestService.findByPrincipalAndStatusAndSubjectAreaAndCreationDateGraterThanPageable(principal,
+                PageRequest.of(currentPage - 1, pageSize), requestStatuses, searchAreas, start);
         model.addAttribute("requestPage", result);
         model.addAttribute("statuses", RequestStatus.values());
         model.addAttribute("selectedSt", requestStatus);
         model.addAttribute("subjectAreas", subjectAreas);
         model.addAttribute("area", subjectArea);
+        model.addAttribute("startDate", startDate);
         return "requests/requests";
     }
 

@@ -13,8 +13,8 @@
     <h1 class="row mt-3">Список запросов</h1>
     <div class="row mt-3">
         <form th:action="@{/requests/all}" id="searchForm">
-            <div class="input-group mt-2">
-                <div class="input-group-prepend">
+            <div class="input-group">
+                <div>
                     <label class="input-group-text" for="subjecArea">Предметная область:</label>
                 </div>
                 <select id="subjecArea" form="searchForm" name="subjectArea" th:value="${area}"
@@ -25,7 +25,7 @@
                             th:text="${subjectArea.name}"
                             th:selected="${area == subjectArea.id.toString() }"></option>
                 </select>
-                <div class="input-group-prepend">
+                <div >
                     <label class="input-group-text" for="statuses">Статус запроса:</label>
                 </div>
                 <select id="statuses" form="searchForm" name="status" th:value="${selectedSt}"
@@ -35,7 +35,14 @@
                     <option th:each="status : ${statuses}" th:value="${status}" th:text="${status.desc}"
                             th:selected="${selectedSt == status}"></option>
                 </select>
-                <div class="input-group-prepend">
+                <div >
+                    <label class="input-group-text" for="startDate">Созданные с:</label>
+                </div>
+                <input id="startDate" form="searchForm" name="startDate" type="date" onchange="changePageSize()"
+                       th:max="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"
+                       th:value="${startDate}"
+                       required value="1"/>
+                <div>
                     <label class="input-group-text" for="pageSize">Выводить по:</label>
                 </div>
                 <input type="hidden" name="page" th:value="1"/>
@@ -79,7 +86,9 @@
 
 
     </div>
-    <div th:replace="pagingNav :: pagingNav(${requestPage}, @{/requests/all})"></div>
+    <div th:replace="pagingNav :: pagingNav(${requestPage},
+    @{/requests/all(subjectArea=${area},status=${selectedSt}, startDate=${startDate}
+    )})"></div>
     <div class="btn-group row mt-3" role="group" aria-label="Basic example"
          sec:authorize="hasAnyAuthority('ADMIN','CREATE_REQUEST')">
         <a role="button" class="btn btn-primary" th:href="@{/requests/create}">Создать...</a>

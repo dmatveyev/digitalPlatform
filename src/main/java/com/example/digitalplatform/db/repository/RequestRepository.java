@@ -23,11 +23,11 @@ public interface RequestRepository extends JpaRepository<Request, UUID>, PagingA
 
     Page<Request> findByWorker(User user, Pageable pageable);
 
-    Page<Request> findByCustomerAndStatusInAndSubjectAreaIn(User user, Pageable pageable, List<RequestStatus> requestStatuses, List<SubjectArea> subjectArea);
+    Page<Request> findByCustomerAndStatusInAndSubjectAreaInAndCreationDateGreaterThan(User user, Pageable pageable, List<RequestStatus> requestStatuses, List<SubjectArea> subjectArea, LocalDateTime start);
 
-    Page<Request> findByWorkerAndStatusInAndSubjectAreaIn(User user, Pageable pageable, List<RequestStatus> requestStatuses, List<SubjectArea> subjectArea);
+    Page<Request> findByWorkerAndStatusInAndSubjectAreaInAndCreationDateGreaterThan(User user, Pageable pageable, List<RequestStatus> requestStatuses, List<SubjectArea> subjectArea, LocalDateTime start);
 
-    Page<Request> findByStatusInAndSubjectAreaIn(Pageable pageable, List<RequestStatus> requestStatuses, List<SubjectArea> subjectArea);
+    Page<Request> findByStatusInAndSubjectAreaInAndCreationDateGreaterThan(Pageable pageable, List<RequestStatus> requestStatuses, List<SubjectArea> subjectArea, LocalDateTime start);
 
     List<Request> findByCustomerAndStatusIn(User customer, List<RequestStatus> statuses);
 

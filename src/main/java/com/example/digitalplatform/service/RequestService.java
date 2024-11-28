@@ -125,17 +125,17 @@ public class RequestService {
         requestRepository.saveAll(tempAssigned);
     }
 
-    public Page<Request> findByPrincipalAndStatusAndSubjectAreaPageable(Principal principal,
-                                                                        Pageable pageable,
-                                                                        List<RequestStatus> requestStatuses,
-                                                                        List<SubjectArea> subjectArea) {
+    public Page<Request> findByPrincipalAndStatusAndSubjectAreaAndCreationDateGraterThanPageable(Principal principal,
+                                                                                                 Pageable pageable,
+                                                                                                 List<RequestStatus> requestStatuses,
+                                                                                                 List<SubjectArea> subjectArea, LocalDateTime start) {
         User user = userRepository.findByLogin(principal.getName());
         Role role = user.getRole();
         RoleType code = role.getCode();
         Page<Request> page = switch (code) {
-            case STUDENT -> requestRepository.findByCustomerAndStatusInAndSubjectAreaIn(user, pageable, requestStatuses, subjectArea);
-            case TEACHER -> requestRepository.findByWorkerAndStatusInAndSubjectAreaIn(user, pageable, requestStatuses, subjectArea);
-            case ADMIN -> requestRepository.findByStatusInAndSubjectAreaIn(pageable, requestStatuses, subjectArea);
+            case STUDENT -> requestRepository.findByCustomerAndStatusInAndSubjectAreaInAndCreationDateGreaterThan(user, pageable, requestStatuses, subjectArea, start);
+            case TEACHER -> requestRepository.findByWorkerAndStatusInAndSubjectAreaInAndCreationDateGreaterThan(user, pageable, requestStatuses, subjectArea, start);
+            case ADMIN -> requestRepository.findByStatusInAndSubjectAreaInAndCreationDateGreaterThan(pageable, requestStatuses, subjectArea, start);
             case USER -> Page.empty();
         };
 
