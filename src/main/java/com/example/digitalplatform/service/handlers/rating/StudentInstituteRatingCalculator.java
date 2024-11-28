@@ -9,6 +9,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -24,14 +26,19 @@ public class StudentInstituteRatingCalculator implements RatingCalculator {
         User customer = request.getCustomer();
         RatingParameters byCode = ratingParametersRepository.findByCode(getRatingName().name());
         StudentInfo customerInfo = studentInfoRepository.findByUser(customer);
-        String institute = customerInfo.getInstitute().toLowerCase();
-        if (institute.contains("школа") && !institute.contains("школа")) {
-            rating += byCode.getMaxValue() * byCode.getCoefficient();
-        } else if (institute.contains("техникум")) {
-            rating += (byCode.getMaxValue() + byCode.getMinValue()) / 2 * byCode.getCoefficient();
+        if (Objects.nonNull(customerInfo)) {
+            String institute = customerInfo.getInstitute().toLowerCase();
+            if (institute.contains("школа") && !institute.contains("школа")) {
+                rating += byCode.getMaxValue() * byCode.getCoefficient();
+            } else if (institute.contains("техникум")) {
+                rating += (byCode.getMaxValue() + byCode.getMinValue()) / 2 * byCode.getCoefficient();
+            } else {
+                rating += byCode.getMinValue() * byCode.getCoefficient();
+            }
         } else {
-            rating += byCode.getMinValue() * byCode.getCoefficient();
+            rating +=  (byCode.getMaxValue() + byCode.getMinValue()) / 2 * byCode.getCoefficient();
         }
+
         request.setRating(rating);
     }
 

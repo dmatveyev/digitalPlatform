@@ -28,15 +28,19 @@ public class AverageScoreParticipantRatingCalculator implements RatingCalculator
             User customer = request.getCustomer();
             double score;
             StudentInfo byUser = studentInfoRepository.findByUser(customer);
-            if (workType.equals(WorkType.INDIVIDUAL)) {
-                score = byUser.getScore();
+            if (Objects.nonNull(byUser)) {
+                if (workType.equals(WorkType.INDIVIDUAL)) {
+                    score = byUser.getScore();
+                } else {
+                    List<StudentInfo> byInstituteAndClazz = studentInfoRepository.getByInstituteAndClazz(byUser.getInstitute(), byUser.getClazz());
+                    DoubleSummaryStatistics doubleSummaryStatistics = byInstituteAndClazz.stream().mapToDouble(StudentInfo::getScore).summaryStatistics();
+                    score = doubleSummaryStatistics.getAverage();
+                }
+                double coefficient = ratingParameters.getCoefficient();
+                rating += score * coefficient;
             } else {
-                List<StudentInfo> byInstituteAndClazz = studentInfoRepository.getByInstituteAndClazz(byUser.getInstitute(), byUser.getClazz());
-                DoubleSummaryStatistics doubleSummaryStatistics = byInstituteAndClazz.stream().mapToDouble(StudentInfo::getScore).summaryStatistics();
-                score = doubleSummaryStatistics.getAverage();
+                rating += (ratingParameters.getMinValue() + ratingParameters.getMaxValue()) / 2 * ratingParameters.getCoefficient();
             }
-            double coefficient = ratingParameters.getCoefficient();
-            rating += score * coefficient;
             request.setRating(rating);
         }
     }
