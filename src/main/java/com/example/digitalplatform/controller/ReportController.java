@@ -26,7 +26,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.security.Principal;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -43,13 +47,19 @@ class ReportController {
             @RequestParam("page") Optional<Integer> page,
             @RequestParam("size") Optional<Integer> size,
             @RequestParam(value = "type", required = false) ReportType reportType,
+            @RequestParam(value = "startDate",required = false) String startDate,
             Model model, Principal principal) {
         int start = page.orElse(1);
         int pageSize = size.orElse(5);
         PageRequest pageRequest = PageRequest.of(start - 1, pageSize);
         String name = principal.getName();
         User byLogin = userRepository.findByLogin(name);
-        List<ReportModel> reportModels = reportService.findByPrincipalAndReportType(byLogin, reportType);
+        ReportData reportData = new ReportData();
+        reportData.setReportType(reportType);
+        reportData.setInitiator(byLogin);
+
+        reportData.setStartDate(LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        List<ReportModel> reportModels = reportService.findByPrincipalAndReportType(reportData);
 
         int end = Math.min((start - 1 + pageRequest.getPageSize()), reportModels.size());
         List<ReportModel> pageContent = reportModels.isEmpty() ? Collections.emptyList() :
@@ -66,18 +76,12 @@ class ReportController {
         };
         model.addAttribute("reportTypes", availableRoles);
         model.addAttribute("reportType", reportType);
+        model.addAttribute("startDate", startDate);
         return switch (reportType) {
             case BY_TEACHERS -> "reports/byTeachers";
             case BY_SUBJECT_AREA -> "reports/bySubjectArea";
             case BY_TEACHES_AND_SUBJECT_AREAS -> "reports/byTeacherAndSubjectArea";
         };
-    }
-
-    public static UUID convertBytesToUUID(byte[] bytes) {
-        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
-        long high = byteBuffer.getLong();
-        long low = byteBuffer.getLong();
-        return new UUID(high, low);
     }
 
     @GetMapping(
@@ -86,17 +90,18 @@ class ReportController {
     )
     public void getFile(
             @RequestParam("type") ReportType reportType,
-            @RequestParam(value = "startDate",required = false) Long startDate,
+            @RequestParam(value = "startDate",required = false) String startDate,
                         Model model, Principal principal,
                         HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.ms-excel");
         User byLogin = userRepository.findByLogin(principal.getName());
         ReportData data = new ReportData();
+        data.setInitiator(byLogin);
         data.setReportName(reportType.getDesc());
         data.setReportType(reportType);
-        data.setStartDate(LocalDateTime.now().minusDays(30));
-        data.setEndDate(LocalDateTime.now());
-        byte[] generate = reportService.generate(byLogin, data);
+        data.setStartDate(LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        data.setEndDate(LocalDate.now());
+        byte[] generate = reportService.generate(data);
         response.setHeader("Content-Disposition", "attachment; filename=" + reportType.name().toLowerCase().concat(".xlsx"));
         OutputStream outputStream = response.getOutputStream();
         outputStream.write(generate);

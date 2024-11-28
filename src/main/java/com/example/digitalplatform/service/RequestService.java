@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +40,8 @@ public class RequestService {
         SubjectArea subjectArea = byId.orElseThrow();
         request.setSubjectArea(subjectArea);
         request.setStatus(RequestStatus.NEW);
-        request.setCreationDate(LocalDateTime.now());
+        long days = ThreadLocalRandom.current().nextLong(1, 30);
+        request.setCreationDate(LocalDateTime.now().minusDays(days));
         request.setPlanedFinishDate(createRequestDto.getDeadline());
         request.setWorkType(createRequestDto.getWorkType());
         request.setPeriodical(createRequestDto.isPeriodical());

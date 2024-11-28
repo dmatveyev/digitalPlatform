@@ -21,7 +21,8 @@
             <li class="nav-item" sec:authorize="hasAuthority('TEACHER')">
                 <a class="nav-link" th:classappend="${activeNav == 5} ? 'active'"
                    th:href="@{/reports/report(type=
-                   ${#authorization.expression('hasAuthority(''TEACHER'',)')} ? 'BY_SUBJECT_AREA': 'BY_TEACHERS'
+                   ${#authorization.expression('hasAuthority(''TEACHER'',)')} ? 'BY_SUBJECT_AREA': 'BY_TEACHERS',
+                   startDate=${#temporals.format(#temporals.createNow().minus(30, T(java.time.temporal.ChronoUnit).DAYS), 'yyyy-MM-dd')}
                    ,page=1, size=20)}" href="#">Отчеты</a>
             </li>
             <li class="nav-item">

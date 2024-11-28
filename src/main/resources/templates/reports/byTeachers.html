@@ -11,7 +11,7 @@
 <nav th:replace="navbar :: navbar(5)"></nav>
 <div class="container">
 
-    <h1 class="row mt-3">Статистика завершенных работ по преподавателям</h1>
+    <h1 class="row mt-3" th:text="${reportType.desc}"></h1>
     <!--Фильтр -->
     <div>
         <form class="row mt-3" th:action="@{/reports/report}" id="searchFormRep">
@@ -23,9 +23,16 @@
                 <select id="roleCode" form="searchFormRep" name="type" th:value="${reportType}"
                         onchange="changeReportSize()"
                         class="size-select">
-                    <option th:each="type : ${reportTypes}" th:value="${type}" th:text="${type.desc}"
+                    <option th:each="type : ${reportTypes}" th:value="${type}" th:text="${type.shortDesc}"
                             th:selected="${reportType == type}"></option>
                 </select>
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="startDate">Созданные с:</label>
+                </div>
+                <input class="col-2" id="startDate" name="startDate" type="date" onchange="changeReportSize()"
+                       th:max="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"
+                       th:value="${startDate}"
+                       required value="1"/>
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="pageSize">Выводить по:</label>
                 </div>

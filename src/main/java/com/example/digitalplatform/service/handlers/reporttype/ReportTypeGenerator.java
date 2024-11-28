@@ -1,8 +1,6 @@
 package com.example.digitalplatform.service.handlers.reporttype;
 
 import com.example.digitalplatform.controller.ReportType;
-import com.example.digitalplatform.db.model.ReportModel;
-import com.example.digitalplatform.db.model.User;
 import com.example.digitalplatform.dto.ReportData;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -11,13 +9,11 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.util.List;
-
 public interface ReportTypeGenerator {
 
     ReportType getReportType();
 
-    byte[] generate(User owner, ReportData data);
+    byte[] generate(ReportData data);
 
     default XSSFCellStyle getHeaderStyle(XSSFWorkbook workbook) {
         XSSFFont firstTitle = workbook.createFont();

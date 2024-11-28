@@ -4,19 +4,18 @@ import com.example.digitalplatform.controller.ReportType;
 import com.example.digitalplatform.db.model.*;
 import com.example.digitalplatform.db.repository.RequestRepository;
 import com.example.digitalplatform.db.repository.SubjectAreaRepository;
-import com.example.digitalplatform.db.repository.UserRepository;
 import com.example.digitalplatform.dto.ReportData;
-import com.example.digitalplatform.service.handlers.reporttype.ByTeacherGenerator;
 import com.example.digitalplatform.service.handlers.reporttype.ReportTypeGenerator;
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -41,12 +40,14 @@ public class ReportService {
         map = reportTypeGenerators.stream().collect(Collectors.toMap(ReportTypeGenerator::getReportType, Function.identity()));
     }
 
-    public List<ReportModel> findByPrincipalAndReportType(User byLogin, ReportType reportType) {
-        RoleType code = byLogin.getRole().getCode();
+    public List<ReportModel> findByPrincipalAndReportType(ReportData reportData) {
+        User initiator = reportData.getInitiator();
+        RoleType code = initiator.getRole().getCode();
+        LocalDateTime startDate = reportData.getStartDate().atStartOfDay();
         List<IReport> terminatedRequests =
         switch (code) {
-            case ADMIN -> getAdminReports(reportType);
-            case TEACHER -> reportRepository.findTerminatedRequestsByTeacherGroupBySubjectArea(byLogin.getId());
+            case ADMIN -> getAdminReports(reportData);
+            case TEACHER -> reportRepository.findTerminatedRequestsByTeacherGroupBySubjectArea(initiator.getId(), startDate);
             default -> Collections.emptyList();
         };
         Map<String, SubjectArea> collect = subjectAreaRepository.findAll().stream().collect(Collectors.toMap(SubjectArea::getName, Function.identity()));
@@ -67,22 +68,23 @@ public class ReportService {
         return reportModels;
     }
 
-    private List<IReport> getAdminReports(ReportType reportType) {
-
+    private List<IReport> getAdminReports(ReportData reportData) {
+        ReportType reportType = reportData.getReportType();
+        LocalDateTime startDate = reportData.getStartDate().atStartOfDay();
         List<IReport> terminatedRequests = reportType == null? Collections.emptyList() :
                 switch (reportType) {
-            case BY_SUBJECT_AREA -> reportRepository.findTerminatedRequestsGroupBySubjectArea();
-            case BY_TEACHERS -> reportRepository.findTerminatedRequestsGroupByTeacher();
-            case BY_TEACHES_AND_SUBJECT_AREAS -> reportRepository.findTerminatedRequestsGroupByTeacherAndSubjectArea();
+            case BY_SUBJECT_AREA -> reportRepository.findTerminatedRequestsGroupBySubjectArea(startDate);
+            case BY_TEACHERS -> reportRepository.findTerminatedRequestsGroupByTeacher(startDate);
+            case BY_TEACHES_AND_SUBJECT_AREAS -> reportRepository.findTerminatedRequestsGroupByTeacherAndSubjectArea(startDate);
         };
         return terminatedRequests;
     }
 
-    public byte[] generate(User user, ReportData reportData) {
-        List<ReportModel> byPrincipalAndReportType = findByPrincipalAndReportType(user, reportData.getReportType());
+    public byte[] generate(ReportData reportData) {
+        List<ReportModel> byPrincipalAndReportType = findByPrincipalAndReportType(reportData);
         reportData.setData(byPrincipalAndReportType);
         ReportTypeGenerator reportTypeGenerator = map.get(reportData.getReportType());
-        byte[] generate = reportTypeGenerator.generate(user, reportData);
+        byte[] generate = reportTypeGenerator.generate(reportData);
         return generate;
     }
 }

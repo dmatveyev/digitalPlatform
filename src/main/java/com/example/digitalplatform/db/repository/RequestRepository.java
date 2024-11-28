@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,10 +45,10 @@ public interface RequestRepository extends JpaRepository<Request, UUID>, PagingA
             from REQUESTS r
             left join TEACHER_INFO ti on ti.USER_ID = r.WORKER_ID
             left join USERS u on u.ID= ti.USER_ID
-            where r.status in ('FINISHED', 'DECLINED')
+            where r.status in ('FINISHED', 'DECLINED') and r.CREATION_DATE > :start
             group by r.WORKER_ID
             """, nativeQuery = true)
-    List<IReport> findTerminatedRequestsGroupByTeacher();
+    List<IReport> findTerminatedRequestsGroupByTeacher(@Param("start") LocalDateTime startDate);
 
     @Query(value = """
             select (u.id::text) as userId,
@@ -64,10 +65,10 @@ public interface RequestRepository extends JpaRepository<Request, UUID>, PagingA
             left join PUBLIC.TEACHER_INFO ti on ti.USER_ID = r.WORKER_ID
             left join PUBLIC.USERS u on u.ID= ti.USER_ID
             left join SUBJECTAREAS s on s.ID = r.SUBJECT_AREA_ID
-            where status in ('FINISHED', 'DECLINED')
+            where status in ('FINISHED', 'DECLINED') and r.CREATION_DATE > :start
             group by r.WORKER_ID, s.NAME
             """, nativeQuery = true)
-    List<IReport> findTerminatedRequestsGroupByTeacherAndSubjectArea();
+    List<IReport> findTerminatedRequestsGroupByTeacherAndSubjectArea(@Param("start") LocalDateTime startDate);
 
     @Query(value = """
             select  s.NAME as subjectArea,
@@ -77,10 +78,10 @@ public interface RequestRepository extends JpaRepository<Request, UUID>, PagingA
                     count(s.NAME) as countAssigned
             from REQUESTS r
             left join SUBJECTAREAS S on S.ID = r.SUBJECT_AREA_ID
-            where status in ('FINISHED', 'DECLINED')
+            where status in ('FINISHED', 'DECLINED') and r.CREATION_DATE > :start
             group by s.NAME
             """, nativeQuery = true)
-    List<IReport> findTerminatedRequestsGroupBySubjectArea();
+    List<IReport> findTerminatedRequestsGroupBySubjectArea(@Param("start") LocalDateTime startDate);
 
     @Query(value = """
             select s.NAME as subjectArea,
@@ -91,10 +92,10 @@ public interface RequestRepository extends JpaRepository<Request, UUID>, PagingA
             from PUBLIC.REQUESTS r
             left join PUBLIC.USERS u on u.ID= r.WORKER_ID
             left join SUBJECTAREAS s on s.ID = r.SUBJECT_AREA_ID
-            where status in ('FINISHED', 'DECLINED') and u.id = :id
+            where status in ('FINISHED', 'DECLINED') and u.id = :id and r.CREATION_DATE > :start
             group by s.NAME;
             """, nativeQuery = true)
-    List<IReport> findTerminatedRequestsByTeacherGroupBySubjectArea(@Param("id") UUID id);
+    List<IReport> findTerminatedRequestsByTeacherGroupBySubjectArea(@Param("id") UUID id, @Param("start") LocalDateTime startDate);
 
 
 }

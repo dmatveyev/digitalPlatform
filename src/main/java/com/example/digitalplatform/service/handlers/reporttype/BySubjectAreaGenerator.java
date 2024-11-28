@@ -2,8 +2,6 @@ package com.example.digitalplatform.service.handlers.reporttype;
 
 import com.example.digitalplatform.controller.ReportType;
 import com.example.digitalplatform.db.model.ReportModel;
-import com.example.digitalplatform.db.model.SubjectArea;
-import com.example.digitalplatform.db.model.User;
 import com.example.digitalplatform.dto.ReportData;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +9,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -35,7 +32,7 @@ public class BySubjectAreaGenerator implements ReportTypeGenerator {
     }
 
     @Override
-    public byte[] generate(User owner, ReportData data) {
+    public byte[] generate(ReportData data) {
         byte[] result = new byte[0];
         Map<?,?> headerData = new HashMap<>();
         try (XSSFWorkbook workbook = new XSSFWorkbook();
@@ -87,8 +84,8 @@ public class BySubjectAreaGenerator implements ReportTypeGenerator {
         Cell cell11 = row1.createCell(1);
         cell11.setCellStyle(dataStyle);
         Cell cell20 = row2.createCell(0);
-        String startDate = headerData.getStartDate().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        String endDate = headerData.getEndDate().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        String startDate = headerData.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        String endDate = headerData.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         cell20.setCellValue(startDate.concat(" - ").concat(endDate));
         cell20.setCellStyle(dataStyle);
 
