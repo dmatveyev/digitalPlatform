@@ -40,8 +40,7 @@ public class RequestService {
         SubjectArea subjectArea = byId.orElseThrow();
         request.setSubjectArea(subjectArea);
         request.setStatus(RequestStatus.NEW);
-        long days = ThreadLocalRandom.current().nextLong(1, 30);
-        request.setCreationDate(LocalDateTime.now().minusDays(days));
+        request.setCreationDate(LocalDateTime.now());
         request.setPlanedFinishDate(createRequestDto.getDeadline());
         request.setWorkType(createRequestDto.getWorkType());
         request.setPeriodical(createRequestDto.isPeriodical());
