@@ -63,4 +63,5 @@ public class Request {
         this.time = time;
         this.rating = rating;
     }
+
 }

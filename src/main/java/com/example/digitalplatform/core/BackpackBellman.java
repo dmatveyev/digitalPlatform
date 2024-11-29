@@ -8,10 +8,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -25,42 +22,70 @@ public class BackpackBellman implements GeneratorDessisions {
         if (list.isEmpty()) {
             return Collections.emptyList();
         }
-        int k = teacher.getLimitHours();
+        List<Request> requests = fullStoredTable(list, teacher);
+        log.debug("Optimal requests list was created. For teacher with id: {} request count is: {}",
+                teacher.getId(), requests.size());
+        return requests;
+    }
+
+    private List<Request> fullStoredTable(List<Request> list, TeacherInfo teacher) {
+        int capacity = teacher.getLimitHours();
         int n = list.size();
-        Request[] requests = list.toArray(Request[]::new);
-        Backpack[][] bp = new Backpack[n + 1][k + 1];
-        for (int i = 0; i < n + 1; i++) {
-            for (int j = 0; j < k + 1; j++) {
-                if (i == 0 || j == 0) {
-                    bp[i][j] = new Backpack(new Request[]{}, 0);
-                } else if (i == 1) {
-                    bp[1][j] = requests[0].getTime() <= j ? new Backpack(new Request[]{requests[0]}, requests[0].getRating())
-                            : new Backpack(new Request[]{}, 0);
+
+        double[][] dp = new double[n + 1][capacity + 1];
+        // Заполнение таблицы DP
+        for (int i = 1; i <= n; i++) {
+            for (int w = 0; w <= capacity; w++) {
+                if (list.get(i - 1).getTime() <= w) {
+                    dp[i][w] = Math.max(
+                            dp[i - 1][w], // Не берем предмет
+                            dp[i - 1][w - list.get(i - 1).getTime()] + list.get(i - 1).getRating() // Берем предмет
+                    );
                 } else {
-                    if (requests[i - 1].getTime() > j)
-                        bp[i][j] = bp[i - 1][j];
-                    else {
-                        Backpack[] backpacks = bp[i - 1];
-                        double newScore = requests[i - 1].getRating() + backpacks[j - requests[i - 1].getTime()].getScore();
-                        if (bp[i - 1][j].getScore() > newScore)
-                            bp[i][j] = bp[i - 1][j];
-                        else {
-                            bp[i][j] = new Backpack(Stream.concat(Arrays.stream(new Request[]{requests[i - 1]}),
-                                    Arrays.stream(bp[i - 1][j - requests[i - 1].getTime()].getRequests()))
-                                    .toArray(Request[]::new), newScore);
-                        }
-                    }
+                    dp[i][w] = dp[i - 1][w]; // Не берем предмет
                 }
             }
         }
-        List<Backpack> lastColumn = Arrays.stream(bp).map(row -> row[row.length - 1]).toList();
-        Backpack backpackWithMax = lastColumn.stream().max(Comparator.comparing(Backpack::getScore))
-                .orElse(new Backpack(null, 0));
-        Request[] requestArr = backpackWithMax.getRequests();
-        log.debug("Optimal requests list was created. For teacher with id: {} request count is: {}",
-                teacher.getId(), requestArr.length);
-        return Arrays.stream(requestArr).toList();
+        List<Request> requests = new ArrayList<>();
+        // Извлечение списка предметов из таблицы DP
+        int w = capacity;
+        for (int i = n; i > 0; i--) {
+            if (dp[i][w] != dp[i - 1][w]) {
+                Request item = list.get(i - 1);
+                requests.add(item);
+                w -= item.getTime();
+            }
+        }
+        return requests;
     }
+
+
+    private List<Request> optimizedBellman(List<Request> list, TeacherInfo teacher) {
+        int capacity = teacher.getLimitHours();
+        int n = list.size();
+
+
+        double[] dp1 = new double[capacity + 1];
+        int[] backtrack = new int[capacity + 1];
+        for (int i = 0; i < list.size(); i++) {
+            Request item = list.get(i);
+            for (int w = capacity; w >= item.getTime(); w--) {
+                if (dp1[w] < dp1[w - item.getTime()] + item.getRating()) {
+                    dp1[w] = dp1[w - item.getTime()] + item.getRating();
+                    backtrack[w] = i; // Сохраняем индекс последнего добавленного предмета
+                }
+            }
+        }
+        List<Request> selectedItems = new ArrayList<>();
+        int w = capacity;
+        while (w > 0 && backtrack[w] != -1) {
+            int itemIndex = backtrack[w];
+            selectedItems.add(list.get(itemIndex));
+            w -= list.get(itemIndex).getTime();
+        }
+        return selectedItems;
+    }
+
 
     @Override
     public String generatorType() {
