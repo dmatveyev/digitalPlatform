@@ -1,6 +1,7 @@
 package com.example.digitalplatform.core.dessision;
 
 import com.example.digitalplatform.core.BackpackBellman;
+import com.example.digitalplatform.core.BranchAndBound;
 import com.example.digitalplatform.db.model.Request;
 import com.example.digitalplatform.db.model.RequestStatus;
 import com.example.digitalplatform.db.model.TeacherInfo;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class BellmanTest {
 
     BackpackBellman backpackBellman = new BackpackBellman();
+    BranchAndBound branchAndBound = new BranchAndBound();
 
     @Test
     void success() {
@@ -41,13 +43,16 @@ public class BellmanTest {
         teacherInfo.setUser(user);
         System.out.println("Bellman");
         List<Request> dpBellmanResult = backpackBellman.execute(requests, teacherInfo);
-        assertTrue(dpBellmanResult.contains(e1));
-        assertTrue(dpBellmanResult.contains(e3));
-        assertTrue(dpBellmanResult.contains(e5));
-        assertTrue(dpBellmanResult.contains(e7));
-        assertTrue(dpBellmanResult.contains(e9));
-        assertTrue(dpBellmanResult.contains(e10));
+        List<Request> bbResult = branchAndBound.execute(requests, teacherInfo);
+        assertTrue(dpBellmanResult.contains(e1) && bbResult.contains(e1));
+        assertTrue(dpBellmanResult.contains(e3) && bbResult.contains(e3));
+        assertTrue(dpBellmanResult.contains(e5) && bbResult.contains(e5));
+        assertTrue(dpBellmanResult.contains(e7) && bbResult.contains(e7));
+        assertTrue(dpBellmanResult.contains(e9) && bbResult.contains(e9));
+        assertTrue(dpBellmanResult.contains(e10) && bbResult.contains(e10));
         int sum = dpBellmanResult.stream().mapToInt(Request::getTime).sum();
+        int sum1 = bbResult.stream().mapToInt(Request::getTime).sum();
         assertEquals(limitOurs, sum);
+        assertEquals(limitOurs, sum1);
     }
 }

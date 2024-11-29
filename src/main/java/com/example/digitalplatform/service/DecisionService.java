@@ -1,6 +1,7 @@
 package com.example.digitalplatform.service;
 
 import com.example.digitalplatform.core.GeneratorDessisions;
+import com.example.digitalplatform.core.GeneratorType;
 import com.example.digitalplatform.db.model.*;
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
@@ -26,7 +27,7 @@ public class DecisionService {
     RequestService requestService;
     List<GeneratorDessisions> generators;
     @NonFinal
-    Map<String, GeneratorDessisions> generatorsMap;
+    Map<GeneratorType, GeneratorDessisions> generatorsMap;
     @NonFinal
     @Value("${generators.type}")
     String generatorType;
@@ -51,10 +52,8 @@ public class DecisionService {
     }
 
     private List<Request> getRequests() {
-        GeneratorDessisions generatorDessisions = generatorsMap.get(generatorType);
-        if (Objects.isNull(generatorDessisions)) {
-            generatorDessisions = generatorsMap.get("BACKPACK_BELLMAN");
-        }
+        GeneratorType genType = GeneratorType.getOrDefault(generatorType);
+        GeneratorDessisions generatorDessisions = generatorsMap.get(genType);
         List<TeacherInfo> teachers = new ArrayList<>(userService.findTeacherInfos());
         Collections.shuffle(teachers);
         List<Request> unassigned = requestService.findUnassigned();

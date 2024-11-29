@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -88,7 +87,7 @@ public class BackpackBellman implements GeneratorDessisions {
 
 
     @Override
-    public String generatorType() {
-        return "BACKPACK_BELLMAN";
+    public GeneratorType generatorType() {
+        return GeneratorType.BACKPACK_BELLMAN;
     }
 }
