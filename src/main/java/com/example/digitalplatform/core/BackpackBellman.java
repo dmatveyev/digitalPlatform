@@ -13,7 +13,7 @@ import java.util.*;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-public class BackpackBellman implements GeneratorDessisions {
+public class BackpackBellman implements GeneratorDecision {
 
     @Override
     public List<Request> execute(List<Request> list, TeacherInfo teacher) {

@@ -7,7 +7,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.Queue;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-public class BranchAndBound implements GeneratorDessisions{
+public class BranchAndBound implements GeneratorDecision {
 
 
     @Override

@@ -1,5 +1,7 @@
 package com.example.digitalplatform;
 
+import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
+import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +15,6 @@ import java.util.List;
 public class DigitalPlatformApplication {
     public static void main(String[] args) {
         SpringApplication.run(DigitalPlatformApplication.class, args);
-
     }
 
     @Bean

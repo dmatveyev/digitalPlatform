@@ -13,7 +13,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
@@ -84,20 +86,22 @@ public class DecisionGeneratorTest {
         User user2 = getUser();
         TeacherInfo info1 = getTeacherInfo(user, List.of(getSubjectArea(MATH)));
         TeacherInfo info2 = getTeacherInfo(user2, List.of(getSubjectArea(MATH)));
-        when(userService.findTeacherInfos()).thenReturn(List.of(info1, info2));
+        List<TeacherInfo> info11 = List.of(info1, info2);
+        when(userService.findTeacherInfos()).thenReturn(info11);
         when(requestService.findUnassigned()).thenReturn(requests);
         doNothing().when(requestService).updateList(requestsCaptor.capture());
         decisionService.automaticAssign();
         List<List<Request>> allValues = requestsCaptor.getAllValues();
         assertEquals(2, allValues.size());
         List<Request> assignedFirst = allValues.get(0);
+        Set<UUID> ids = info11.stream().map(TeacherInfo::getUser).map(User::getId).collect(Collectors.toSet());
         boolean isActualStatus = assignedFirst.stream().allMatch(request -> request.getStatus().equals(RequestStatus.ASSIGNED));
-        boolean isWorkerAssigned = assignedFirst.stream().allMatch(request -> request.getWorker().getId().equals(user.getId()));
+        boolean isWorkerAssigned = assignedFirst.stream().map(Request::getWorker).map(User::getId).allMatch(ids::contains);
         assertTrue(isActualStatus);
         assertTrue(isWorkerAssigned);
-        List<Request> nonAssignedSecond = allValues.get(1);
-        isActualStatus = nonAssignedSecond.stream().allMatch(request -> request.getStatus().equals(RequestStatus.ASSIGNED));
-        isWorkerAssigned = nonAssignedSecond.stream().allMatch(request -> request.getWorker().getId().equals(user2.getId()));
+        List<Request> assignedSecond = allValues.get(1);
+        isActualStatus = assignedSecond.stream().allMatch(request -> request.getStatus().equals(RequestStatus.ASSIGNED));
+        isWorkerAssigned = assignedSecond.stream().map(Request::getWorker).map(User::getId).allMatch(ids::contains);
         assertTrue(isActualStatus);
         assertTrue(isWorkerAssigned);
     }

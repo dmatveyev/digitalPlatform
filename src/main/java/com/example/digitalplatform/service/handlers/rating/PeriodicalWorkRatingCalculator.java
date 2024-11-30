@@ -3,6 +3,7 @@ package com.example.digitalplatform.service.handlers.rating;
 import com.example.digitalplatform.db.model.RatingName;
 import com.example.digitalplatform.db.model.RatingParameters;
 import com.example.digitalplatform.db.model.Request;
+import com.example.digitalplatform.db.model.WorkType;
 import com.example.digitalplatform.db.repository.RatingParametersRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,13 @@ public class PeriodicalWorkRatingCalculator implements RatingCalculator {
     public void calculate(Request request) {
         RatingParameters byCode = ratingParametersRepository.findByCode(getRatingName().name());
         double rating = request.getRating();
-        double value = request.isPeriodical() ? byCode.getMaxValue(): byCode.getMinValue();
-        rating += value * byCode.getCoefficient();
+        WorkType workType = request.getWorkType();
+        double byType = switch (workType) {
+            case INDIVIDUAL -> byCode.getMinValue();
+            default -> byCode.getMaxValue();
+        };
+        double periodicalValue = request.isPeriodical() ? byCode.getMaxValue(): byCode.getMinValue();
+        rating += byType * periodicalValue * byCode.getCoefficient();
         request.setRating(rating);
     }
 

@@ -1,6 +1,6 @@
 package com.example.digitalplatform.service;
 
-import com.example.digitalplatform.core.GeneratorDessisions;
+import com.example.digitalplatform.core.GeneratorDecision;
 import com.example.digitalplatform.core.GeneratorType;
 import com.example.digitalplatform.db.model.*;
 import jakarta.annotation.PostConstruct;
@@ -25,9 +25,9 @@ public class DecisionService {
 
     UserService userService;
     RequestService requestService;
-    List<GeneratorDessisions> generators;
+    List<GeneratorDecision> generators;
     @NonFinal
-    Map<GeneratorType, GeneratorDessisions> generatorsMap;
+    Map<GeneratorType, GeneratorDecision> generatorsMap;
     @NonFinal
     @Value("${generators.type}")
     String generatorType;
@@ -35,7 +35,7 @@ public class DecisionService {
 
     @PostConstruct
     public void init() {
-        generatorsMap = generators.stream().collect(Collectors.toMap(GeneratorDessisions::generatorType, Function.identity()));
+        generatorsMap = generators.stream().collect(Collectors.toMap(GeneratorDecision::generatorType, Function.identity()));
     }
 
     @Scheduled(cron = "0 */1 * * * *")
@@ -53,7 +53,7 @@ public class DecisionService {
 
     private List<Request> getRequests() {
         GeneratorType genType = GeneratorType.getOrDefault(generatorType);
-        GeneratorDessisions generatorDessisions = generatorsMap.get(genType);
+        GeneratorDecision generatorDessision = generatorsMap.get(genType);
         List<TeacherInfo> teachers = new ArrayList<>(userService.findTeacherInfos());
         Collections.shuffle(teachers);
         List<Request> unassigned = requestService.findUnassigned();
@@ -61,7 +61,7 @@ public class DecisionService {
         log.debug("Available request count: {}", processing.size());
         for (TeacherInfo teacherInfo : teachers) {
             List<Request> available = getAvailableRequests(teacherInfo, processing);
-            List<Request> tempAssigned = generatorDessisions.execute(available, teacherInfo);
+            List<Request> tempAssigned = generatorDessision.execute(available, teacherInfo);
             processing.removeAll(tempAssigned);
             tempAssigned.forEach(request -> request.setWorker(teacherInfo.getUser()));
             tempAssigned.forEach(request -> request.setStatus(RequestStatus.ASSIGNED));
