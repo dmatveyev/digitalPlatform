@@ -57,9 +57,15 @@ public class RequestService {
         request.setPlanedFinishDate(requestDto.getDeadline());
         request.setPeriodical(requestDto.isPeriodical());
         request.setWorkType(requestDto.getWorkType());
-        if (requestDto.getStatus().equals(RequestStatus.FINISHED)) {
+        if (RequestStatus.FINISHED.equals(requestDto.getStatus())) {
             request.setActualFinishDate(requestDto.getEndDate());
             request.setStatus(requestDto.getStatus());
+            if (request.getTeacherScore() == null) {
+                request.setTeacherScore(requestDto.getTeacherScore());
+            }
+            if (request.getParticipantsScore() == null) {
+                request.setParticipantsScore(requestDto.getParticipantsScore());
+            }
         }
         Request save = requestRepository.save(request);
         return getRequestDto(save);
@@ -105,6 +111,8 @@ public class RequestService {
         dto.setDeadline(request.getPlanedFinishDate());
         dto.setPeriodical(request.isPeriodical());
         dto.setWorkType(request.getWorkType());
+        dto.setParticipantsScore(request.getParticipantsScore());
+        dto.setTeacherScore(request.getTeacherScore());
         return dto;
     }
 
@@ -145,5 +153,13 @@ public class RequestService {
         byId.setStatus(requestStatus);
         requestRepository.save(byId);
         return getRequestDto(byId);
+    }
+
+    public RequestDto setScores(UUID fromString, RequestDto requestDto) {
+        Request request = requestRepository.findById(fromString).orElseThrow();
+        request.setTeacherScore(request.getTeacherScore());
+        request.setParticipantsScore(request.getParticipantsScore());
+        requestRepository.save(request);
+        return getRequestDto(request);
     }
 }

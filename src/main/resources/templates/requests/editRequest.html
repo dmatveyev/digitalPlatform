@@ -29,7 +29,7 @@
         </div>
         <div class="row mt-3">
             <label class="col-2" for="dropDownList">Предметная область:</label>
-            <select class="col-2" id="dropDownList" name="subjectAreaId" disabled>
+            <select class="col-2" id="dropDownList" name="subjectAreaId" readonly>
                 <option selected th:value="${request.subjectArea.id}" th:text="${request.subjectArea.name}"
                 ></option>
             </select>
@@ -82,6 +82,15 @@
                    th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd''T''HH:mm')}"
                    th:value="${#temporals.format(request.endDate, 'yyyy-MM-dd''T''HH:mm')}" required value="1"/>
         </div>
+        <div class="row mt-3">
+            <label th:if="${ ( #authorization.expression('hasAnyAuthority(''TEACHER'')') && request.participantsScore < 0 )
+            ||  (#authorization.expression('hasAnyAuthority(''STUDENT'')') &&  request.teacherScore < 0)}"
+                   th:text="${#authorization.expression('hasAnyAuthority(''TEACHER'')')} ? 'Оцените участников' : 'Оцените преподавателя'"></label>
+        </div>
+        <div class="row mt-3" th:if="${request.status.name == 'FINISHED'}">
+            <div th:replace="ratingPane :: ratingPane(${request})"></div>
+        </div>
+
         <div class="row mt-3">
             <button th:marginheight="50" type="submit" class="btn btn-primary" th:value="${'PROCESSED'}"
                     th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'',''CREATE_REQUEST'')') && request.status.name == 'NEW'}"

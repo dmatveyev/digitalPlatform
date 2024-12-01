@@ -119,6 +119,8 @@ create table REQUESTS
     SUBJECT_AREA_ID    UUID,
     CREATION_DATE      TIMESTAMP,
     PLANED_FINISH_DATE TIMESTAMP,
+    PARTICIPANTS_SCORE INTEGER,
+    TEACHER_SCORE      INTEGER,
     ACTUAL_FINISH_DATE TIMESTAMP,
     constraint requests_customers_fk
         foreign key (CUSTOMER_ID) references USERS,

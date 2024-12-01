@@ -36,5 +36,7 @@ public class RequestDto {
     LocalDateTime endDate;
     WorkType workType;
     boolean periodical;
+    Integer participantsScore;
+    Integer teacherScore;
 
 }

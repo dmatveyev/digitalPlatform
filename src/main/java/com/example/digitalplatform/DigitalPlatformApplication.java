@@ -38,7 +38,7 @@ public class DigitalPlatformApplication {
         String subjects = """
                 Русский и родной язык;
                 Математика;
-                литература;
+                Литература;
                 Английский язык;
                 Китайский язык;
                 История;

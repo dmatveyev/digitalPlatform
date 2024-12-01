@@ -43,6 +43,8 @@ public class Request {
      * Стоимость проведения занятия в баллах
      */
     double rating;
+    Integer participantsScore;
+    Integer teacherScore;
 
     @Enumerated(EnumType.STRING)
     RequestStatus status;
