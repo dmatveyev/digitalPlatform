@@ -1,4 +1,4 @@
-package com.example.digitalplatform.config;
+package com.example.digitalplatform.security;
 
 import com.example.digitalplatform.db.model.RoleType;
 import jakarta.servlet.http.HttpServletRequest;

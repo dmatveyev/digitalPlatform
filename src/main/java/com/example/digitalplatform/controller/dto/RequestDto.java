@@ -1,5 +1,7 @@
-package com.example.digitalplatform.dto;
+package com.example.digitalplatform.controller.dto;
 
+import com.example.digitalplatform.db.model.RequestStatus;
+import com.example.digitalplatform.db.model.SubjectArea;
 import com.example.digitalplatform.db.model.WorkType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
@@ -19,14 +20,20 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateRequestDto {
+public class RequestDto {
 
+    UUID id;
     String title;
     String description;
-    UUID subjectAreaId;
+    SubjectArea subjectArea;
     int time;
-    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
+    RequestStatus status;
+    String creatorName;
+    String assignedBy;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     LocalDateTime deadline;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    LocalDateTime endDate;
     WorkType workType;
     boolean periodical;
 

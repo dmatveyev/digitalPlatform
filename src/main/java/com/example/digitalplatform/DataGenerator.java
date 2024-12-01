@@ -1,12 +1,14 @@
-package com.example.digitalplatform.service;
+package com.example.digitalplatform;
 
 import com.example.digitalplatform.db.model.RoleType;
 import com.example.digitalplatform.db.model.SubjectArea;
 import com.example.digitalplatform.db.model.User;
 import com.example.digitalplatform.db.model.WorkType;
 import com.example.digitalplatform.db.repository.SubjectAreaRepository;
-import com.example.digitalplatform.dto.CreateRequestDto;
-import com.example.digitalplatform.dto.UserAccountDto;
+import com.example.digitalplatform.controller.dto.CreateRequestDto;
+import com.example.digitalplatform.controller.dto.UserAccountDto;
+import com.example.digitalplatform.service.RequestService;
+import com.example.digitalplatform.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

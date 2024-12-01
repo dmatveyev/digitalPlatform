@@ -1,10 +1,9 @@
-package com.example.digitalplatform.config;
+package com.example.digitalplatform.security;
 
 import com.example.digitalplatform.db.model.Privilege;
 import com.example.digitalplatform.db.model.Role;
 import com.example.digitalplatform.db.model.User;
 import com.example.digitalplatform.db.repository.UserRepository;
-import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

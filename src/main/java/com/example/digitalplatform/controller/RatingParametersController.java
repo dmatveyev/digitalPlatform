@@ -2,7 +2,6 @@ package com.example.digitalplatform.controller;
 
 import com.example.digitalplatform.db.model.RatingParameters;
 import com.example.digitalplatform.db.repository.RatingParametersRepository;
-import com.example.digitalplatform.dto.UserAccountDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

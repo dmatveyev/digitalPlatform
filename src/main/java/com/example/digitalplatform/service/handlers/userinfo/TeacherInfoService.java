@@ -2,11 +2,10 @@ package com.example.digitalplatform.service.handlers.userinfo;
 
 import com.example.digitalplatform.db.model.*;
 import com.example.digitalplatform.db.repository.TeacherInfoRepository;
-import com.example.digitalplatform.dto.UserAccountDto;
+import com.example.digitalplatform.controller.dto.UserAccountDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.type.descriptor.java.ObjectJavaType;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;

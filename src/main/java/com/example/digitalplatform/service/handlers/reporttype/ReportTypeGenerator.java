@@ -1,7 +1,7 @@
 package com.example.digitalplatform.service.handlers.reporttype;
 
 import com.example.digitalplatform.controller.ReportType;
-import com.example.digitalplatform.dto.ReportData;
+import com.example.digitalplatform.controller.dto.ReportData;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;

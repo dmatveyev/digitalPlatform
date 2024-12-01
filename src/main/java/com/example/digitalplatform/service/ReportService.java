@@ -4,7 +4,7 @@ import com.example.digitalplatform.controller.ReportType;
 import com.example.digitalplatform.db.model.*;
 import com.example.digitalplatform.db.repository.RequestRepository;
 import com.example.digitalplatform.db.repository.SubjectAreaRepository;
-import com.example.digitalplatform.dto.ReportData;
+import com.example.digitalplatform.controller.dto.ReportData;
 import com.example.digitalplatform.service.handlers.reporttype.ReportTypeGenerator;
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
@@ -14,7 +14,6 @@ import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;

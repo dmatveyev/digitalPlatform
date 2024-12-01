@@ -2,7 +2,7 @@ package com.example.digitalplatform.service.handlers.userinfo;
 
 import com.example.digitalplatform.db.model.RoleType;
 import com.example.digitalplatform.db.model.User;
-import com.example.digitalplatform.dto.UserAccountDto;
+import com.example.digitalplatform.controller.dto.UserAccountDto;
 
 public interface UserInfoService {
 

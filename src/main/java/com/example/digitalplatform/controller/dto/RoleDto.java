@@ -1,4 +1,4 @@
-package com.example.digitalplatform.dto;
+package com.example.digitalplatform.controller.dto;
 
 import com.example.digitalplatform.db.model.RoleType;
 import lombok.AccessLevel;

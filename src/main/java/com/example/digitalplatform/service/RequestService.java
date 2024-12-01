@@ -4,8 +4,8 @@ import com.example.digitalplatform.db.model.*;
 import com.example.digitalplatform.db.repository.RequestRepository;
 import com.example.digitalplatform.db.repository.SubjectAreaRepository;
 import com.example.digitalplatform.db.repository.UserRepository;
-import com.example.digitalplatform.dto.CreateRequestDto;
-import com.example.digitalplatform.dto.RequestDto;
+import com.example.digitalplatform.controller.dto.CreateRequestDto;
+import com.example.digitalplatform.controller.dto.RequestDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor

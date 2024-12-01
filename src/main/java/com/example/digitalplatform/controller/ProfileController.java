@@ -3,12 +3,9 @@ package com.example.digitalplatform.controller;
 import com.example.digitalplatform.db.model.RoleType;
 import com.example.digitalplatform.db.model.SubjectArea;
 import com.example.digitalplatform.db.model.User;
-import com.example.digitalplatform.db.model.WorkType;
 import com.example.digitalplatform.db.repository.SubjectAreaRepository;
 import com.example.digitalplatform.db.repository.UserRepository;
-import com.example.digitalplatform.dto.CreateRequestDto;
-import com.example.digitalplatform.dto.RequestDto;
-import com.example.digitalplatform.dto.UserAccountDto;
+import com.example.digitalplatform.controller.dto.UserAccountDto;
 import com.example.digitalplatform.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +14,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/profile")

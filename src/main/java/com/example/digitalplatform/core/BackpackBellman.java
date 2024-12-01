@@ -7,14 +7,11 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
-
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 public class BackpackBellman implements GeneratorDecision {
-
     @Override
     public List<Request> execute(List<Request> list, TeacherInfo teacher) {
         log.debug("Starting creating optimal request list for teacher with id: {}", teacher.getId());
@@ -26,7 +23,6 @@ public class BackpackBellman implements GeneratorDecision {
                 teacher.getId(), requests.size());
         return requests;
     }
-
     private List<Request> fullStoredTable(List<Request> list, TeacherInfo teacher) {
         int capacity = teacher.getLimitHours();
         int n = list.size();

@@ -2,8 +2,7 @@ package com.example.digitalplatform.core;
 
 public enum GeneratorType {
 
-    BACKPACK_BELLMAN("Метод Беллмана"),
-    BRANCH_AND_BOUND("Метод ветвей и границ");
+    BACKPACK_BELLMAN("Метод Беллмана");
 
     private final String desc;
 

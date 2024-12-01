@@ -1,8 +1,8 @@
 package com.example.digitalplatform.controller;
 
 import com.example.digitalplatform.db.model.RoleType;
-import com.example.digitalplatform.dto.RoleDto;
-import com.example.digitalplatform.dto.UserAccountDto;
+import com.example.digitalplatform.controller.dto.RoleDto;
+import com.example.digitalplatform.controller.dto.UserAccountDto;
 import com.example.digitalplatform.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
