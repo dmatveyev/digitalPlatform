@@ -22,7 +22,7 @@ public class StudentInstituteRatingCalculator implements RatingCalculator {
 
     @Override
     public void calculate(Request request) {
-        double rating = request.getRating();
+    float rating = request.getRating();
         User customer = request.getCustomer();
         RatingParameters byCode = ratingParametersRepository.findByCode(getRatingName().name());
         StudentInfo customerInfo = studentInfoRepository.findByUser(customer);

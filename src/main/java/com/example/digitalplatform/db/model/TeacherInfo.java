@@ -21,7 +21,7 @@ public class TeacherInfo {
     User user;
     String institute;
     String degree;
-    double score;
+float score;
     @Column(name = "limit_hours")
     Integer limitHours;
     @OneToMany(fetch = FetchType.EAGER)

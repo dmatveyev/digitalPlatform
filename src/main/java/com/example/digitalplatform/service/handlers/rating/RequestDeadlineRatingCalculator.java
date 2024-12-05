@@ -23,7 +23,7 @@ public class RequestDeadlineRatingCalculator implements RatingCalculator {
     @Override
     public void calculate(Request request) {
         RatingParameters byCode = ratingParametersRepository.findByCode(getRatingName().name());
-        double rating = request.getRating();
+    float rating = request.getRating();
         LocalDateTime planedFinishDate = request.getPlanedFinishDate();
         LocalDateTime now = LocalDateTime.now();
         if (now.plusDays(7).isAfter(planedFinishDate))  {

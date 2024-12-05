@@ -23,10 +23,10 @@ public class RatingParameters {
 
     private String description;
     @Column(name = "min_value")
-    private double minValue;
+    private float minValue;
     @Column(name = "max_value")
-    private double maxValue;
-    private double coefficient;
+    private float maxValue;
+    private float coefficient;
 
 
 }

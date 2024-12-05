@@ -28,8 +28,8 @@ public class AuthorRatingCalculator implements RatingCalculator {
         List<Request> requestList = requestRepository.findByCustomerAndStatusIn(customer, List.of(RequestStatus.DECLINED,
                 RequestStatus.FINISHED));
         RatingParameters byCode = ratingParametersRepository.findByCode(getRatingName().name());
-        double defaultRating = (byCode.getMaxValue() - byCode.getMinValue()) / 2 * byCode.getCoefficient();
-        double rating = request.getRating();
+    float defaultRating = (byCode.getMaxValue() - byCode.getMinValue()) / 2 * byCode.getCoefficient();
+        float rating = request.getRating();
         if (requestList.isEmpty()) {
             rating += defaultRating;
             request.setRating(rating);

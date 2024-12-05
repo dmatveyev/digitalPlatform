@@ -21,13 +21,13 @@ public class PeriodicalWorkRatingCalculator implements RatingCalculator {
     @Override
     public void calculate(Request request) {
         RatingParameters byCode = ratingParametersRepository.findByCode(getRatingName().name());
-        double rating = request.getRating();
+    float rating = request.getRating();
         WorkType workType = request.getWorkType();
-        double byType = switch (workType) {
+    float byType = switch (workType) {
             case INDIVIDUAL -> byCode.getMinValue();
             default -> byCode.getMaxValue();
         };
-        double periodicalValue = request.isPeriodical() ? byCode.getMaxValue(): byCode.getMinValue();
+    float periodicalValue = request.isPeriodical() ? byCode.getMaxValue(): byCode.getMinValue();
         rating += byType * periodicalValue * byCode.getCoefficient();
         request.setRating(rating);
     }

@@ -42,7 +42,7 @@ public class Request {
     /**
      * Стоимость проведения занятия в баллах
      */
-    double rating;
+    float rating;
     Integer participantsScore;
     Integer teacherScore;
 

@@ -87,7 +87,7 @@ public class DataGenerator {
 
     private UserAccountDto getStudentAccountDto(int i) {
         UserAccountDto dto = new UserAccountDto();
-        dto.setUserName("student_"+i);
+        dto.setUserName("student_" + i);
         int index = ThreadLocalRandom.current().nextInt(0, studentsNames.size() - 1);
         dto.setFirstName(studentsNames.get(index)[1]);
         dto.setLastName(studentsNames.get(index)[0]);
@@ -144,9 +144,9 @@ public class DataGenerator {
     private CreateRequestDto getCreateRequestDto(int i, List<SubjectArea> subjectAreas) {
         int index = ThreadLocalRandom.current().nextInt(0, subjectAreas.size() - 1);
         CreateRequestDto createRequestDto = new CreateRequestDto();
-        createRequestDto.setTitle("Заголовок_"+ i);
+        createRequestDto.setTitle("Заголовок_" + i);
         createRequestDto.setSubjectAreaId(subjectAreas.get(index).getId());
-        createRequestDto.setWorkType(new Random().nextBoolean() ? WorkType.INDIVIDUAL: WorkType.GROUP);
+        createRequestDto.setWorkType(new Random().nextBoolean() ? WorkType.INDIVIDUAL : WorkType.GROUP);
         createRequestDto.setPeriodical(new Random().nextBoolean());
         long days = ThreadLocalRandom.current().nextLong(1, 30);
         createRequestDto.setDeadline(LocalDateTime.now().plusDays(days));
@@ -154,9 +154,9 @@ public class DataGenerator {
         return createRequestDto;
     }
 
-    private double getScore(int rangeMin, int rangeMax) {
+    private float getScore(int rangeMin, int rangeMax) {
         Random r = new Random();
-        double randomValue = ThreadLocalRandom.current().nextDouble(rangeMin, rangeMax);
+        float randomValue = (float) ThreadLocalRandom.current().nextDouble(rangeMin, rangeMax);
         return randomValue;
     }
 

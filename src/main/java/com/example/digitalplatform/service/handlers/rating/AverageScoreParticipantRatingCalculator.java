@@ -6,6 +6,7 @@ import com.example.digitalplatform.db.repository.StudentInfoRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.aspectj.apache.bcel.classfile.Deprecated;
 import org.springframework.stereotype.Service;
 
 import java.util.DoubleSummaryStatistics;
@@ -23,10 +24,10 @@ public class AverageScoreParticipantRatingCalculator implements RatingCalculator
     public void calculate(Request request) {
         RatingParameters ratingParameters = ratingParametersRepository.findByCode(getRatingName().name());
         if (Objects.nonNull(ratingParameters)) {
-            double rating = request.getRating();
+        float rating = request.getRating();
             WorkType workType = request.getWorkType();
             User customer = request.getCustomer();
-            double score;
+        float score;
             StudentInfo byUser = studentInfoRepository.findByUser(customer);
             if (Objects.nonNull(byUser)) {
                 if (workType.equals(WorkType.INDIVIDUAL)) {
@@ -34,9 +35,9 @@ public class AverageScoreParticipantRatingCalculator implements RatingCalculator
                 } else {
                     List<StudentInfo> byInstituteAndClazz = studentInfoRepository.getByInstituteAndClazz(byUser.getInstitute(), byUser.getClazz());
                     DoubleSummaryStatistics doubleSummaryStatistics = byInstituteAndClazz.stream().mapToDouble(StudentInfo::getScore).summaryStatistics();
-                    score = doubleSummaryStatistics.getAverage();
+                    score = (float) doubleSummaryStatistics.getAverage();
                 }
-                double coefficient = ratingParameters.getCoefficient();
+            float coefficient = ratingParameters.getCoefficient();
                 rating += score * coefficient;
             } else {
                 rating += (ratingParameters.getMinValue() + ratingParameters.getMaxValue()) / 2 * ratingParameters.getCoefficient();

@@ -25,7 +25,7 @@ public class UserAccountDto {
     String roleName;
     String degree;
     Integer limitHours;
-    Double score;
+    Float score;
     List<SubjectArea> subjectAreas;
 
 }

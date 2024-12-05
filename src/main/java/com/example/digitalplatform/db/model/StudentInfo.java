@@ -21,7 +21,7 @@ public class StudentInfo {
     User user;
     String institute;
     String clazz;
-    double score;
+float score;
 
 
 }
