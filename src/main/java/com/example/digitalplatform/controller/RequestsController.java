@@ -1,13 +1,11 @@
 package com.example.digitalplatform.controller;
 
-import com.example.digitalplatform.db.model.Request;
-import com.example.digitalplatform.db.model.RequestStatus;
-import com.example.digitalplatform.db.model.SubjectArea;
-import com.example.digitalplatform.db.model.WorkType;
+import com.example.digitalplatform.db.model.*;
 import com.example.digitalplatform.db.repository.RequestRepository;
 import com.example.digitalplatform.db.repository.SubjectAreaRepository;
 import com.example.digitalplatform.controller.dto.CreateRequestDto;
 import com.example.digitalplatform.controller.dto.RequestDto;
+import com.example.digitalplatform.db.repository.UserRepository;
 import com.example.digitalplatform.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,6 +34,7 @@ public class RequestsController {
     private final RequestRepository requestRepository;
     private final SubjectAreaRepository subjectAreaRepository;
     private final RequestService requestService;
+    private final UserRepository userRepository;
 
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('STUDENT','TEACHER')")
@@ -67,10 +66,13 @@ public class RequestsController {
 
     @GetMapping("/edit")
     @PreAuthorize("hasAnyRole('STUDENT','TEACHER')")
-    public String edit(@RequestParam("id") String id, Model model) {
+    public String edit(@RequestParam("id") String id, Model model, Principal principal) {
         RequestDto requestDto = requestService.findById(UUID.fromString(id));
+        Request byId = requestRepository.getById(requestDto.getId());
         model.addAttribute("request", requestDto);
         model.addAttribute("workTypes", Arrays.stream(WorkType.values()).toList());
+        model.addAttribute("owner", byId.getCustomer());
+        model.addAttribute("worker", byId.getWorker());
         return "requests/editRequest";
     }
 
@@ -121,7 +123,10 @@ public class RequestsController {
                                Model model,
                                Principal principal) {
         RequestDto updated = requestService.changeStatus(UUID.fromString(id), requestDto.getStatus());
+        Request byId = requestRepository.getById(requestDto.getId());
         model.addAttribute("request", updated);
+        model.addAttribute("owner", byId.getCustomer());
+        model.addAttribute("worker", byId);
         return "redirect:/requests/edit?id="+id;
     }
 

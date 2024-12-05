@@ -3,13 +3,14 @@ package com.example.digitalplatform.db.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 @Data
-public class User {
+public class User implements Principal {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -37,4 +38,8 @@ public class User {
                     name = "role_id", referencedColumnName = "id"))
     private Role role;
 
+    @Override
+    public String getName() {
+        return login;
+    }
 }

@@ -2,7 +2,7 @@
     <input type="hidden" name="status"
            th:value="${T(com.example.digitalplatform.db.model.RequestStatus).FINISHED}"/>
     <ul class="nav nav-pills"
-        th:if="${(#authorization.expression('hasAnyAuthority(''STUDENT'')') && request.teacherScore < 1)}">
+        th:if="${(owner != null && #authentication.name == owner.login && request.teacherScore < 1)}">
         <li class="page-item"
             th:classappend="${request.teacherScore == score} ? 'active'"
             th:each="score : ${#numbers.sequence(1,5,1)}">
@@ -11,7 +11,7 @@
         </li>
     </ul>
     <ul class="nav nav-pills"
-        th:if="${(#authorization.expression('hasAnyAuthority(''TEACHER'')') && request.participantsScore <1)}">
+        th:if="${(worker != null && #authentication.name == worker.login && request.participantsScore <1)}">
         <li class="page-item"
             th:classappend="${request.participantsScore == score} ? 'active'"
             th:each="score : ${#numbers.sequence(1,5,1)}">
