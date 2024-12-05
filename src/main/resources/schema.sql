@@ -19,7 +19,7 @@ create table TEACHER_INFO
     ID         UUID             not null
         primary key,
     USER_ID    UUID,
-    SCORE      DOUBLE PRECISION not null,
+    SCORE      FLOAT not null,
     DEGREE     CHARACTER VARYING(255),
     INSTITUTE  CHARACTER VARYING(255),
     LIMIT_HOURS INTEGER,
@@ -33,7 +33,7 @@ create table STUDENT_INFO
     ID         UUID             not null
         primary key,
     USER_ID    UUID,
-    SCORE      DOUBLE PRECISION not null,
+    SCORE      FLOAT not null,
     DEGREE     CHARACTER VARYING(255),
     INSTITUTE  CHARACTER VARYING(255),
     CLAZZ  CHARACTER VARYING(255),
@@ -109,7 +109,7 @@ create table REQUESTS
         primary key,
     TITLE              CHARACTER VARYING(255),
     DESCRIPTION        CHARACTER VARYING(255),
-    RATING             DOUBLE PRECISION not null,
+    RATING             FLOAT not null,
     STATUS             CHARACTER VARYING(255),
     WORK_TYPE          CHARACTER VARYING(255),
     PERIODICAL         BOOLEAN,
@@ -138,9 +138,9 @@ create table rating_parameters
         primary key,
     CODE        CHARACTER VARYING(255),
     DESCRIPTION CHARACTER VARYING(255),
-    MIN_VALUE   DOUBLE PRECISION,
-    MAX_VALUE   DOUBLE PRECISION,
-    COEFFICIENT DOUBLE PRECISION
+    MIN_VALUE   FLOAT,
+    MAX_VALUE   FLOAT,
+    COEFFICIENT FLOAT
 );
 
 
