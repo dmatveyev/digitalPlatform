@@ -19,6 +19,7 @@ public class UserAccountDto {
     String password;
     String firstName;
     String lastName;
+    String middleName;
     String institution;
     String clazz;
     RoleType roleCode;

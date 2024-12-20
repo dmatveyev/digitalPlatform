@@ -7,6 +7,7 @@ public interface IReport {
     String getLastName();
 
     String getFirstName();
+    String getMiddleName();
 
     String getDegree();
 

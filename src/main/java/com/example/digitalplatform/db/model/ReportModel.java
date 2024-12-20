@@ -16,6 +16,7 @@ public class ReportModel {
     private UUID userId;
     private String lastName;
     private String firstName;
+    private String middle;
     private String degree;
     private String institute;
     private SubjectArea subjectArea;

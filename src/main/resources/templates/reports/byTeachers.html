@@ -51,8 +51,9 @@
         <table class="table table-bordered table-striped">
             <thead class="bg-info">
             <tr>
-                <th>Имя</th>
                 <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
                 <th>Звание</th>
                 <th>Учреждение</th>
                 <th>Завершено</th>
@@ -63,8 +64,9 @@
             </thead>
             <tbody>
             <tr th:each="data : ${reportData}">
-                <td th:text="${data.firstName}">Bond</td>
                 <td th:text="${data.lastName}">Bond</td>
+                <td th:text="${data.firstName}">Bond</td>
+                <td th:text="${data.middle}">Bond</td>
                 <td th:text="${data.degree}">Bond</td>
                 <td th:text="${data.institute}">Bond</td>
                 <td th:text="${data.countDone}">Bond</td>

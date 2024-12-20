@@ -129,6 +129,7 @@ public class ByTeacherGenerator implements ReportTypeGenerator {
                 Row dataRow = createRow(sheet, rowStart++);
                 String lastName = datum.getLastName();
                 String firstName = datum.getFirstName();
+                String middleName = datum.getMiddle();
                 String degree = datum.getDegree();
                 String institute = datum.getInstitute();
                 long countDone = datum.getCountDone();
@@ -137,7 +138,7 @@ public class ByTeacherGenerator implements ReportTypeGenerator {
                 long countAssigned = datum.getCountAssigned();
                 Cell dataCell0 = dataRow.createCell(0);
 
-                dataCell0.setCellValue(degree + " " + lastName + " " + firstName);
+                dataCell0.setCellValue(degree + " " + lastName + " " + firstName + " " + middleName);
                 XSSFCellStyle tableDataStyle = getTableDataStyle(workbook);
                 tableDataStyle.setAlignment(HorizontalAlignment.LEFT);
                 dataCell0.setCellStyle(tableDataStyle);

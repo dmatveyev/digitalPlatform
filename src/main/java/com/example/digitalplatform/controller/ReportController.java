@@ -53,9 +53,9 @@ class ReportController {
         reportData.setStartDate(LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         List<ReportModel> reportModels = reportService.findByPrincipalAndReportType(reportData);
 
-        int end = Math.min((start - 1 + pageRequest.getPageSize()), reportModels.size());
+        int end = Math.min((int)pageRequest.getOffset() + pageSize, reportModels.size());
         List<ReportModel> pageContent = reportModels.isEmpty() ? Collections.emptyList() :
-                reportModels.subList(start - 1, end);
+                reportModels.subList((int)pageRequest.getOffset(), end);
         Page<ReportModel> result = new PageImpl<>(pageContent, pageRequest, reportModels.size());
 
         model.addAttribute("reportData", result);

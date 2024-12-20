@@ -26,7 +26,8 @@ public class UserDetailInfoService {
 
             case TEACHER -> {
                 TeacherInfo byUser = teacherInfoRepository.findByUser(user);
-                yield byUser.getDegree().concat(" ").concat(user.getFirstName().concat(" ").concat(user.getLastName()));
+                yield byUser.getDegree().concat(" ").concat(user.getLastName() + " "
+                        + user.getFirstName() + " " + user.getMiddleName());
             }
             default -> user.getLogin();
         };

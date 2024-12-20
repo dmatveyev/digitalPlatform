@@ -56,6 +56,7 @@ public class ReportService {
                         rep.getUserId() != null ? UUID.fromString(rep.getUserId()) : null,
                         rep.getLastName(),
                         rep.getFirstName(),
+                        rep.getMiddleName(),
                         rep.getDegree(),
                         rep.getInstitute(),
                         collect.get(rep.getSubjectArea()),

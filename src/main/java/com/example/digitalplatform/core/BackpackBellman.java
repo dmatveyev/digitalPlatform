@@ -125,24 +125,28 @@ public class BackpackBellman implements GeneratorDecision {
     @Fork(value = 1)
     @Benchmark
     @BenchmarkMode({AverageTime, Throughput})
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Warmup(iterations = 5)
     @Measurement(iterations = 10)
     public void fullStoredTable(Blackhole blackhole) {
-        List<Request> requests = backpackBellman.fullStoredTable(requestList, info);
-        blackhole.consume(requests);
-
+        for (int i = 0; i < 1000; i++) {
+            List<Request> requests = backpackBellman.fullStoredTable(requestList, info);
+            blackhole.consume(requests);
+        }
     }
 
     @Fork(value = 1)
     @Benchmark
     @BenchmarkMode({AverageTime, Throughput})
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Warmup(iterations = 5)
     @Measurement(iterations = 10)
     public void memoryOptimized(Blackhole blackhole) {
-        List<Request> requests = backpackBellman.optimizedBellman(requestList, info);
-        blackhole.consume(requests);
+        for (int i = 0; i < 1000; i++) {
+            List<Request> requests = backpackBellman.optimizedBellman(requestList, info);
+            blackhole.consume(requests);
+        }
+
     }
 
     public static void main(String[] args) throws Exception {
