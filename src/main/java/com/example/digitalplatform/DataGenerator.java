@@ -81,10 +81,10 @@ public class DataGenerator {
         UserAccountDto dto = new UserAccountDto();
         dto.setSubjectAreas(getSubjectAreas(subjectAreas));
         dto.setUserName("teacher" + i);
-        int index = ThreadLocalRandom.current().nextInt(0, teachersNames.size() - 1);
-        dto.setFirstName(teachersNames.get(index)[1]);
-        dto.setLastName(teachersNames.get(index)[0]);
-        dto.setMiddleName(teachersNames.get(index)[2]);
+
+        dto.setFirstName(teachersNames.get(i-1)[1]);
+        dto.setLastName(teachersNames.get(i-1)[0]);
+        dto.setMiddleName(teachersNames.get(i-1)[2]);
         dto.setPassword("teacher");
         dto.setInstitution(getTeacherInstitution());
         dto.setRoleCode(RoleType.TEACHER);
