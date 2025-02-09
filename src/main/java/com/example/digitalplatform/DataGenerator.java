@@ -96,7 +96,7 @@ public class DataGenerator {
 
     private UserAccountDto getStudentAccountDto(int i) {
         UserAccountDto dto = new UserAccountDto();
-        dto.setUserName("student_" + i);
+        dto.setUserName("student" + i);
         int index = ThreadLocalRandom.current().nextInt(0, studentsNames.size() - 1);
         dto.setFirstName(studentsNames.get(index)[1]);
         dto.setLastName(studentsNames.get(index)[0]);

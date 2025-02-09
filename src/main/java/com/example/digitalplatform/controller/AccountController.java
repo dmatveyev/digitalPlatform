@@ -1,5 +1,6 @@
 package com.example.digitalplatform.controller;
 
+import com.example.digitalplatform.db.model.Request;
 import com.example.digitalplatform.db.model.RoleType;
 import com.example.digitalplatform.controller.dto.RoleDto;
 import com.example.digitalplatform.controller.dto.UserAccountDto;
@@ -62,8 +63,8 @@ class AccountController {
         PageRequest pageRequest = PageRequest.of(start - 1, pageSize);
         List<UserAccountDto> accounts = Objects.isNull(roleCode) ? userService.getAllUserAccounts()
                 :userService.findByRoleCode(roleCode);
-        int end = Math.min((start - 1 + pageRequest.getPageSize()), accounts.size());
-        List<UserAccountDto> pageContent = accounts.isEmpty()? Collections.emptyList(): accounts.subList(start-1, end);
+        int end = Math.min((((start-1) * pageRequest.getPageSize()) + pageRequest.getPageSize()), accounts.size());
+        List<UserAccountDto> pageContent = accounts.isEmpty()? Collections.emptyList(): accounts.subList(((start-1) * pageRequest.getPageSize()), end);
         Page<UserAccountDto> accountPage = new PageImpl<>(pageContent, pageRequest, accounts.size());
         model.addAttribute("accounts", accountPage);
         List<RoleDto> availableRoles = userService.getAvailableRoles();
