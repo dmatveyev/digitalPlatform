@@ -31,6 +31,9 @@ logging:
       example:
         digitalplatform: DEBUG
 
+automatic-assign:
+  ##cron: '0 */1 * * * *'
+  cron: '-'
 
 
 

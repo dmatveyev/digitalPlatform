@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -31,12 +33,14 @@ public class DataGenerator {
     List<String[]> teachersNames;
     List<String[]> studentsNames;
     List<String> subjectNames;
+    List<Subject> subjects;
 
     @EventListener(value = ContextRefreshedEvent.class)
     public void init() {
         createSubjectAreas();
 
         List<SubjectArea> subjectAreas = subjectAreaRepository.findAll();
+        Map<String, SubjectArea> areasMap = subjectAreas.stream().collect(Collectors.toMap(SubjectArea::getName, Function.identity()));
         for (int i = 1; i < teachersNames.size() + 1; i++) {
             UserAccountDto teacherAccountDto = getTeacherAccountDto(subjectAreas, i);
             User user = userService.registerNewUserAccount(teacherAccountDto);
@@ -50,11 +54,15 @@ public class DataGenerator {
             userService.saveUserInfo(studentAccountDto, student);
             students.add(student.getLogin());
         }
-        for (int i = 1; i < 40; i++) {
-            int randomValue = ThreadLocalRandom.current().nextInt(0, students.size() - 1);
-            CreateRequestDto createRequestDto = getCreateRequestDto(i, subjectAreas);
-            requestService.addRequest(createRequestDto, students.get(randomValue));
 
+        for (Subject subject : subjects) {
+            List<Topic> topics = subject.getTopics();
+            SubjectArea area = areasMap.get(subject.getName());
+            for (Topic topic : topics) {
+                int randomValue = ThreadLocalRandom.current().nextInt(0, students.size() - 1);
+                CreateRequestDto createRequestDto = getCreateRequestDto(area, topic);
+                requestService.addRequest(createRequestDto, students.get(randomValue));
+            }
         }
 
     }
@@ -72,7 +80,7 @@ public class DataGenerator {
     private UserAccountDto getTeacherAccountDto(List<SubjectArea> subjectAreas, int i) {
         UserAccountDto dto = new UserAccountDto();
         dto.setSubjectAreas(getSubjectAreas(subjectAreas));
-        dto.setUserName("teacher_" + i);
+        dto.setUserName("teacher" + i);
         int index = ThreadLocalRandom.current().nextInt(0, teachersNames.size() - 1);
         dto.setFirstName(teachersNames.get(index)[1]);
         dto.setLastName(teachersNames.get(index)[0]);
@@ -143,11 +151,11 @@ public class DataGenerator {
 
     }
 
-    private CreateRequestDto getCreateRequestDto(int i, List<SubjectArea> subjectAreas) {
-        int index = ThreadLocalRandom.current().nextInt(0, subjectAreas.size() - 1);
+    private CreateRequestDto getCreateRequestDto(SubjectArea subject, Topic topic) {
         CreateRequestDto createRequestDto = new CreateRequestDto();
-        createRequestDto.setTitle("Заголовок_" + i);
-        createRequestDto.setSubjectAreaId(subjectAreas.get(index).getId());
+        createRequestDto.setTitle(topic.getTitle());
+        createRequestDto.setDescription(topic.getDescription());
+        createRequestDto.setSubjectAreaId(subject.getId());
         createRequestDto.setWorkType(new Random().nextBoolean() ? WorkType.INDIVIDUAL : WorkType.GROUP);
         createRequestDto.setPeriodical(new Random().nextBoolean());
         long days = ThreadLocalRandom.current().nextLong(1, 30);

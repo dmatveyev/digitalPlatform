@@ -1,12 +1,19 @@
 package com.example.digitalplatform;
 
+import com.example.digitalplatform.controller.dto.CreateRequestDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +34,7 @@ public class DigitalPlatformApplication {
 
     @Bean
     public List<String[]> teachersNames() {
-        String str = "Петрова Виктория Васильевна; Белякова Ксения Олеговна; Макаров Максим Глебович; Мартынов Михаил Михайлович; Дьяконов Михаил Георгиевич; Афанасьева Светлана Саввична; Беляков Сергей Русланович; Воронов Григорий Тимурович; Николаев Илья Георгиевич; Михайлов Максим Андреевич";
+        String str = "Петрова Виктория Васильевна; Белякова Ксения Олеговна; Макаров Максим Глебович; Мартынов Михаил Михайлович; Дьяконов Михаил Георгиевич; Афанасьева Светлана Саввична; ";
         List<String> names = Arrays.stream(str.split("; ")).toList();
         List<String[]> strings = names.stream().map(s -> s.split(" ")).toList();
         return strings;
@@ -36,20 +43,25 @@ public class DigitalPlatformApplication {
     @Bean
     public List<String> subjectNames() {
         String subjects = """
-                Русский и родной язык;
+                Русский язык;
                 Математика;
-                Литература;
                 Английский язык;
-                Китайский язык;
-                История;
-                Обществознание;
                 Физика;
-                Химия;
-                Биология;
-                География;
                 """;
         List<String> subjectNames = Arrays.stream(subjects.split(";\n")).toList();
         return subjectNames;
+    }
+
+
+    @Bean
+    @SneakyThrows
+    public List<Subject> subjects() {
+        ObjectMapper mapper = new ObjectMapper();
+        File file = ResourceUtils.getFile("classpath:subjects.json");
+        Root root = mapper.readValue(file, Root.class);
+        List<Subject> subjects = root.getSubjects();
+        // Далее работайте с данными
+        return subjects;
     }
 
 }

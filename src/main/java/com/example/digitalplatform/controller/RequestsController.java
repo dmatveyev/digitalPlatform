@@ -6,6 +6,7 @@ import com.example.digitalplatform.db.repository.SubjectAreaRepository;
 import com.example.digitalplatform.controller.dto.CreateRequestDto;
 import com.example.digitalplatform.controller.dto.RequestDto;
 import com.example.digitalplatform.db.repository.UserRepository;
+import com.example.digitalplatform.service.DecisionService;
 import com.example.digitalplatform.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,7 @@ public class RequestsController {
     private final SubjectAreaRepository subjectAreaRepository;
     private final RequestService requestService;
     private final UserRepository userRepository;
+    private final DecisionService decisionService;
 
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('STUDENT','TEACHER')")
@@ -128,6 +130,18 @@ public class RequestsController {
         model.addAttribute("owner", byId.getCustomer());
         model.addAttribute("worker", byId);
         return "redirect:/requests/edit?id="+id;
+    }
+
+    @GetMapping("/assign")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String assign(
+            Model model, Principal principal) {
+        String name = principal.getName();
+        User byLogin = userRepository.findByLogin(name);
+        decisionService.manualAssign(byLogin.getId());
+
+        List<RequestDto> requests = requestService.findByPrincipal(principal);
+        return "redirect:/requests/all?page=1&size=5";
     }
 
 }

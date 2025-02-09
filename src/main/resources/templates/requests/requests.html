@@ -89,9 +89,11 @@
     <div th:replace="pagingNav :: pagingNav(${requestPage},
     @{/requests/all(subjectArea=${area},status=${selectedSt}, startDate=${startDate}
     )})"></div>
-    <div class="btn-group row mt-3" role="group" aria-label="Basic example"
+
+    <div class="btn-group row mt-3" role="group"
          sec:authorize="hasAnyAuthority('ADMIN','CREATE_REQUEST')">
         <a role="button" class="btn btn-primary" th:href="@{/requests/create}">Создать...</a>
+        <a role="button" class="btn btn-success" th:href="@{/requests/assign}">Назначить</a>
     </div>
 </div>
 
