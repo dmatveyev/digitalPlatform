@@ -70,7 +70,7 @@ public class DataGenerator {
     private void createSubjectAreas() {
         for (String subjectName : subjectNames) {
             SubjectArea subjectArea = new SubjectArea();
-            subjectArea.setId(UUID.randomUUID());
+            //subjectArea.setId(UUID.randomUUID());
             subjectArea.setName(subjectName);
             subjectAreaRepository.save(subjectArea);
         }

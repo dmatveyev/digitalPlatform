@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.5.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
@@ -27,7 +27,8 @@
         <url/>
     </scm>
     <properties>
-        <java.version>17</java.version>
+        <java.version>25</java.version>
+        <lombok.version>1.18.48</lombok.version>
     </properties>
     <dependencies>
         <dependency>
@@ -122,6 +123,34 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <!-- JDK 25 доступен только как JRE (javac отсутствует), поэтому сборка идёт через ECJ -->
+                    <compilerId>eclipse</compilerId>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-eclipse</artifactId>
+                        <version>2.15.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.eclipse.jdt</groupId>
+                        <artifactId>ecj</artifactId>
+                        <version>3.46.100</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
