@@ -26,7 +26,9 @@ public class SimpleErrorController implements ErrorController {
             if (Objects.nonNull(ex)) {
                 log.error("Exception: {}", ex);
             }
-            if (statusCode == HttpStatus.NOT_FOUND.value()) {
+            if (statusCode == HttpStatus.BAD_REQUEST.value()) {
+                return "400page";
+            } else if (statusCode == HttpStatus.NOT_FOUND.value()) {
                 return "404page";
             } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
                 return "403page";

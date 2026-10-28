@@ -48,6 +48,10 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity6</artifactId>
         </dependency>
@@ -130,7 +134,6 @@
                 <version>3.13.0</version>
                 <configuration>
                     <!-- JDK 25 доступен только как JRE (javac отсутствует), поэтому сборка идёт через ECJ -->
-                    <compilerId>eclipse</compilerId>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -139,18 +142,6 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.plexus</groupId>
-                        <artifactId>plexus-compiler-eclipse</artifactId>
-                        <version>2.15.0</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.eclipse.jdt</groupId>
-                        <artifactId>ecj</artifactId>
-                        <version>3.46.100</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>

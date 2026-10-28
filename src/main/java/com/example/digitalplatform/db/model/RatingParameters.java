@@ -1,6 +1,7 @@
 package com.example.digitalplatform.db.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,10 @@ public class RatingParameters {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NotBlank(message = "'code' must not be null, empty or blank")
     private String code;
 
+    @NotBlank(message = "'description' must not be null, empty or blank")
     private String description;
     @Column(name = "min_value")
     private float minValue;

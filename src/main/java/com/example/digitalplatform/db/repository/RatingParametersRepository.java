@@ -9,4 +9,6 @@ import java.util.UUID;
 
 public interface RatingParametersRepository extends JpaRepository<RatingParameters, UUID> {
     RatingParameters findByCode(String name);
+
+    boolean existsByCode(String code);
 }
