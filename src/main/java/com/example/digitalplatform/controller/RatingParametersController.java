@@ -1,22 +1,21 @@
 package com.example.digitalplatform.controller;
 
+import com.example.digitalplatform.controller.dto.RatingParametersPageRequest;
 import com.example.digitalplatform.db.model.RatingParameters;
 import com.example.digitalplatform.db.repository.RatingParametersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.Sort;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -27,17 +26,9 @@ public class RatingParametersController {
     private final RatingParametersRepository ratingParametersRepository;
 
     @GetMapping("/all")
-    public String getAll(
-            @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size,
-            Model model) {
-        int start = page.orElse(1);
-        int pageSize = size.orElse(5);
-        PageRequest pageRequest = PageRequest.of(start - 1, pageSize);
-        List<RatingParameters> all = ratingParametersRepository.findAll();
-        int end = Math.min((start-1 + pageRequest.getPageSize()), all.size());
-        List<RatingParameters> pageContent = all.isEmpty()? Collections.emptyList(): all.subList(start-1, end);
-        Page<RatingParameters> pageItem = new PageImpl<>(pageContent, pageRequest, all.size());
+    public String getAll(@Valid @ModelAttribute RatingParametersPageRequest request, Model model) {
+        Page<RatingParameters> pageItem = ratingParametersRepository.findAll(
+                PageRequest.of(request.getPage() - 1, request.getSize(), Sort.by("code")));
 
         model.addAttribute("pageItem", pageItem);
         return "rating_parameters/rating_parameters";
