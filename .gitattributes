@@ -1,2 +1,2 @@
-/mvnw text eol=lf
+/mvnw text eol=lf fileMode=100755
 *.cmd text eol=crlf

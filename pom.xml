@@ -133,7 +133,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <!-- JDK 25 доступен только как JRE (javac отсутствует), поэтому сборка идёт через ECJ -->
+                    <!-- Java 25+ поставляется только в виде JRE (javac отсутствует), поэтому сборка выполняется через ECJ. -->
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

@@ -7,7 +7,6 @@ import com.example.digitalplatform.service.RatingParametersService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -41,18 +39,22 @@ public class RatingParametersController {
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam("id") String id, Model model) {
-        final RatingParameters ratingParameters = ratingParametersService.findByIdOrThrow(parseId(id));
+    public String edit(@RequestParam("id") UUID id, Model model) {
+        // Парсинг/валидация формата UUID передана Spring (@RequestParam UUID):
+        // мусорный id -> TypeMismatchException -> 400 (SimpleErrorController -> 400page.html);
+        // валидный id без записи в БД -> 404 из сервиса (SimpleErrorController -> 404page.html).
+        final RatingParameters ratingParameters = ratingParametersService.findByIdOrThrow(id);
         model.addAttribute("rating_parameters", ratingParameters);
         return "rating_parameters/rating_parameters_edit";
     }
 
     @PostMapping("/edit")
-    public String save(@RequestParam("id") String id, @Valid RatingParameters toSave) {
+    public String save(@RequestParam("id") UUID id, @Valid RatingParameters toSave) {
         // Bean Validation (@NotBlank на code/description в RatingParameters + class-level constraint
         // @MinNotGreaterThanMax) проверяет входные параметры. Если валидация не пройдена —
         // Spring выбрасывает MethodArgumentNotValidException (400), который диспетчеризуется в /error
         // и обрабатывается SimpleErrorController -> HTML-страница 400page.
+        // Парсинг/валидация формата UUID передана Spring (@RequestParam UUID): мусорный id -> 400.
         ratingParametersService.save(id, toSave);
         return "redirect:/rating_parameters/all";
     }
@@ -83,13 +85,5 @@ public class RatingParametersController {
         // невалидный UUID -> 400, отсутствующая запись -> 404 (ResponseStatusException из сервиса).
         ratingParametersService.deleteById(request.getId());
         return "redirect:/rating_parameters/all";
-    }
-
-    private UUID parseId(String id) {
-        try {
-            return UUID.fromString(id);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid rating parameter id: '" + id + "'");
-        }
     }
 }

@@ -51,7 +51,12 @@ public class RatingParametersService {
      * - успешное удаление -> запись удалена.
      */
     public void deleteById(String id) {
-        final UUID uuid = parseId(id);
+        final UUID uuid;
+        try {
+            uuid = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid rating parameter id: '" + id + "'");
+        }
         deleteById(uuid);
     }
 
@@ -84,30 +89,18 @@ public class RatingParametersService {
     }
 
     /**
-     * Обновляет существующий параметр рейтинга по id строковым значением.
-     * - невалидный UUID (мусор) -> 400 Bad Request;
+     * Обновляет существующий параметр рейтинга по id.
+     * Парсинг формата UUID передан на уровень MVC (@RequestParam("id") UUID в контроллере):
+     * мусорный id -> TypeMismatchException -> 400 Bad Request (SimpleErrorController).
      * - валидный UUID без записи в БД -> 404 Not Found;
      * - успешное сохранение -> сохранённая запись.
      */
-    public RatingParameters save(String id, RatingParameters updated) {
-        final UUID uuid = parseId(id);
+    public RatingParameters save(UUID uuid, RatingParameters updated) {
         RatingParameters existing = findByIdOrThrow(uuid);
         existing.setCoefficient(updated.getCoefficient());
         existing.setMaxValue(updated.getMaxValue());
         existing.setMinValue(updated.getMinValue());
         existing.setDescription(updated.getDescription());
         return ratingParametersRepository.save(existing);
-    }
-
-    /**
-     * Парсит строку в UUID.
-     * - невалидный формат -> 400 Bad Request (ResponseStatusException).
-     */
-    private UUID parseId(String id) {
-        try {
-            return UUID.fromString(id);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid rating parameter id: '" + id + "'");
-        }
     }
 }
