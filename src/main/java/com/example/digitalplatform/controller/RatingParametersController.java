@@ -1,8 +1,10 @@
 package com.example.digitalplatform.controller;
 
+import com.example.digitalplatform.controller.dto.RatingParametersDeleteRequest;
 import com.example.digitalplatform.controller.dto.RatingParametersPageRequest;
 import com.example.digitalplatform.db.model.RatingParameters;
 import com.example.digitalplatform.db.repository.RatingParametersRepository;
+import com.example.digitalplatform.service.RatingParametersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +26,7 @@ import java.util.UUID;
 @PreAuthorize("hasRole('ADMIN')")
 public class RatingParametersController {
     private final RatingParametersRepository ratingParametersRepository;
+    private final RatingParametersService ratingParametersService;
 
     @GetMapping("/all")
     public String getAll(@Valid @ModelAttribute RatingParametersPageRequest request, Model model) {
@@ -76,10 +79,11 @@ public class RatingParametersController {
     }
 
     @PostMapping("/delete")
-    public String delete(@RequestParam("id") String id, Model model) {
-        ratingParametersRepository.deleteById(UUID.fromString(id));
-        List<RatingParameters> list = ratingParametersRepository.findAll();
-        model.addAttribute("rating_parameters", list);
+    public String delete(@Valid @ModelAttribute RatingParametersDeleteRequest request) {
+        // Бизнес-логика удаления (парсинг UUID, проверка существования, удаление) вынесена в сервис.
+        // Bean Validation (@NotBlank на id в DTO) возвращает 400 для пустого/отсутствующего id;
+        // невалидный UUID -> 400, отсутствующая запись -> 404 (ResponseStatusException из сервиса).
+        ratingParametersService.deleteById(request.getId());
         return "redirect:/rating_parameters/all";
     }
 }
