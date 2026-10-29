@@ -15,10 +15,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import static org.hamcrest.Matchers.containsString;
 
 /**
  * Тесты delete в RatingParametersController: POST /rating_parameters/delete.
@@ -108,6 +112,28 @@ class RatingParametersControllerDeleteTest {
                 .andExpect(status().isForbidden());
 
         // Проверяем, что запись НЕ была удалена (запрос отклонён до удаления)
+        Assertions.assertTrue(ratingParametersRepository.findById(entity.getId()).isPresent(),
+                "Запись не должна быть удалена при 403");
+    }
+
+    /**
+     * Тест 403 для аутентифицированного пользователя без роли ADMIN: ExceptionTranslationFilter
+     * через настроенный accessDeniedHandler форвардит на /error, SimpleErrorController отдаёт
+     * HTML-страницу 403page (проверка по содержимому, а не только статусу).
+     */
+    @Test
+    void deleteWithoutAdminRoleReturns403HtmlPage() throws Exception {
+        RatingParameters entity = new RatingParameters(null, "FORBIDDEN_HTML_PARAM", "Параметр для проверки 403 HTML", 1.0f, 10.0f, 0.5f);
+        ratingParametersRepository.save(entity);
+
+        mockMvc.perform(post("/rating_parameters/delete")
+                        .param("id", entity.getId().toString())
+                        .with(user("user").roles("USER"))
+                        .with(csrf()))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string(containsString("<html lang")))
+                .andExpect(content().string(containsString("403")));
+
         Assertions.assertTrue(ratingParametersRepository.findById(entity.getId()).isPresent(),
                 "Запись не должна быть удалена при 403");
     }

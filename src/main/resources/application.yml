@@ -7,8 +7,9 @@ spring:
     username: sa
     password: password
   h2:
+    # Консоль H2 отключена в production (план, этап 1, шаг 1.2)
     console:
-      enabled: true
+      enabled: false
       path: /h2-console
   jpa:
     generate-ddl: false
@@ -20,9 +21,11 @@ spring:
       format_sql: true
     show-sql: true
   security:
+    # В production логин и пароль задаются вне git через переменные окружения
+    # (например, export ADMIN_USERNAME / ADMIN_PASSWORD перед запуском).
     user:
-      name: admin
-      password: admin
+      name: ${ADMIN_USERNAME:admin}
+      password: ${ADMIN_PASSWORD:admin}
       roles: ADMIN
   sql:
     init:

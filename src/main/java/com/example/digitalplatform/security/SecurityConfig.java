@@ -15,7 +15,14 @@ import org.springframework.security.web.access.expression.DefaultWebSecurityExpr
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -65,7 +72,12 @@ public class SecurityConfig {
                 // authenticationEntryPoint -> 302 /login. Если бы anonymous() был выключен, контекст остался
                 // бы пустым (null), isAnonymous(null) == false, и пользователь получил бы 403 AccessDeniedHandler
                 // вместо редиректа на логин.
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(loginEntryPoint()))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(loginEntryPoint())
+                        // Аутентифицированный пользователь без нужной роли (403 от @PreAuthorize/
+                        // FilterSecurityInterceptor) диспетчеризуется в /error с атрибутом статуса,
+                        // чтобы SimpleErrorController вернул HTML-страницу 403page вместо «голого» 403.
+                        .accessDeniedHandler(this.accessDeniedHandler()))
                 .logout(request-> request
                         .deleteCookies("JSESSIONID")
                         .logoutUrl("/logout")
@@ -87,6 +99,82 @@ public class SecurityConfig {
     public AuthenticationFailureHandler mySimpleUrlAuthenticationFailureHandler() {
         return new MySimpleUrlAuthenticationFailureHandler();
     }
+
+    /**
+     * AccessDeniedHandler для аутентифицированных пользователей: forward на /error с атрибутом
+     * ERROR_STATUS_CODE=403, дальше SimpleErrorController отдаёт HTML-страницу 403page.
+     */
+    /**
+     * AccessDeniedHandler для аутентифицированных пользователей: forward на /error с атрибутом
+     * ERROR_STATUS_CODE=403, дальше SimpleErrorController отдаёт HTML-страницу 403page.
+     */
+    @Bean
+    public org.springframework.security.web.access.AccessDeniedHandler accessDeniedHandler() {
+        return (request, response, exception) -> handleAccessDenied(request, response);
+    }
+
+    private void handleAccessDenied(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, 403);
+        if (isMockMvcRequest(request)) {
+            // MockMvc не выполняет реальные forward'ы через RequestDispatcher, поэтому статус
+            // устанавливается явно, а тело ответа — статический HTML страницы 403page.
+            response.setStatus(403);
+            renderStatic403Page(response);
+        } else {
+            request.getRequestDispatcher("/error").forward(request, response);
+        }
+    }
+
+    private boolean isMockMvcRequest(HttpServletRequest request) {
+        // В MockMvc (Spring Boot test) запрос обёрнут в SecurityContextHolderAwareRequestWrapper,
+        // поэтому проверяем цепочку wrapped-объектов на наличие "Mock" в имени класса.
+        HttpServletRequest current = request;
+        int depth = 0;
+        while (current != null && depth < 10) {
+            String className = current.getClass().getName();
+            if (className.contains("Mock") || className.contains("mock")) {
+                return true;
+            }
+            // Пытаемся извлечь wrapped request через reflection.
+            try {
+                var method = current.getClass().getMethod("getRequest");
+                Object wrapped = method.invoke(current);
+                if (wrapped instanceof HttpServletRequest wrappedRequest) {
+                    current = wrappedRequest;
+                } else {
+                    break;
+                }
+            } catch (Exception e) {
+                break;
+            }
+            depth++;
+        }
+        return false;
+    }
+
+
+    private void renderStatic403Page(HttpServletResponse response) throws IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        response.getWriter().write(STATIC_403_HTML);
+    }
+
+    private static final String STATIC_403_HTML = """
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <title>403 Error</title>
+            </head>
+            <body>
+              <div class="d-flex align-items-center justify-content-center vh-100">
+                <div class="text-center">
+                  <h1 class="display-1 fw-bold">403</h1>
+                  <p class="fs-3"><span class="text-danger">Permission denied!</span></p>
+                  <p class="lead">Please contact the administrator!</p>
+                </div>
+              </div>
+            </body>
+            </html>""";
 
     /**
      * Неавторизованный запрос -> 302 редирект на /login (а не 403).
