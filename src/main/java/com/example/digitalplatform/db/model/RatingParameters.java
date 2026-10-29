@@ -1,5 +1,6 @@
 package com.example.digitalplatform.db.model;
 
+import com.example.digitalplatform.db.model.validator.MinNotGreaterThanMax;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@MinNotGreaterThanMax(message = "'minValue' must not be greater than 'maxValue'")
 public class RatingParameters {
 
     @Id

@@ -37,16 +37,28 @@ public class RatingParametersController {
         return "rating_parameters/rating_parameters";
     }
 
+    private UUID parseId(String id) {
+        try {
+            return UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid rating parameter id: '" + id + "'");
+        }
+    }
+
     @GetMapping("/edit")
     public String edit(@RequestParam("id") String id, Model model) {
-        RatingParameters ratingParameters = ratingParametersRepository.findById(UUID.fromString(id)).orElseThrow(NullPointerException::new);
+        final UUID uuid = parseId(id);
+        RatingParameters ratingParameters = ratingParametersRepository.findById(uuid).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rating parameter with id '" + id + "' not found"));
         model.addAttribute("rating_parameters", ratingParameters);
         return "rating_parameters/rating_parameters_edit";
     }
 
     @PostMapping("/edit")
-    public String save(@RequestParam("id") String id, RatingParameters toSave, Model model) {
-        RatingParameters ratingParameters = ratingParametersRepository.findById(UUID.fromString(id)).orElseThrow();
+    public String save(@RequestParam("id") String id, @Valid RatingParameters toSave, Model model) {
+        final UUID uuid = parseId(id);
+        RatingParameters ratingParameters = ratingParametersRepository.findById(uuid).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rating parameter with id '" + id + "' not found"));
         ratingParameters.setCoefficient(toSave.getCoefficient());
         ratingParameters.setMaxValue(toSave.getMaxValue());
         ratingParameters.setMinValue(toSave.getMinValue());
@@ -65,7 +77,7 @@ public class RatingParametersController {
         // Уникальность кода параметра: повторная запись с тем же code отклоняется с 400 Bad Request,
         // чтобы не создавать дубликаты. Исключение диспетчеризуется в /error -> SimpleErrorController.
         if (ratingParametersRepository.existsByCode(toAdd.getCode())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parameter with code '" + toAdd.getCode() + "' already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Parameter with code '" + toAdd.getCode() + "' already exists");
         }
 
         ratingParametersRepository.save(toAdd);

@@ -107,9 +107,6 @@ class RatingParametersControllerCreateTest {
     /**
      * Тест create в RatingParametersController: отправка null/пустых значений (code или description)
      * приводит к ошибке 400 Bad Request и запись НЕ сохраняется в БД.
-     *
-     * Обработка 400 диспетчеризуется в /error -> SimpleErrorController -> HTML-шаблон 400page.html
-     * (сама отдача HTML-страницы при 400 проверяется тестом errorPageFor400ReturnsHtml).
      */
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -129,25 +126,25 @@ class RatingParametersControllerCreateTest {
 
     /**
      * Тест create в RatingParametersController: повторное создание параметра с уже существующим
-     * кодом отклоняется с 400 Bad Request (проверка уникальности через repository.existsByCode),
+     * кодом отклоняется с 409 Conflict (проверка уникальности через repository.existsByCode),
      * дубль НЕ сохраняется — количество записей с этим кодом остаётся равным одному.
      */
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    void createRatingParametersWithDuplicateCodeReturns400() throws Exception {
+    void createRatingParametersWithDuplicateCodeReturns409() throws Exception {
         // Сначала успешно создаём запись с кодом DUP_PARAM
         RatingParameters first = new RatingParameters(null, "DUP_PARAM", "Первый параметр", 1.0f, 10.0f, 0.5f);
         ratingParametersRepository.save(first);
 
-        // Повторный POST с тем же кодом должен быть отклонён с 400
+        // Повторный POST с тем же кодом должен быть отклонён с 409 Conflict
         mockMvc.perform(post("/rating_parameters/create")
                         .param("code", "DUP_PARAM")
                         .param("description", "Попытка дубликата")
                         .param("minValue", "1.0")
                         .param("maxValue", "10.0")
-                        .param("coefficient", "0.5")
-                        .with(csrf()))
-                .andExpect(status().isBadRequest());
+                         .param("coefficient", "0.5")
+                          .with(csrf()))
+                  .andExpect(status().isConflict());
 
         // Запись с кодом DUP_PARAM осталась ровно одна (дубль не сохранён)
         RatingParameters entity = ratingParametersRepository.findByCode("DUP_PARAM");
@@ -275,6 +272,47 @@ class RatingParametersControllerCreateTest {
         // Запись не попала в БД (ошибка конвертации отклонила запрос до сохранения)
         RatingParameters entity = ratingParametersRepository.findByCode("BAD_NUMBER_PARAM");
         Assertions.assertNull(entity, "Запись с невалидным minValue не должна быть сохранена при 400");
+    }
+
+    /**
+     * Тест create в RatingParametersController: minValue > maxValue отклоняется с 400 Bad Request
+     * (class-level constraint @MinNotGreaterThanMax на RatingParameters), запись НЕ сохраняется в БД.
+     */
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    void createRatingParametersWithMinGreaterThanMaxReturns400() throws Exception {
+        mockMvc.perform(post("/rating_parameters/create")
+                        .param("code", "MIN_GT_MAX_PARAM")
+                        .param("description", "Параметр с minValue > maxValue")
+                        .param("minValue", "15.0")
+                        .param("maxValue", "10.0")
+                        .param("coefficient", "0.5")
+                        .with(csrf()))
+                .andExpect(status().isBadRequest());
+
+        // Запись не попала в БД (валидация диапазона отклонила запрос до сохранения)
+        RatingParameters entity = ratingParametersRepository.findByCode("MIN_GT_MAX_PARAM");
+        Assertions.assertNull(entity, "Запись с minValue > maxValue не должна быть сохранена при 400");
+    }
+
+    /**
+     * Тест create в RatingParametersController: minValue == maxValue — допустимый случай (200/3xx),
+     * запись сохраняется в БД.
+     */
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    void createRatingParametersWithMinEqualMaxSucceeds() throws Exception {
+        mockMvc.perform(post("/rating_parameters/create")
+                        .param("code", "MIN_EQ_MAX_PARAM")
+                        .param("description", "Параметр с minValue == maxValue")
+                        .param("minValue", "5.0")
+                        .param("maxValue", "5.0")
+                        .param("coefficient", "0.5")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection());
+
+        RatingParameters entity = ratingParametersRepository.findByCode("MIN_EQ_MAX_PARAM");
+        Assertions.assertNotNull(entity, "Запись с minValue == maxValue должна быть сохранена в БД");
     }
 
     /**

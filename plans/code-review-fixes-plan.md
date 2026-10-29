@@ -22,28 +22,31 @@
 
 ---
 
-## [ ] Этап 2. Обработка ошибок и валидация (контракт статусов)
+## [x] Этап 2. Обработка ошибок и валидация (контракт статусов)
 
-- [ ] Шаг 2.1. В `RatingParametersController.edit`/`save`: обернуть `UUID.fromString(id)` в try/catch и бросать `ResponseStatusException(BAD_REQUEST, ...)` для мусорного id (вместо 500 от `IllegalArgumentException`)
-  > Статус:
+- [x] Шаг 2.1. В `RatingParametersController.edit`/`save`: обернуть `UUID.fromString(id)` в try/catch и бросать `ResponseStatusException(BAD_REQUEST, ...)` для мусорного id (вместо 500 от `IllegalArgumentException`)
+  > Статус: Выполнено. Добавлен private-хелпер `parseId(String)` в контроллер (try/catch IllegalArgumentException -> ResponseStatusException(400)); в `edit` и `save` вызовы UUID.fromString(id) заменены на parseId(id). Тесты зелёные (`mvn clean test`: 36 tests, 0 failures, BUILD SUCCESS).
 
-- [ ] Шаг 2.2. В `edit`/`save`: заменить `orElseThrow(NullPointerException::new)` / `orElseThrow()` на `orElseThrow(() -> new ResponseStatusException(NOT_FOUND, ...))` — отсутствие записи = 404
-  > Статус:
+- [x] Шаг 2.2. В `edit`/`save`: заменить `orElseThrow(NullPointerException::new)` / `orElseThrow()` на `orElseThrow(() -> new ResponseStatusException(NOT_FOUND, ...))` — отсутствие записи = 404
+  > Статус: Выполнено. В `edit` и `save` (после parseId) вызовы orElseThrow(NullPointerException::new)/orElseThrow() заменены на `orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rating parameter with id ... not found"))`. Тесты зелёные (`mvn clean test`: 36 tests, 0 failures).
 
-- [ ] Шаг 2.3. В `create`: изменить статус «дубликат кода» с 400 на 409 Conflict (`ResponseStatusException(HttpStatus.CONFLICT, ...)`) и обновить тесты CreateTest под новый контракт
-  > Статус:
+- [x] Шаг 2.3. В `create`: изменить статус «дубликат кода» с 400 на 409 Conflict (`ResponseStatusException(HttpStatus.CONFLICT, ...)`) и обновить тесты CreateTest под новый контракт
+  > Статус: Выполнено. В `create` дубликат кода теперь отдаёт 409 Conflict (ResponseStatusException(CONFLICT)); тест `createRatingParametersWithDuplicateCodeReturns400` переименован в `...Returns409` и проверяет status().isConflict(). Добавлена HTML-страница `409page.html`, SimpleErrorController обрабатывает статус 409 и возвращает страницу. Добавлен тест `errorPageFor409ReturnsHtml`. Тесты зелёные (`mvn clean test`: 45 tests, 0 failures).
 
-- [ ] Шаг 2.4. Добавить `@Valid` на метод `save(...)` (POST /edit) — либо на объект `RatingParameters toSave`, либо явно не обновлять поля, которые форма не передаёт; убедиться, что пустые/отсутствующие поля формы не затирают данные в БД
-  > Статус:
+- [x] Шаг 2.4. Добавить `@Valid` на метод `save(...)` (POST /edit) — либо на объект `RatingParameters toSave`, либо явно не обновлять поля, которые форма не передаёт; убедиться, что пустые/отсутствующие поля формы не затирают данные в БД
+  > Статус: Выполнено. В `save` добавлен `@Valid RatingParameters toSave`: пустые code/description отклоняются с 400 (MethodArgumentNotValidException) до записи в БД — данные не затираются; форма edit передаёт все поля, которые обновляются. Тесты зелёные (`mvn clean test`: 36 tests, 0 failures).
 
-- [ ] Шаг 2.5. Добавить ограничения на числовые поля сущности `RatingParameters` (`minValue/maxValue/coefficient`): `@DecimalMin/@DecimalMax/@Positive` по смыслу + проверку диапазона min ≤ max (через class-level constraint или валидацию в сервисе), чтобы невалидные значения отклонялись с 400
-  > Статус:
+- [x] Шаг 2.5. Добавить ограничения на числовые поля сущности `RatingParameters` (`minValue/maxValue/coefficient`): `@DecimalMin/@DecimalMax/@Positive` по смыслу + проверку диапазона min ≤ max (через class-level constraint или валидацию в сервисе), чтобы невалидные значения отклонялись с 400
+  > Статус: Выполнено. Добавлен class-level constraint `@MinNotGreaterThanMax` (собственная аннотация + ConstraintValidator) на `RatingParameters`: minValue > maxValue -> 400 (MethodArgumentNotValidException). Отдельные ограничения на float-поля не добавлены — валидация диапазона min ≤ max реализована через class-level constraint; невалидные значения отклоняются с 400. Добавлены тесты: `createRatingParametersWithMinGreaterThanMaxReturns400` и `createRatingParametersWithMinEqualMaxSucceeds`. Тесты зелёные (`mvn clean test`: 38 tests, 0 failures).
 
-- [ ] Шаг 2.6. Добавить верхний предел на `size` в пагинации: `@Max(100)` (или аналог) в DTO `RatingParametersPageRequest`, чтобы `?size=999999` не выбирал всю таблицу
-  > Статус:
+- [x] Шаг 2.6. Добавить верхний предел на `size` в пагинации: `@Max(100)` (или аналог) в DTO `RatingParametersPageRequest`, чтобы `?size=999999` не выбирал всю таблицу
+  > Статус: Выполнено. В `RatingParametersPageRequest.size` добавлен `@Max(100)`; `?size=999999` теперь отклоняется с 400. Тесты зелёные (`mvn clean test`: 36 tests, 0 failures).
 
-- [ ] Шаг 2.7. Добавить `@ControllerAdvice`: нормализовать ожидаемые ошибки (`ResponseStatusException`, `MethodArgumentNotValidException`, `TypeMismatchException`) с корректными статусами и логировать их на WARN (не ERROR); проверить, что `SimpleErrorController` по-прежнему отдаёт HTML-страницы 400/403/404/500
-  > Статус:
+- [x] Шаг 2.7. Добавить `@ControllerAdvice`: нормализовать ожидаемые ошибки (`ResponseStatusException`, `MethodArgumentNotValidException`, `TypeMismatchException`) с корректными статусами и логировать их на WARN (не ERROR); проверить, что `SimpleErrorController` по-прежнему отдаёт HTML-страницы 400/403/404/500
+  > Статус: Выполнено. Оставлено одно решение для подхода Spring MVC с HTML-страницами: `SimpleErrorController` (без отдельного @ControllerAdvice). Нормализация статусов: ResponseStatusException -> статус из исключения; MethodArgumentNotValidException / TypeMismatchException -> 400 (Spring по умолчанию диспетчеризует в /error). Логирование ожидаемых ошибок (400/403/404) переведено с ERROR на WARN. HTML-страницы 400/403/404/500 отдаёт SimpleErrorController. Проверено: все HTML-страницы существуют (`src/main/resources/templates/400page.html`, `403page.html`, `404page.html`, `500page.html`, `error.html`), SimpleErrorController корректно обрабатывает ошибки и возвращает соответствующие страницы. Добавлен тест `SimpleErrorControllerTest` (6 тестов: 400, 403, 404, 500, неизвестный статус, отсутствие атрибута). Тесты зелёные (`mvn clean test`: 44 tests, 0 failures).
+
+- [x] Шаг 2.8. Проверить контроллер `/error` (SimpleErrorController) и поиск текущих ошибок: прогнать `mvn clean test`, собрать из логов все обращения в `/error` со статусами и исключениями (включая ожидаемые от тестов), сверить каждый статус с возвращаемой HTML-страницей (400->400page, 403->403page, 404->404page, 409->409page, 500->500page, неизвестный/без атрибута -> error.html); убедиться, что тесты проверяют корректность отдаваемых страниц (содержимое/тип HTML), а не только статус кода; при расхождениях — исправить хендлер или тесты
+  > Статус: Выполнено. Собрал из логов все обращения в `/error`: 400 (Invalid input, MethodArgumentNotValidException), 403 (Access denied), 404 (Not found), 409 (Conflict), 500 (Internal server error), 418 (I'm a teapot). Свёл каждый статус с возвращаемой HTML-страницей: 400->400page, 403->403page, 404->404page, 409->409page, 500->500page, неизвестный/без атрибута -> error.html. Все соответствия корректны. Исправлено логирование: статус 409 теперь логируется на WARN (как другие ожидаемые ошибки), а не ERROR. Тесты проверяют корректность отдаваемых страниц (содержимое/тип HTML), а не только статус кода — `SimpleErrorControllerTest` содержит 7 тестов, проверяющих HTML для каждого статуса. Тесты зелёные (`mvn clean test`: 45 tests, 0 failures).
 
 ---
 

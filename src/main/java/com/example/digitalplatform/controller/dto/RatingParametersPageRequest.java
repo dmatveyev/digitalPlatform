@@ -1,5 +1,6 @@
 package com.example.digitalplatform.controller.dto;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ public class RatingParametersPageRequest {
     int page = 1;
 
     @Min(1)
+    @Max(100)
     int size = 5;
 
 }

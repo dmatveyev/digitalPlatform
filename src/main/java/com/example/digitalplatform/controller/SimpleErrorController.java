@@ -8,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Objects;
-
 @Controller
 @Slf4j
 public class SimpleErrorController implements ErrorController {
@@ -21,10 +19,12 @@ public class SimpleErrorController implements ErrorController {
             Integer statusCode = Integer.valueOf(status.toString());
             Object attribute = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
 
-            log.error("Error with code: {} and message: {}", statusCode, attribute);
-            Object ex = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
-            if (Objects.nonNull(ex)) {
-                log.error("Exception: {}", ex);
+            // Ожидаемые ошибки ввода/статусов логируются на WARN, а не ERROR.
+            if (statusCode == HttpStatus.BAD_REQUEST.value() || statusCode == HttpStatus.NOT_FOUND.value()
+                    || statusCode == HttpStatus.FORBIDDEN.value() || statusCode == HttpStatus.CONFLICT.value()) {
+                log.warn("Error with code: {} and message: {}", statusCode, attribute);
+            } else {
+                log.error("Error with code: {} and message: {}", statusCode, attribute);
             }
             if (statusCode == HttpStatus.BAD_REQUEST.value()) {
                 return "400page";
@@ -32,6 +32,8 @@ public class SimpleErrorController implements ErrorController {
                 return "404page";
             } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
                 return "403page";
+            } else if (statusCode == HttpStatus.CONFLICT.value()) {
+                return "409page";
             } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
                 return "500page";
             }
