@@ -1,10 +1,13 @@
 package com.example.digitalplatform.controller;
 
 import com.example.digitalplatform.controller.dto.AccountsPageRequest;
+import com.example.digitalplatform.controller.dto.RoleDto;
 import com.example.digitalplatform.controller.dto.UserAccountDto;
 import com.example.digitalplatform.db.model.RoleType;
 import com.example.digitalplatform.service.UserService;
 import jakarta.validation.Valid;
+
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +36,7 @@ public class AccountController {
     @PreAuthorize("hasRole('ADMIN')")
     String getAddAccountForm(Model model) {
         model.addAttribute("userData", new UserAccountDto());
-        model.addAttribute("roles", userService.getAvailableRoles());
+        addRoleOptions(model);
         return "accounts/addAccount";
     }
 
@@ -53,8 +56,16 @@ public class AccountController {
         Page<UserAccountDto> accountPage = roleCode == null ? userService.getAllUserAccounts(pageRequest)
                 : userService.findByRoleCode(roleCode, pageRequest);
         model.addAttribute("accounts", accountPage);
-        model.addAttribute("roles", userService.getAvailableRoles());
+        addRoleOptions(model);
         model.addAttribute("roleCode", roleCode);
         return "accounts/accounts";
+    }
+
+    /**
+     * Кладёт список доступных ролей в модель один раз на запрос.
+     */
+    private void addRoleOptions(Model model) {
+        List<RoleDto> roles = userService.getAvailableRoles();
+        model.addAttribute("roles", roles);
     }
 }
