@@ -1,4 +1,4 @@
-package com.example.digitalplatform.controller;
+package com.example.digitalplatform.controller.ratingparameters;
 
 import com.example.digitalplatform.db.repository.RatingParametersRepository;
 import jakarta.servlet.RequestDispatcher;

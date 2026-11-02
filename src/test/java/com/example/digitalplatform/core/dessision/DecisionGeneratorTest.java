@@ -1,16 +1,16 @@
 package com.example.digitalplatform.core.dessision;
 
+import com.example.digitalplatform.core.BackpackBellman;
 import com.example.digitalplatform.db.model.*;
 import com.example.digitalplatform.service.DecisionService;
 import com.example.digitalplatform.service.RequestService;
 import com.example.digitalplatform.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Set;
@@ -21,22 +21,32 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = DecisionGeneratorConfig.class)
+@ExtendWith(MockitoExtension.class)
 public class DecisionGeneratorTest {
 
     public static final String MATH = "Math";
     public static final UUID MATH_ID = UUID.randomUUID();
-    @Autowired
-    DecisionService decisionService;
-    @Autowired
+
+    @Mock
     UserService userService;
-    @Autowired
+    @Mock
     RequestService requestService;
-    @Captor
-    ArgumentCaptor<List<Request>> requestsCaptor;
 
+    private ArgumentCaptor<List<Request>> requestsCaptor = ArgumentCaptor.forClass(List.class);
 
+    private DecisionService decisionService;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        BackpackBellman backpackBellman = new BackpackBellman();
+        decisionService = new DecisionService(userService, requestService, List.of(backpackBellman));
+        // Установить generatorType через reflection (поле приватное).
+        var field = DecisionService.class.getDeclaredField("generatorType");
+        field.setAccessible(true);
+        field.set(decisionService, "BACKPACK_BELLMAN");
+        // Вызвать @PostConstruct init() вручную.
+        decisionService.init();
+    }
 
     @Test
     void assignForOne() {
@@ -65,7 +75,6 @@ public class DecisionGeneratorTest {
     private SubjectArea getSubjectArea(String name) {
         if (name.equals(MATH)) {
             return new SubjectArea(MATH_ID, name, "");
-
         } else {
             return new SubjectArea(UUID.randomUUID(), name, "");
         }
@@ -96,20 +105,22 @@ public class DecisionGeneratorTest {
         List<Request> assignedFirst = allValues.get(0);
         Set<UUID> ids = info11.stream().map(TeacherInfo::getUser).map(User::getId).collect(Collectors.toSet());
         boolean isActualStatus = assignedFirst.stream().allMatch(request -> request.getStatus().equals(RequestStatus.ASSIGNED));
-        boolean isWorkerAssigned = assignedFirst.stream().map(Request::getWorker).map(User::getId).allMatch(ids::contains);
+        boolean isWorkerAssigned = assignedFirst.stream().allMatch(request -> request.getWorker().getId() != null && ids.contains(request.getWorker().getId()));
         assertTrue(isActualStatus);
         assertTrue(isWorkerAssigned);
         List<Request> assignedSecond = allValues.get(1);
         isActualStatus = assignedSecond.stream().allMatch(request -> request.getStatus().equals(RequestStatus.ASSIGNED));
-        isWorkerAssigned = assignedSecond.stream().map(Request::getWorker).map(User::getId).allMatch(ids::contains);
+        isWorkerAssigned = assignedSecond.stream().allMatch(request -> request.getWorker() != null && ids.contains(request.getWorker().getId()));
         assertTrue(isActualStatus);
         assertTrue(isWorkerAssigned);
     }
+
     private User getUser() {
         User user = new User();
         user.setId(UUID.randomUUID());
         return user;
     }
+
     private List<Request> getRequests() {
         Request e1 = new Request("Заявка 1", 1, 8);
         e1.setSubjectArea(getSubjectArea(MATH));
@@ -131,7 +142,6 @@ public class DecisionGeneratorTest {
         e9.setSubjectArea(getSubjectArea(MATH));
         Request e10 = new Request("Заявка 10", 3, 5);
         e10.setSubjectArea(getSubjectArea(MATH));
-        List<Request> requests = List.of( e1, e2, e3, e4, e5, e6, e7, e8, e9, e10);
-        return requests;
+        return List.of(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.digitalplatform.controller;
+package com.example.digitalplatform.controller.ratingparameters;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
