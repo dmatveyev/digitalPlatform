@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -82,10 +81,7 @@ class UserServiceTest {
      */
     @Test
     void registerNewUserAccountWithDuplicateLoginThrowsConflict() {
-        User existing = new User();
-        existing.setId(UUID.randomUUID());
-        existing.setLogin("dup_login");
-        when(userRepository.findByLogin("dup_login")).thenReturn(existing);
+        when(userRepository.existsByLogin("dup_login")).thenReturn(true);
 
         org.springframework.web.server.ResponseStatusException ex = Assertions.assertThrows(
                 org.springframework.web.server.ResponseStatusException.class,
@@ -104,7 +100,7 @@ class UserServiceTest {
      */
     @Test
     void registerNewUserAccountWithUnknownRoleThrowsExplicitError() {
-        when(userRepository.findByLogin("new_user")).thenReturn(null);
+        when(userRepository.existsByLogin("new_user")).thenReturn(false);
         when(roleRepository.findByCode(RoleType.USER)).thenReturn(null);
 
         org.springframework.web.server.ResponseStatusException ex = Assertions.assertThrows(
@@ -126,7 +122,7 @@ class UserServiceTest {
      */
     @Test
     void registerNewUserAccountWithValidDataSavesUser() {
-        when(userRepository.findByLogin("new_user")).thenReturn(null);
+        when(userRepository.existsByLogin("new_user")).thenReturn(false);
 
         Role role = new Role();
         role.setId(UUID.randomUUID());

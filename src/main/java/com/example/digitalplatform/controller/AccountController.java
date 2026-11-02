@@ -1,17 +1,13 @@
 package com.example.digitalplatform.controller;
 
-import com.example.digitalplatform.db.model.Request;
-import com.example.digitalplatform.db.model.RoleType;
 import com.example.digitalplatform.controller.dto.AccountsPageRequest;
-import com.example.digitalplatform.controller.dto.RoleDto;
 import com.example.digitalplatform.controller.dto.UserAccountDto;
+import com.example.digitalplatform.db.model.RoleType;
 import com.example.digitalplatform.service.UserService;
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -21,26 +17,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
+/**
+ * Тонкий MVC-контроллер пользовательских аккаунтов: маппинг DTO + redirect.
+ * Вся бизнес-логика (валидация, создание, пагинация) вынесена в {@link UserService}.
+ */
 @Controller
 @RequestMapping("/accounts")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @PreAuthorize("hasRole('ADMIN')")
-class AccountController {
+public class AccountController {
 
-    UserService userService;
+    private final UserService userService;
 
     @GetMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     String getAddAccountForm(Model model) {
-
         model.addAttribute("userData", new UserAccountDto());
-        List<RoleDto> roles = userService.getAvailableRoles();
-        model.addAttribute("roles", roles);
+        model.addAttribute("roles", userService.getAvailableRoles());
         return "accounts/addAccount";
     }
 
@@ -56,17 +49,11 @@ class AccountController {
     String getAll(@Valid AccountsPageRequest accountsPageRequest,
                   @RequestParam(value = "role", required = false) RoleType roleCode,
                   Model model) {
-        int start = accountsPageRequest.getPage();
-        int pageSize = accountsPageRequest.getSize();
-        PageRequest pageRequest = PageRequest.of(start - 1, pageSize);
-        List<UserAccountDto> accounts = Objects.isNull(roleCode) ? userService.getAllUserAccounts()
-                :userService.findByRoleCode(roleCode);
-        int end = Math.min((((start-1) * pageRequest.getPageSize()) + pageRequest.getPageSize()), accounts.size());
-        List<UserAccountDto> pageContent = accounts.isEmpty()? Collections.emptyList(): accounts.subList(((start-1) * pageRequest.getPageSize()), end);
-        Page<UserAccountDto> accountPage = new PageImpl<>(pageContent, pageRequest, accounts.size());
+        Pageable pageRequest = PageRequest.of(accountsPageRequest.getPage() - 1, accountsPageRequest.getSize());
+        Page<UserAccountDto> accountPage = roleCode == null ? userService.getAllUserAccounts(pageRequest)
+                : userService.findByRoleCode(roleCode, pageRequest);
         model.addAttribute("accounts", accountPage);
-        List<RoleDto> availableRoles = userService.getAvailableRoles();
-        model.addAttribute("roles", availableRoles);
+        model.addAttribute("roles", userService.getAvailableRoles());
         model.addAttribute("roleCode", roleCode);
         return "accounts/accounts";
     }
