@@ -28,17 +28,13 @@ import static org.mockito.Mockito.when;
 /**
  * Юнит-тесты {@link UserService#registerNewUserAccount(UserAccountDto)} с моками репозиториев.
  *
- * Фиксируют целевое поведение (контракт после Этапа 3.1 плана рефакторинга):
+ * Фиксируют поведение (контракт после Этапа 3.1 плана рефакторинга):
  * <ul>
  *   <li>дублирующий login &rarr; {@link org.springframework.web.server.ResponseStatusException}
  *       с кодом 409 (Conflict), а не тихий возврат существующего пользователя;</li>
  *   <li>null из {@code roleRepository.findByCode(...)} для неизвестной роли &rarr; явная ошибка
  *       ({@link org.springframework.web.server.ResponseStatusException} 400/404), а не NPE.</li>
  * </ul>
- *
- * ДО рефакторинга текущая реализация возвращает существующего пользователя при дубле и не
- * проверяет null-роль (NPE в {@code user.setRole(null)} + сбой сохранения). Поэтому тесты,
- * описывающие целевой контракт, помечены {@code @Disabled}: они активируются после Этапа 3.1.
  */
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -85,7 +81,6 @@ class UserServiceTest {
      * новый пользователь не создаётся, save() не вызывается.
      */
     @Test
-    @org.junit.jupiter.api.Disabled("Целевой контракт после Этапа 3.1 (ResponseStatusException(409)): текущий код тихо возвращает существующего пользователя")
     void registerNewUserAccountWithDuplicateLoginThrowsConflict() {
         User existing = new User();
         existing.setId(UUID.randomUUID());
@@ -108,7 +103,6 @@ class UserServiceTest {
      * &rarr; явная ошибка (ResponseStatusException), а не NPE / сохранение пользователя с null-ролью.
      */
     @Test
-    @org.junit.jupiter.api.Disabled("Целевой контракт после Этапа 3.1: текущий код не проверяет null-роль (NPE/сбой сохранения)")
     void registerNewUserAccountWithUnknownRoleThrowsExplicitError() {
         when(userRepository.findByLogin("new_user")).thenReturn(null);
         when(roleRepository.findByCode(RoleType.USER)).thenReturn(null);
@@ -157,22 +151,4 @@ class UserServiceTest {
         verify(userRepository).save(any(User.class));
     }
 
-    /**
-     * Сигнатурный контракт: при дублирующем login существующий пользователь возвращается.
-     * ДО рефакторинга — текущее поведение (log.error + return old); после Этапа 3.1 будет заменено на 409,
-     * поэтому тест будет удалён/перенесён в @Disabled-вариант выше при выполнении Этапа 3.1.
-     */
-    @Test
-    void registerNewUserAccountWithDuplicateLoginCurrentlyReturnsExisting() {
-        User existing = new User();
-        existing.setId(UUID.randomUUID());
-        existing.setLogin("dup_login");
-        when(userRepository.findByLogin("dup_login")).thenReturn(existing);
-
-        User returned = userService.registerNewUserAccount(account("dup_login", "Secret#123", RoleType.STUDENT));
-
-        Assertions.assertSame(existing, returned,
-                "Текущее (до рефакторинга) поведение: при дубле возвращается существующий пользователь");
-        verify(userRepository, never()).save(any(User.class));
-    }
 }

@@ -8,7 +8,6 @@ import com.example.digitalplatform.db.repository.RoleRepository;
 import com.example.digitalplatform.db.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,12 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * приложение использует GrantedAuthorityDefaults("") (пустой префикс ролей), поэтому
  * @PreAuthorize("hasRole('ADMIN')") проверяет право 'ADMIN' без префикса ROLE_.
  *
- * ВАЖНО (до рефакторинга): текущий код НЕ выполняет Bean Validation на UserAccountDto
- * и молча возвращает существующего пользователя при дублирующем login. Поэтому тесты,
- * фиксирующие контракт «пустой userName/пароль -> 400» и «дубликат -> 409», помечены
- * @Disabled: они описывают целевое поведение после Этапа 2 (валидация) и
- * Этапа 3.1 (ResponseStatusException(409)) из плана рефакторинга. Тесты без @Disabled
- * фиксируют текущее рабочее поведение (GET-форма, успешное создание, авторизация).
+ * Bean Validation на UserAccountDto активен с Этапа 2: «пустой userName/пароль -> 400».
+ * Контракт «дубликат login -> 409» активирован с Этапа 3.1 (ResponseStatusException(409)).
  */
 @SpringBootTest(classes = com.example.digitalplatform.DigitalPlatformApplication.class)
 @AutoConfigureMockMvc
@@ -149,13 +144,10 @@ class AccountControllerCreateTest {
     }
 
     /**
-     * T3 (целевой контракт после Этапа 2): POST с пустым userName -> 400 Bad Request.
-     * До рефакторинга Bean Validation на UserAccountDto отсутствует, поэтому тест @Disabled:
-     * в текущем коде пустой login принимается молча (и может привести к дубликату).
+     * T3: POST с пустым userName -> 400 Bad Request (Bean Validation @NotBlank на UserAccountDto, Этап 2).
      */
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Disabled("Целевой контракт после Этапа 2 (Bean Validation): до этого шага тест не выполняется")
     void createAccountWithBlankUserNameReturns400() throws Exception {
         mockMvc.perform(post("/accounts/create")
                         .param("userName", "")
@@ -169,11 +161,10 @@ class AccountControllerCreateTest {
     }
 
     /**
-     * T4 (целевой контракт после Этапа 2): POST с пустым password -> 400 Bad Request.
+     * T4: POST с пустым password -> 400 Bad Request (Bean Validation @NotBlank на UserAccountDto, Этап 2).
      */
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Disabled("Целевой контракт после Этапа 2 (Bean Validation): до этого шага тест не выполняется")
     void createAccountWithBlankPasswordReturns400() throws Exception {
         mockMvc.perform(post("/accounts/create")
                         .param("userName", "blank_pass_user")
@@ -193,7 +184,6 @@ class AccountControllerCreateTest {
      */
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Disabled("Целевой контракт после Этапа 3.1 (ResponseStatusException(409)): до этого шага тест не выполняется")
     void createAccountWithDuplicateLoginReturns409() throws Exception {
         userRepository.save(createUser("dup_login_user", RoleType.STUDENT));
 

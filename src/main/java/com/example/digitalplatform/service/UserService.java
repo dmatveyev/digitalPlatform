@@ -14,10 +14,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -44,11 +48,16 @@ public class UserService {
     }
 
 
+    /**
+     * Создаёт новый пользовательский аккаунт.
+     * - дублирующий login (запись с тем же login уже существует) -> 409 Conflict;
+     * - неизвестная роль из формы (roleRepository.findByCode вернул null) -> 404 Not Found;
+     * - успешное создание -> сохранённый пользователь.
+     */
     public User registerNewUserAccount(UserAccountDto accountDto) {
         User old = userRepository.findByLogin(accountDto.getUserName());
         if (Objects.nonNull(old)) {
-            log.error("There is an account with that user name: " + accountDto.getUserName());
-            return old;
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "There is an account with that user name: " + accountDto.getUserName());
         }
         User user = new User();
         user.setLogin(accountDto.getUserName());
@@ -56,6 +65,9 @@ public class UserService {
         user.setEnabled(true);
 
         Role byCode = roleRepository.findByCode(accountDto.getRoleCode());
+        if (Objects.isNull(byCode)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unknown role code: '" + accountDto.getRoleCode() + "'");
+        }
         user.setRole(byCode);
         User saved = userRepository.save(user);
 
@@ -65,13 +77,7 @@ public class UserService {
 
     public List<UserAccountDto> getAllUserAccounts() {
         List<User> users = userRepository.findAll();
-        List<UserAccountDto> result = new ArrayList<>();
-        for (User user : users) {
-            UserInfoService userInfoService = serviceMap.get(user.getRole().getCode());
-            UserAccountDto userInfo = userInfoService.getUserInfo(user);
-            result.add(userInfo);
-        }
-        return result;
+        return mapUsersToDtos(users);
     }
 
 
@@ -115,12 +121,12 @@ public class UserService {
 
     public List<UserAccountDto> findByRoleCode(RoleType roleCode) {
         List<User> users = userRepository.findByRoleCode(roleCode);
-        List<UserAccountDto> result = new ArrayList<>();
-        for (User user : users) {
-            UserInfoService userInfoService = serviceMap.get(user.getRole().getCode());
-            UserAccountDto userInfo = userInfoService.getUserInfo(user);
-            result.add(userInfo);
-        }
-        return result;
+        return mapUsersToDtos(users);
+    }
+
+    private List<UserAccountDto> mapUsersToDtos(List<User> users) {
+        return users.stream()
+                .map(user -> serviceMap.get(user.getRole().getCode()).getUserInfo(user))
+                .toList();
     }
 }

@@ -2,9 +2,11 @@ package com.example.digitalplatform.controller;
 
 import com.example.digitalplatform.db.model.Request;
 import com.example.digitalplatform.db.model.RoleType;
+import com.example.digitalplatform.controller.dto.AccountsPageRequest;
 import com.example.digitalplatform.controller.dto.RoleDto;
 import com.example.digitalplatform.controller.dto.UserAccountDto;
 import com.example.digitalplatform.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/accounts")
@@ -45,21 +46,18 @@ class AccountController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    String addAccount(UserAccountDto userAccountDto, Model model) {
+    String addAccount(@Valid UserAccountDto userAccountDto) {
         userService.registerNewUserAccount(userAccountDto);
-        List<UserAccountDto> accounts = userService.getAllUserAccounts();
-        model.addAttribute("accounts", accounts);
         return "redirect:/accounts/all";
     }
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    String getAll(@RequestParam("page") Optional<Integer> page,
-                  @RequestParam("size") Optional<Integer> size,
-                  @RequestParam(value = "role",required = false) RoleType roleCode,
+    String getAll(@Valid AccountsPageRequest accountsPageRequest,
+                  @RequestParam(value = "role", required = false) RoleType roleCode,
                   Model model) {
-        int start = page.orElse(1);
-        int pageSize = size.orElse(5);
+        int start = accountsPageRequest.getPage();
+        int pageSize = accountsPageRequest.getSize();
         PageRequest pageRequest = PageRequest.of(start - 1, pageSize);
         List<UserAccountDto> accounts = Objects.isNull(roleCode) ? userService.getAllUserAccounts()
                 :userService.findByRoleCode(roleCode);
